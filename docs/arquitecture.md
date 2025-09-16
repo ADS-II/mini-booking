@@ -25,3 +25,13 @@ Además, se utilizan **Capas de Servicio (`@Service`)** para separar la lógica 
 
 El frontend es una Single Page Application (SPA) desarrollada con Angular. Su arquitectura es modular y está basada en componentes, siguiendo las mejores prácticas de Angular.
 
+## 3. Diagrama de Componentes
+
+El siguiente diagrama ilustra una vista completa del sistema. Se divide en cuatro áreas principales:
+- **Frontend:** La aplicación Angular con la que interactúa el **Usuario**.
+- **Backend:** La API REST (construida con Java Spring Boot) que contiene la lógica de negocio.
+- **Database:** La base de datos PostgreSQL donde se almacenan los datos.
+- **DevOps:** Las herramientas que soportan el ciclo de vida del desarrollo, incluyendo Docker para la contenedorización, CI/CD para la integración continua y la propia documentación.
+
+Las flechas indican el flujo de interacción entre estos componentes.
+
