@@ -2,16 +2,46 @@
 # Node / Angular
 node_modules/
 dist/
+/tmp
+/out-tsc
+/bazel-out
+/.angular/cache
+/.sass-cache
+/connect.lock
+/coverage
+/libpeerconnection.log
 npm-debug.log
 yarn-error.log
+speed-measure-plugin.json
+chrome-profiler-events.json
+testem.log
+/typings
 
 # Java / Maven
 target/
 *.jar
 *.war
+
+# IDEs and editors
 .idea/
 *.iml
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+
+# IDE - VSCode
+.vscode/*
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.history/*
 
 # OS generated files
 .DS_Store
 Thumbs.db
+
+# Auth0 configuration
+auth_config.json
