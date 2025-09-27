@@ -1,31 +1,38 @@
-<p>Información de los espacios</p>
-
 <section>
-  <div class="espacios-card" *ngFor="let espacio of espacios_list">
-    <div class="espacios-card-info">
-      <h3>{{ espacio.nombre }}</h3>
-      <p>Tipo: {{ espacio.tipo }}</p>
-      <p>Capacidad: {{ espacio.capacidad }}</p>
-      <p>Precio: ${{ espacio.precio }}</p>
-      <p>Estado: {{ espacio.estado }}</p>
+
+  <app-filtros-espacio (filtrosAplicados)="filtrarEspacios($event)"></app-filtros-espacio>
+
+  <article>
+    <p>Información de los espacios</p>
+    <div class="espacios-content">
+      <div class="espacios-card" *ngFor="let espacio of espacios_list_filtrados">
+        <div class="imagen-espacio">
+          <img src="https://wearecloudworks.com/wp-content/uploads/2022/01/beneficios-coworking.jpeg"
+            alt="Imagen del espacio">
+        </div>
+
+        
+        <div class="espacios-card-info">
+          <h3>{{ espacio.nombre }}</h3>
+          <p>Tipo: {{ espacio.tipo }}</p>
+          <p>Capacidad: {{ espacio.capacidad }}</p>
+          <p>Precio: ${{ espacio.precio }}</p>
+          <p>Estado: {{ espacio.estado }}</p>
+        </div>
+        <div class="espacios-card-servicios">
+          <h4>Servicios:</h4>
+          <ul>
+            <li *ngFor="let servicio of espacio.servicios">
+              {{ servicio.nombre }} - {{ servicio.descripcion }}
+            </li>
+          </ul>
+        </div>
+        <button (click)="toggleForm(espacio.id)">Reservar</button>
+        <app-form-reserva *ngIf="mostrarFormId === espacio.id" [espacioId]="espacio.id"
+          (cerrarForm)="mostrarFormId = null">
+        </app-form-reserva>
+
+      </div>
     </div>
-
-    <div class="espacios-card-servicios">
-      <h4>Servicios:</h4>
-      <ul>
-        <li *ngFor="let servicio of espacio.servicios">
-          {{ servicio.nombre }} - {{ servicio.descripcion }}
-        </li>
-      </ul>
-    </div>
-
-    <button (click)="toggleForm(espacio.id)">Reservar</button>
-
-    <!-- Pasamos el id del espacio al componente FormReservaComponent -->
-    <app-form-reserva 
-      *ngIf="mostrarFormId === espacio.id"
-      [espacioId]="espacio.id">
-    </app-form-reserva>
-
-  </div>
+  </article>
 </section>

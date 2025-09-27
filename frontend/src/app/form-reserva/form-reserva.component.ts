@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, EventEmitter, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
@@ -12,10 +12,10 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
 })
 export class FormReservaComponent {
 
-  // id del espacio que se recibe del cual fue seleccionado reservar
   @Input() espacioId!: number;
+  @Output() cerrarForm = new EventEmitter<void>();
 
-  email = 'usuario1@demo.com'; // lo recogeremos de localstorage
+  email = 'usuario1@demo.com';
   estadoPago = 'completado';
   metodoPago = 'procesando angular';
   monto = 25000;
@@ -28,7 +28,6 @@ export class FormReservaComponent {
   constructor(private http: HttpClient) { }
 
   reservar() {
-    // damos la estructura que solicita el backend
     const reservaData = {
       idEspacio: this.espacioId.toString(),
       email: this.email,
@@ -41,24 +40,14 @@ export class FormReservaComponent {
       monto: this.monto
     };
 
-    // podemos cargar un loaders
-
-    // hacemos peticion al api
     this.http.post('http://localhost:8080/api/reserva', reservaData)
       .subscribe({
         next: (response) => {
           console.log('Reserva exitosa:', response);
           alert(`Reserva procesada ${this.espacioId}!`);
-
-          // reseteamos el formulario
-          this.fechaInicio = '';
-          this.fechaFin = '';
-          this.horaInicio = '';
-          this.horaFin = '';
+          this.resetForm();
         },
         error: (err) => {
-
-          // capturamos posibles errores
           console.error('Error al enviar la reserva:', err);
           const mensajeError = err.error?.error || 'Ocurrió un error desconocido';
           alert(`Error al realizar la reserva: ${mensajeError}`);
@@ -66,4 +55,15 @@ export class FormReservaComponent {
       });
   }
 
+  resetForm() {
+    this.fechaInicio = '';
+    this.fechaFin = '';
+    this.horaInicio = '';
+    this.horaFin = '';
+  }
+
+  cerrar() {
+    this.resetForm();
+    this.cerrarForm.emit(); 
+  }
 }

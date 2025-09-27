@@ -1,0 +1,37 @@
+<article>
+    <p>Selecciona un filtro</p>
+
+    <form (ngSubmit)="aplicarFiltros()" #filtrosForm="ngForm">
+
+        <!-- Tipo de espacio -->
+        <label for="tipo">Tipo de espacio:</label>
+        <select name="tipo" id="tipo" [(ngModel)]="filtroSeleccionado.tipo">
+            <option value="">Todos</option>
+            <option *ngFor="let tipo of tipo_espacios" [value]="tipo">{{ tipo }}</option>
+        </select>
+
+        <!-- Capacidad -->
+        <label for="capacidad">Capacidad mínima:</label>
+        <input type="number" id="capacidad" name="capacidad" min="1" placeholder="Cualquier"
+            [(ngModel)]="filtroSeleccionado.capacidad">
+
+        <!-- Precio máximo -->
+        <label for="precio_max">Precio máximo:</label>
+        <input type="number" id="precio_max" name="precio_max" min="0" placeholder="Cualquier"
+            [(ngModel)]="filtroSeleccionado.precio_max">
+
+        <!-- Precio mínimo -->
+        <label for="precio_min">Precio mínimo:</label>
+        <input type="number" id="precio_min" name="precio_min" min="0" placeholder="Cualquier"
+            [(ngModel)]="filtroSeleccionado.precio_min">
+
+        <!-- Servicios -->
+        <label>Servicios:</label>
+        <div *ngFor="let servicio of servicios">
+            <input type="checkbox" [value]="servicio" (change)="toggleServicio(servicio, $event.target.checked)">
+            {{ servicio }}
+        </div>
+
+        <button type="submit">Aplicar filtros</button>
+    </form>
+</article>
