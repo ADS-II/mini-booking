@@ -11,7 +11,7 @@
             alt="Imagen del espacio">
         </div>
 
-        
+
         <div class="espacios-card-info">
           <h3>{{ espacio.nombre }}</h3>
           <p>Tipo: {{ espacio.tipo }}</p>
@@ -23,7 +23,7 @@
           <h4>Servicios:</h4>
           <ul>
             <li *ngFor="let servicio of espacio.servicios">
-              {{ servicio.nombre }} - {{ servicio.descripcion }}
+              {{ servicio.nombre }}
             </li>
           </ul>
         </div>
