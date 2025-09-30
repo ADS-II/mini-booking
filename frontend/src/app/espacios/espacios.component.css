@@ -1,42 +1,377 @@
-section {
+/* =============================================
+   ESPACIOS COMPONENT - RESPONSIVE DESIGN
+   ============================================= */
+
+/* Layout principal - Mobile First */
+.espacios-layout {
+  min-height: calc(100vh - 64px);
+  background: var(--gray-50);
+  padding: var(--spacing-4);
+}
+
+/* Mobile: Stack vertical */
+.espacios-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-6);
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+/* Tablet y Desktop: Layout lado a lado */
+@media (min-width: 1024px) {
+  .espacios-container {
     display: grid;
-    grid-template-columns: .3fr 1fr;
+    grid-template-columns: 320px 1fr;
+    gap: var(--spacing-8);
+  }
+  
+  .espacios-layout {
+    padding: var(--spacing-6) var(--spacing-8);
+  }
 }
 
-article {
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
+/* =============================================
+   ÁREA DE CONTENIDO PRINCIPAL
+   ============================================= */
+
+.espacios-main {
+  background: white;
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--gray-200);
+  overflow: hidden;
 }
 
-.espacios-content {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 20px;
-    padding: 20px;
-
-    overflow: scroll;
-    min-height: 50vh;
-    max-height: 80vh;
+.espacios-header {
+  padding: var(--spacing-6);
+  border-bottom: 1px solid var(--gray-200);
+  background: linear-gradient(135deg, var(--gray-50) 0%, white 100%);
 }
 
-.imagen-espacio{
-    height: 200px;
-    width: 100%;
-
-}
-.imagen-espacio img{
-    height: 100%;
-    width: 100%;
-    object-fit: cover;
+.espacios-title {
+  font-size: var(--font-size-2xl);
+  font-weight: 700;
+  color: var(--gray-900);
+  margin-bottom: var(--spacing-2);
 }
 
-.espacios-card {
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    padding: 16px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+.espacios-subtitle {
+  font-size: var(--font-size-base);
+  color: var(--gray-600);
+  margin: 0;
+}
+
+@media (min-width: 768px) {
+  .espacios-title {
+    font-size: var(--font-size-3xl);
+  }
+  
+  .espacios-subtitle {
+    font-size: var(--font-size-lg);
+  }
+}
+
+/* =============================================
+   GRID DE ESPACIOS
+   ============================================= */
+
+.espacios-grid {
+  padding: var(--spacing-6);
+  display: grid;
+  gap: var(--spacing-6);
+  grid-template-columns: 1fr;
+}
+
+/* Responsive breakpoints */
+@media (min-width: 640px) {
+  .espacios-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-4);
+  }
+}
+
+@media (min-width: 1024px) {
+  .espacios-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-6);
+  }
+}
+
+@media (min-width: 1280px) {
+  .espacios-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* =============================================
+   CARDS DE ESPACIOS
+   ============================================= */
+
+.espacio-card {
+  background: white;
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--gray-200);
+  overflow: hidden;
+  transition: all 0.3s ease;
+  position: relative;
+  height: fit-content;
+}
+
+.espacio-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-xl);
+  border-color: var(--primary-300);
+}
+
+/* Imagen del espacio */
+.espacio-imagen {
+  position: relative;
+  height: 200px;
+  overflow: hidden;
+}
+
+.espacio-imagen img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.espacio-card:hover .espacio-imagen img {
+  transform: scale(1.05);
+}
+
+/* Badge de estado */
+.estado-badge {
+  position: absolute;
+  top: var(--spacing-3);
+  right: var(--spacing-3);
+  padding: var(--spacing-1) var(--spacing-3);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  backdrop-filter: blur(8px);
+  box-shadow: var(--shadow-sm);
+}
+
+.estado-disponible {
+  background: rgba(16, 185, 129, 0.9);
+  color: white;
+}
+
+.estado-ocupado {
+  background: rgba(239, 68, 68, 0.9);
+  color: white;
+}
+
+.estado-mantenimiento {
+  background: rgba(245, 158, 11, 0.9);
+  color: white;
+}
+
+/* =============================================
+   CONTENIDO DE LA CARD
+   ============================================= */
+
+.espacio-content {
+  padding: var(--spacing-6);
+}
+
+.espacio-nombre {
+  font-size: var(--font-size-xl);
+  font-weight: 700;
+  color: var(--gray-900);
+  margin-bottom: var(--spacing-4);
+  line-height: 1.2;
+}
+
+/* Info grid */
+.espacio-info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-3);
+  margin-bottom: var(--spacing-4);
+}
+
+.info-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  font-size: var(--font-size-sm);
+  color: var(--gray-600);
+}
+
+.info-icon {
+  width: 16px;
+  height: 16px;
+  color: var(--gray-400);
+  flex-shrink: 0;
+}
+
+/* Precio */
+.espacio-precio {
+  display: flex;
+  align-items: baseline;
+  gap: var(--spacing-1);
+  margin-bottom: var(--spacing-4);
+}
+
+.precio-valor {
+  font-size: var(--font-size-2xl);
+  font-weight: 700;
+  color: var(--primary-600);
+}
+
+.precio-periodo {
+  font-size: var(--font-size-sm);
+  color: var(--gray-500);
+  font-weight: 500;
+}
+
+/* =============================================
+   SERVICIOS
+   ============================================= */
+
+.servicios-section {
+  margin-bottom: var(--spacing-6);
+}
+
+.servicios-titulo {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--gray-700);
+  margin-bottom: var(--spacing-3);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.servicios-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-2);
+}
+
+.servicio-tag {
+  padding: var(--spacing-1) var(--spacing-3);
+  background: var(--primary-50);
+  color: var(--primary-700);
+  border: 1px solid var(--primary-200);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-xs);
+  font-weight: 500;
+}
+
+/* =============================================
+   BOTÓN DE RESERVA
+   ============================================= */
+
+.card-action {
+  padding: 0;
+  border-top: 1px solid var(--gray-200);
+}
+
+.btn-reservar {
+  width: 100%;
+  padding: var(--spacing-4) var(--spacing-6);
+  background: linear-gradient(135deg, var(--primary-600), var(--primary-700));
+  color: white;
+  border: none;
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  position: relative;
+  overflow: hidden;
+  border-radius: 0;
+}
+
+.btn-reservar::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  transition: left 0.5s;
+}
+
+.btn-reservar:hover::before {
+  left: 100%;
+}
+
+.btn-reservar:hover {
+  background: linear-gradient(135deg, var(--primary-700), var(--primary-800));
+  transform: translateY(-1px);
+}
+
+.btn-reservar:disabled {
+  background: var(--gray-400);
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn-reservar:disabled::before {
+  display: none;
+}
+
+/* Estados específicos */
+.btn-no-disponible {
+  background: linear-gradient(135deg, var(--error), #dc2626);
+}
+
+.btn-mantenimiento {
+  background: linear-gradient(135deg, var(--warning), #d97706);
+}
+
+/* =============================================
+   RESPONSIVE ADJUSTMENTS
+   ============================================= */
+
+@media (max-width: 639px) {
+  .espacio-info-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .espacio-content {
+    padding: var(--spacing-4);
+  }
+  
+  .espacio-imagen {
+    height: 160px;
+  }
+}
+
+@media (min-width: 640px) and (max-width: 1023px) {
+  .espacio-imagen {
+    height: 180px;
+  }
+}
+
+/* =============================================
+   SCROLLBAR CUSTOM
+   ============================================= */
+
+.espacios-grid::-webkit-scrollbar {
+  width: 6px;
+}
+
+.espacios-grid::-webkit-scrollbar-track {
+  background: var(--gray-100);
+  border-radius: var(--radius-sm);
+}
+
+.espacios-grid::-webkit-scrollbar-thumb {
+  background: var(--gray-300);
+  border-radius: var(--radius-sm);
+}
+
+.espacios-grid::-webkit-scrollbar-thumb:hover {
+  background: var(--gray-400);
 }

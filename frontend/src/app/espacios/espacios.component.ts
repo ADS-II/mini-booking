@@ -2,7 +2,24 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { FormReservaComponent } from '../form-reserva/form-reserva.component';
-import { FiltrosEspacioComponent } from "../filtros-espacio/filtros-espacio.component";
+import { FiltrosEspacioComponent, FiltrosEspacio } from '../filtros-espacio/filtros-espacio.component';
+
+interface Servicio {
+  id: number;
+  nombre: string;
+  descripcion?: string;
+}
+
+interface Espacio {
+  id: number;
+  nombre: string;
+  tipo: string;
+  capacidad: number;
+  precio: number;
+  estado: string;
+  servicios: Servicio[];
+  imagen?: string;
+}
 
 @Component({
   selector: 'app-espacios',
@@ -13,68 +30,121 @@ import { FiltrosEspacioComponent } from "../filtros-espacio/filtros-espacio.comp
 })
 export class EspaciosComponent implements OnInit {
 
-  images: string[] = [
-    'src/assets/coworking-6173112_1280.jpg',
-    'src/assets/small-office-4837892_1280.jpg',
-    'https://aticco.com/wp-content/uploads/2024/07/que-es-coworking-1.jpg'
-  ];
-
-  espacios_list: any[] = []; // lista que obtenemos al inciciar la pagina
-  espacios_list_filtrados: any[] = []; // lista que se muestra en la pagina despues de aplicar filtros
-  mostrarFormId: number | null = null;  // mostrar el formulario de la reserva
-  usserIsLogged: boolean = true;
+  espacios_list: Espacio[] = [];
+  espacios_list_filtrados: Espacio[] = [];
+  mostrarFormId: number | null = null;
 
   constructor(private http: HttpClient) {}
 
-  // Al iniciar la pagina obtenemos todos los espacios
   ngOnInit(): void {
-    this.getEspacios();
+    this.cargarEspacios();
   }
 
-  // hacemos peticion al api para obtener todos los espacios
-  getEspacios() {
-    this.http.get<any[]>('http://localhost:8080/api/espacio')
+  /**
+   * Carga los espacios desde el backend
+   */
+  cargarEspacios(): void {
+    this.http.get<Espacio[]>('http://localhost:8080/api/espacio')
       .subscribe({
         next: (data) => {
-          // inicializamos las dos listas con los datos obtenidos
           this.espacios_list = data;
-          this.espacios_list_filtrados = data;
+          this.espacios_list_filtrados = [...data];
+          console.log('Espacios cargados:', data);
         },
-        error: (err) => {
-          console.error('Error al obtener espacios:', err);
+        error: (error) => {
+          console.error('Error al cargar espacios:', error);
+          // Puedes mostrar un mensaje al usuario aquí
         }
       });
   }
 
-  // mostramos el formulario segun validacion
-  toggleForm(espacioId: number) {
-    if (!this.usserIsLogged) {
-      alert('Debes iniciar sesión para reservar un espacio.');
-      return;
+  /**
+   * Toggle del formulario de reserva
+   */
+  toggleForm(espacioId: number): void {
+    if (this.mostrarFormId === espacioId) {
+      this.mostrarFormId = null;
+    } else {
+      this.mostrarFormId = espacioId;
     }
-    this.mostrarFormId = this.mostrarFormId === espacioId ? null : espacioId;
   }
 
-  // recibimos los filtros aplicados del formulario
-  filtrarEspacios(filtros: any) {
+  /**
+   * Obtiene el nombre del espacio por ID
+   */
+  getEspacioNombre(id: number): string {
+    const espacio = this.espacios_list_filtrados.find(e => e.id === id);
+    return espacio ? espacio.nombre : '';
+  }
+
+  /**
+   * Obtiene el precio del espacio por ID
+   */
+  getEspacioPrecio(id: number): number {
+    const espacio = this.espacios_list_filtrados.find(e => e.id === id);
+    return espacio ? espacio.precio : 50;
+  }
+
+  /**
+   * Aplica los filtros a la lista de espacios
+   */
+  filtrarEspacios(filtros: FiltrosEspacio): void {
+    console.log('Aplicando filtros:', filtros);
+
     this.espacios_list_filtrados = this.espacios_list.filter(espacio => {
-      // Tipo
-      if (filtros.tipo && espacio.tipo !== filtros.tipo) return false;
-      
-      // Capacidad
-      if (filtros.capacidad && espacio.capacidad < filtros.capacidad) return false;
-      
-      // Precio
-      if (filtros.precio_min && espacio.precio < filtros.precio_min) return false;
-      if (filtros.precio_max && espacio.precio > filtros.precio_max) return false;
-      
-      
-      // Servicios
-      if (filtros.servicios.length) {
-        const serviciosEspacio = espacio.servicios.map((s: any) => s.nombre);
-        if (!filtros.servicios.every((s: string) => serviciosEspacio.includes(s))) return false;
+      // Filtro por tipo
+      if (filtros.tipo && espacio.tipo !== filtros.tipo) {
+        return false;
       }
+
+      // Filtro por capacidad mínima
+      if (filtros.capacidadMinima && espacio.capacidad < filtros.capacidadMinima) {
+        return false;
+      }
+
+      // Filtro por precio mínimo
+      if (filtros.precioMinimo && espacio.precio < filtros.precioMinimo) {
+        return false;
+      }
+
+      // Filtro por precio máximo
+      if (filtros.precioMaximo && espacio.precio > filtros.precioMaximo) {
+        return false;
+      }
+
+      // Filtros de servicios
+      if (filtros.wifi && !this.tieneServicio(espacio, 'wifi')) {
+        return false;
+      }
+
+      if (filtros.aireAcondicionado && !this.tieneServicio(espacio, 'aire acondicionado')) {
+        return false;
+      }
+
+      if (filtros.cafes && !this.tieneServicio(espacio, 'cafes')) {
+        return false;
+      }
+
+      if (filtros.proyector && !this.tieneServicio(espacio, 'proyector')) {
+        return false;
+      }
+
+      if (filtros.pizarra && !this.tieneServicio(espacio, 'pizarra')) {
+        return false;
+      }
+
       return true;
     });
+
+    console.log('Espacios filtrados:', this.espacios_list_filtrados.length);
+  }
+
+  /**
+   * Verifica si un espacio tiene un servicio específico
+   */
+  private tieneServicio(espacio: Espacio, nombreServicio: string): boolean {
+    return espacio.servicios.some(
+      servicio => servicio.nombre.toLowerCase().includes(nombreServicio.toLowerCase())
+    );
   }
 }

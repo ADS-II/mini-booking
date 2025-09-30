@@ -1,38 +1,112 @@
-<section>
+<!-- Layout principal con diseño responsivo -->
+<div class="espacios-layout">
+  <div class="espacios-container">
+    
+    <!-- Sidebar de filtros (Mobile: arriba, Desktop: izquierda) -->
+    <app-filtros-espacio (filtrosAplicados)="filtrarEspacios($event)"></app-filtros-espacio>
 
-  <app-filtros-espacio (filtrosAplicados)="filtrarEspacios($event)"></app-filtros-espacio>
+    <!-- Área principal de espacios -->
+    <main class="espacios-main">
+      
+      <!-- Header -->
+      <header class="espacios-header">
+        <h1 class="espacios-title">Espacios Disponibles</h1>
+        <p class="espacios-subtitle">Encuentra el espacio perfecto para tu trabajo</p>
+      </header>
 
-  <article>
-    <p>Información de los espacios</p>
-    <div class="espacios-content">
-      <div class="espacios-card" *ngFor="let espacio of espacios_list_filtrados">
-        <div class="imagen-espacio">
-          <img src="https://wearecloudworks.com/wp-content/uploads/2022/01/beneficios-coworking.jpeg"
-            alt="Imagen del espacio">
-        </div>
+      <!-- Grid de espacios -->
+      <div class="espacios-grid">
+        
+        <!-- Card de espacio -->
+        <article class="espacio-card" *ngFor="let espacio of espacios_list_filtrados">
+          
+          <!-- Imagen con badge de estado -->
+          <div class="espacio-imagen">
+            <img 
+              [src]="espacio.imagen || 'https://wearecloudworks.com/wp-content/uploads/2022/01/beneficios-coworking.jpeg'"
+              [alt]="'Imagen del ' + espacio.nombre"
+              loading="lazy">
+            
+            <div class="estado-badge" 
+                 [ngClass]="{
+                   'estado-disponible': espacio.estado === 'disponible',
+                   'estado-ocupado': espacio.estado === 'ocupado',
+                   'estado-mantenimiento': espacio.estado === 'mantenimiento'
+                 }">
+              {{ espacio.estado }}
+            </div>
+          </div>
 
+          <!-- Contenido de la card -->
+          <div class="espacio-content">
+            
+            <!-- Nombre del espacio -->
+            <h2 class="espacio-nombre">{{ espacio.nombre }}</h2>
+            
+            <!-- Grid de información -->
+            <div class="espacio-info-grid">
+              <div class="info-item">
+                <svg class="info-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                        d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-4m-5 0H3m2 0h3M9 7h1m1 0h1m-1 4h1m1 0h1m-1 4h1"/>
+                </svg>
+                <span>{{ espacio.tipo }}</span>
+              </div>
+              
+              <div class="info-item">
+                <svg class="info-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                        d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                </svg>
+                <span>{{ espacio.capacidad }} personas</span>
+              </div>
+            </div>
 
-        <div class="espacios-card-info">
-          <h3>{{ espacio.nombre }}</h3>
-          <p>Tipo: {{ espacio.tipo }}</p>
-          <p>Capacidad: {{ espacio.capacidad }}</p>
-          <p>Precio: ${{ espacio.precio }}</p>
-          <p>Estado: {{ espacio.estado }}</p>
-        </div>
-        <div class="espacios-card-servicios">
-          <h4>Servicios:</h4>
-          <ul>
-            <li *ngFor="let servicio of espacio.servicios">
-              {{ servicio.nombre }}
-            </li>
-          </ul>
-        </div>
-        <button (click)="toggleForm(espacio.id)">Reservar</button>
-        <app-form-reserva *ngIf="mostrarFormId === espacio.id" [espacioId]="espacio.id"
-          (cerrarForm)="mostrarFormId = null">
-        </app-form-reserva>
+            <!-- Precio -->
+            <div class="espacio-precio">
+              <span class="precio-valor">${{ espacio.precio }}</span>
+              <span class="precio-periodo">/hora</span>
+            </div>
 
+            <!-- Servicios -->
+            <div class="servicios-section">
+              <h3 class="servicios-titulo">Servicios Incluidos</h3>
+              <div class="servicios-list">
+                <span class="servicio-tag" *ngFor="let servicio of espacio.servicios">
+                  {{ servicio.nombre }}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Botón de reserva -->
+          <div class="card-action">
+            <button 
+              class="btn-reservar"
+              [ngClass]="{
+                'btn-no-disponible': espacio.estado === 'ocupado',
+                'btn-mantenimiento': espacio.estado === 'mantenimiento'
+              }"
+              [disabled]="espacio.estado !== 'disponible'"
+              (click)="toggleForm(espacio.id)">
+              
+              <span *ngIf="espacio.estado === 'disponible'">Reservar Espacio</span>
+              <span *ngIf="espacio.estado === 'ocupado'">No Disponible</span>
+              <span *ngIf="espacio.estado === 'mantenimiento'">En Mantenimiento</span>
+            </button>
+          </div>
+          
+        </article>
       </div>
-    </div>
-  </article>
-</section>
+    </main>
+  </div>
+
+  <!-- MODAL FUERA DEL LOOP - Renderizado una sola vez -->
+  <app-form-reserva 
+    *ngIf="mostrarFormId !== null" 
+    [espacioId]="mostrarFormId"
+    [espacioNombre]="getEspacioNombre(mostrarFormId)"
+    [espacioPrecio]="getEspacioPrecio(mostrarFormId)"
+    (cerrarForm)="mostrarFormId = null">
+  </app-form-reserva>
+</div>

@@ -1,37 +1,161 @@
-<article>
-    <p>Selecciona un filtro</p>
+<!-- Container responsivo para filtros -->
+<aside class="filtros-container">
+  
+  <!-- Toggle para móviles -->
+  <button class="filtros-toggle" (click)="toggleFiltros()">
+    <span class="filtros-title">Filtros de Búsqueda</span>
+    <svg [class.rotate-180]="mostrarFiltros" 
+         class="w-5 h-5 transition-transform" 
+         fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+    </svg>
+  </button>
 
-    <form (ngSubmit)="aplicarFiltros()" #filtrosForm="ngForm">
+  <!-- Contenido de filtros -->
+  <div class="filtros-content" [class.show]="mostrarFiltros">
+    
+    <!-- Header -->
+    <header class="filtros-header">
+      <h2 class="filtros-title">Selecciona un filtro</h2>
+    </header>
 
-        <!-- Tipo de espacio -->
-        <label for="tipo">Tipo de espacio:</label>
-        <select name="tipo" id="tipo" [(ngModel)]="filtroSeleccionado.tipo">
-            <option value="">Todos</option>
-            <option *ngFor="let tipo of tipo_espacios" [value]="tipo">{{ tipo }}</option>
+    <!-- Body con filtros -->
+    <div class="filtros-body">
+      
+      <!-- Tipo de espacio -->
+      <div class="form-group">
+        <label class="form-label" for="tipoEspacio">Tipo de espacio</label>
+        <select 
+          id="tipoEspacio" 
+          class="form-control" 
+          [(ngModel)]="filtros.tipo"
+          name="tipoEspacio">
+          <option value="">Todos los tipos</option>
+          <option value="escritorio">Escritorio</option>
+          <option value="sala de juntas">Sala de Juntas</option>
+          <option value="oficina privada">Oficina Privada</option>
+          <option value="sala">Sala</option>
         </select>
+      </div>
 
-        <!-- Capacidad -->
-        <label for="capacidad">Capacidad mínima:</label>
-        <input type="number" id="capacidad" name="capacidad" min="1" placeholder="Cualquier"
-            [(ngModel)]="filtroSeleccionado.capacidad">
+      <!-- Capacidad -->
+      <div class="form-group">
+        <label class="form-label" for="capacidad">Capacidad mínima</label>
+        <input 
+          type="number" 
+          id="capacidad"
+          class="form-control" 
+          placeholder="Ej: 5 personas"
+          [(ngModel)]="filtros.capacidadMinima"
+          name="capacidad"
+          min="1"
+          max="50">
+      </div>
 
-        <!-- Precio máximo -->
-        <label for="precio_max">Precio máximo:</label>
-        <input type="number" id="precio_max" name="precio_max" min="0" placeholder="Cualquier"
-            [(ngModel)]="filtroSeleccionado.precio_max">
-
-        <!-- Precio mínimo -->
-        <label for="precio_min">Precio mínimo:</label>
-        <input type="number" id="precio_min" name="precio_min" min="0" placeholder="Cualquier"
-            [(ngModel)]="filtroSeleccionado.precio_min">
-
-        <!-- Servicios -->
-        <label>Servicios:</label>
-        <div *ngFor="let servicio of servicios">
-            <input type="checkbox" [value]="servicio" (change)="toggleServicio(servicio, $event.target.checked)">
-            {{ servicio }}
+      <!-- Rango de precios -->
+      <div class="form-group">
+        <label class="form-label">Rango de precio (por hora)</label>
+        <div class="precio-range">
+          <div class="precio-input">
+            <input 
+              type="number" 
+              class="form-control" 
+              placeholder="Mínimo"
+              [(ngModel)]="filtros.precioMinimo"
+              name="precioMin"
+              min="0">
+          </div>
+          <div class="precio-input">
+            <input 
+              type="number" 
+              class="form-control" 
+              placeholder="Máximo"
+              [(ngModel)]="filtros.precioMaximo"
+              name="precioMax"
+              min="0">
+          </div>
         </div>
+      </div>
 
-        <button type="submit">Aplicar filtros</button>
-    </form>
-</article>
+      <!-- Servicios -->
+      <div class="form-group">
+        <label class="form-label">Servicios incluidos</label>
+        <div class="servicios-group">
+          
+          <label class="checkbox-item">
+            <input 
+              type="checkbox" 
+              class="checkbox-input"
+              [(ngModel)]="filtros.wifi"
+              name="wifi">
+            <span class="checkbox-label">WiFi</span>
+          </label>
+
+          <label class="checkbox-item">
+            <input 
+              type="checkbox" 
+              class="checkbox-input"
+              [(ngModel)]="filtros.aireAcondicionado"
+              name="aireAcondicionado">
+            <span class="checkbox-label">Aire Acondicionado</span>
+          </label>
+
+          <label class="checkbox-item">
+            <input 
+              type="checkbox" 
+              class="checkbox-input"
+              [(ngModel)]="filtros.cafes"
+              name="cafes">
+            <span class="checkbox-label">Cafés</span>
+          </label>
+
+          <label class="checkbox-item">
+            <input 
+              type="checkbox" 
+              class="checkbox-input"
+              [(ngModel)]="filtros.proyector"
+              name="proyector">
+            <span class="checkbox-label">Proyector</span>
+          </label>
+
+          <label class="checkbox-item">
+            <input 
+              type="checkbox" 
+              class="checkbox-input"
+              [(ngModel)]="filtros.pizarra"
+              name="pizarra">
+            <span class="checkbox-label">Pizarra</span>
+          </label>
+
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Contador de resultados -->
+    <div class="resultados-count" *ngIf="totalResultados !== undefined">
+      <p class="count-text">
+        <span class="count-number">{{ totalResultados }}</span> 
+        {{ totalResultados === 1 ? 'espacio encontrado' : 'espacios encontrados' }}
+      </p>
+    </div>
+
+    <!-- Actions -->
+    <div class="filtros-actions">
+      <button 
+        type="button" 
+        class="btn-aplicar" 
+        (click)="aplicarFiltros()">
+        Aplicar Filtros
+      </button>
+      
+      <button 
+        type="button" 
+        class="btn-limpiar" 
+        (click)="limpiarFiltros()">
+        Limpiar Filtros
+      </button>
+    </div>
+
+  </div>
+</aside>
