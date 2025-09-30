@@ -110,3 +110,10 @@
     (cerrarForm)="mostrarFormId = null">
   </app-form-reserva>
 </div>
+
+<!-- Formulario de login controlado desde el padre -->
+
+<app-form-login 
+  [isVisibleForm]="mostrarLogin"
+  (visibilityChange)="mostrarLogin = $event">
+</app-form-login>

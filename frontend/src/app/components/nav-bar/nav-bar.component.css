@@ -11,17 +11,14 @@
 }
 
 .navbar-brand {
-  display: flex;
-  align-items: center;
-  font-size: 1.5rem;
-  font-weight: 800;
-  color: #2563eb;
-  text-decoration: none;
+  height: 60px;
+  width: 60px;
 }
-
-.navbar-brand::before {
-  margin-right: 0.5rem;
-  font-size: 1.75rem;
+.navbar-brand img {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+ 
 }
 
 .nav-link {

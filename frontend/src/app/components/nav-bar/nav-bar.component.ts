@@ -38,6 +38,7 @@ export class NavBarComponent {
   ) {}
 
   loginWithRedirect() {
+    alert('Redirigiendo al login');
     this.auth.loginWithRedirect();
   }
 

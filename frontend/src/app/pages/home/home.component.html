@@ -1,31 +1,221 @@
+<app-form-login />
+
+<section>
+
+  <div class="hero">
+    <div class="content">
+      <h1>
+        Tu <span class="highlight">Espacio de Trabajo</span> Flexible, a un Clic.
+      </h1>
+      <p>
+        Reserva escritorios, salas de reuniones y oficinas privadas por hora, día o mes. Enfócate en tu productividad,
+        nosotros nos encargamos del resto.
+      </p>
+      <div class="buttons">
+        <button class="btn btn-primary" [routerLink]="'/catalogo'">Explorar Espacios</button>
+        <button class="btn btn-secondary">Ver Beneficios</button>
+      </div>
+    </div>
+    <div class="card">
+      <h2>WorkNest</h2>
+    </div>
+  </div>
 
 
+  <div class="features-section">
+    <div class="header">
+      <h2>La Productividad que Necesitas</h2>
+      <p>Nuestro espacio está diseñado para potenciar tu trabajo con flexibilidad total y la mejor infraestructura.</p>
+    </div>
 
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="icon">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="10" />
+            <polyline points="12 6 12 12 16 14" />
+          </svg>
+        </div>
+        <h3>Reserva por Horas</h3>
+        <p>¿Solo necesitas un par de horas? Reserva y paga solo por el tiempo que realmente utilizas. Máxima
+          flexibilidad
+          para tu agenda.</p>
+      </div>
 
+      <div class="feature-card">
+        <div class="icon">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path d="M12 2L2 7l10 5 10-5-10-5z" />
+            <path d="M2 17l10 5 10-5" />
+            <path d="M2 12l10 5 10-5" />
+          </svg>
+        </div>
+        <h3>Internet de Alta Velocidad</h3>
+        <p>Nunca te desconectes. Contamos con conexiones de fibra óptica redundantes y una red Wi-Fi ultra rápida y
+          segura.</p>
+      </div>
 
+      <div class="feature-card">
+        <div class="icon">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <rect x="2" y="3" width="20" height="14" rx="2" />
+            <line x1="8" y1="21" x2="16" y2="21" />
+            <line x1="12" y1="17" x2="12" y2="21" />
+          </svg>
+        </div>
+        <h3>Comunidad e Networking</h3>
+        <p>Conecta con profesionales de tu sector. Acceso a eventos y talleres exclusivos para miembros de la comunidad.
+        </p>
+      </div>
+    </div>
+  </div>
 
+  <div class="spaces-section">
+    <h2 class="section-title">Encuentra tu Espacio Ideal</h2>
 
+    <div class="spaces-grid">
+      <div class="space-card">
+        <div class="card-header">
+          Escritorio Flexible
+        </div>
+        <div class="card-body">
+          <h3>Escritorio Flexible</h3>
+          <p>Un asiento en la zona común. Ideal para freelancers y nómadas digitales que buscan un cambio de ambiente.
+          </p>
+          <a href="#" class="card-link">
+            Reservar Escritorio
+            <span class="arrow">→</span>
+          </a>
+        </div>
+      </div>
 
+      <div class="space-card">
+        <div class="card-header">
+          Sala de Reuniones
+        </div>
+        <div class="card-body">
+          <h3>Sala de Reuniones</h3>
+          <p>Espacios equipados con pantallas y pizarras, perfectos para reuniones de equipo o clientes importantes.</p>
+          <a href="#" class="card-link">
+            Reservar Sala
+            <span class="arrow">→</span>
+          </a>
+        </div>
+      </div>
 
+      <div class="space-card">
+        <div class="card-header">
+          Oficina Privada
+        </div>
+        <div class="card-body">
+          <h3>Oficina Privada</h3>
+          <p>Para equipos pequeños que necesitan privacidad y su propio espacio, con acceso 24/7 y seguridad.</p>
+          <a href="#" class="card-link">
+            Solicitar Presupuesto
+            <span class="arrow">→</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
 
+  <div class="spaces-section">
+    <h2 class="section-title">Nuestro Catalogo</h2>
 
+    <div class="espacios-grid-infinite-carrusel carousel-container">
+      <div class="carousel-wrapper" id="carouselWrapper">
+        <article class="espacio-card" *ngFor="let espacio of espacios_list">
 
+          <!-- Imagen con badge de estado -->
+          <div class="espacio-imagen">
+            <img
+              [src]="espacio.imagen || 'https://wearecloudworks.com/wp-content/uploads/2022/01/beneficios-coworking.jpeg'"
+              [alt]="'Imagen del ' + espacio.nombre" loading="lazy">
 
+            <div class="estado-badge" [ngClass]="{
+                     'estado-disponible': espacio.estado === 'disponible',
+                     'estado-ocupado': espacio.estado === 'ocupado',
+                     'estado-mantenimiento': espacio.estado === 'mantenimiento'
+                   }">
+              {{ espacio.estado }}
+            </div>
+          </div>
 
+          <!-- Contenido de la card -->
+          <div class="espacio-content">
 
+            <!-- Nombre del espacio -->
+            <h2 class="espacio-nombre">{{ espacio.nombre }}</h2>
 
+            <!-- Grid de información -->
+            <div class="espacio-info-grid">
+              <div class="info-item">
+                <svg class="info-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-4m-5 0H3m2 0h3M9 7h1m1 0h1m-1 4h1m1 0h1m-1 4h1" />
+                </svg>
+                <span>{{ espacio.tipo }}</span>
+              </div>
 
+              <div class="info-item">
+                <svg class="info-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
+                <span>{{ espacio.capacidad }} personas</span>
+              </div>
+            </div>
 
+            <!-- Precio -->
+            <div class="espacio-precio">
+              <span class="precio-valor">${{ espacio.precio }}</span>
+              <span class="precio-periodo">/hora</span>
+            </div>
 
+            <!-- Servicios -->
+            <div class="servicios-section">
+              <h3 class="servicios-titulo">Servicios Incluidos</h3>
+              <div class="servicios-list">
+                <span class="servicio-tag" *ngFor="let servicio of espacio.servicios">
+                  {{ servicio.nombre }}
+                </span>
+              </div>
+            </div>
+          </div>
 
+          <!-- Botón de reserva -->
+          <div class="card-action">
+            <button class="btn-reservar" [ngClass]="{
+                  'btn-no-disponible': espacio.estado === 'ocupado',
+                  'btn-mantenimiento': espacio.estado === 'mantenimiento'
+                }" [disabled]="espacio.estado !== 'disponible'" (click)="toggleForm(espacio.id)">
 
+              <span *ngIf="espacio.estado === 'disponible'">Reservar Espacio</span>
+              <span *ngIf="espacio.estado === 'ocupado'">No Disponible</span>
+              <span *ngIf="espacio.estado === 'mantenimiento'">En Mantenimiento</span>
+            </button>
+          </div>
 
+        </article>
+      </div>
+    </div>
+  </div>
 
+</section>
 
+<app-footer />
 
+<app-form-reserva *ngIf="mostrarFormId !== null" [espacioId]="mostrarFormId"
+  [espacioNombre]="getEspacioNombre(mostrarFormId)" [espacioPrecio]="getEspacioPrecio(mostrarFormId)"
+  (cerrarForm)="mostrarFormId = null">
+</app-form-reserva>
 
+<!-- Formulario de login controlado desde el padre -->
 
-
+<app-form-login 
+  [isVisibleForm]="mostrarLogin"
+  (visibilityChange)="mostrarLogin = $event">
+</app-form-login>
 
 
 
@@ -58,10 +248,10 @@
 
 
 <!-- <div class="container" *ngIf="auth.isLoading$ | async; else loaded"> -->
-  <!-- <app-loading></app-loading> -->
+<!-- <app-loading></app-loading> -->
 <!-- </div> -->
 
 <!-- <ng-template #loaded> -->
-  <!-- <app-hero></app-hero> -->
-  <!-- <app-home-content></app-home-content> -->
+<!-- <app-hero></app-hero> -->
+<!-- <app-home-content></app-home-content> -->
 <!-- </ng-template> -->

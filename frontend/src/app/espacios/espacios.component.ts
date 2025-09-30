@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { FormReservaComponent } from '../form-reserva/form-reserva.component';
 import { FiltrosEspacioComponent, FiltrosEspacio } from '../filtros-espacio/filtros-espacio.component';
+import { FormLoginComponent } from "../form-login/form-login.component";
 
 interface Servicio {
   id: number;
@@ -24,7 +25,7 @@ interface Espacio {
 @Component({
   selector: 'app-espacios',
   standalone: true,
-  imports: [CommonModule, HttpClientModule, FormReservaComponent, FiltrosEspacioComponent],
+  imports: [CommonModule, HttpClientModule, FormReservaComponent, FiltrosEspacioComponent, FormLoginComponent],
   templateUrl: './espacios.component.html',
   styleUrls: ['./espacios.component.css']
 })
@@ -33,8 +34,9 @@ export class EspaciosComponent implements OnInit {
   espacios_list: Espacio[] = [];
   espacios_list_filtrados: Espacio[] = [];
   mostrarFormId: number | null = null;
+  mostrarLogin: boolean = false;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   ngOnInit(): void {
     this.cargarEspacios();
@@ -62,11 +64,21 @@ export class EspaciosComponent implements OnInit {
    * Toggle del formulario de reserva
    */
   toggleForm(espacioId: number): void {
+    const usserAutenticado = localStorage.getItem('usserAutenticado');
+
+    if (!usserAutenticado) {
+      this.mostrarLogin = true;
+      return;
+    }
+
     if (this.mostrarFormId === espacioId) {
       this.mostrarFormId = null;
     } else {
       this.mostrarFormId = espacioId;
     }
+  }
+  hideLoginForm() {
+    this.mostrarFormId = null; 
   }
 
   /**
