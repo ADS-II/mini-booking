@@ -6,6 +6,7 @@ import { ProfileComponent } from './pages/profile/profile.component';
 import { ExternalApiComponent } from './pages/external-api/external-api.component';
 import { ErrorComponent } from './pages/error/error.component';
 import { authGuardFn } from '@auth0/auth0-angular';
+import { CatalogoComponent } from './pages/catalogo/catalogo.component';
 
 export const routes: Routes = [
   {
@@ -21,6 +22,12 @@ export const routes: Routes = [
   {
     path: 'error',
     component: ErrorComponent,
+  },
+  // agregar una nueva ruta que redirija a catalogo
+  {
+    path: 'catalogo',   // 👈 nueva ruta
+    component: CatalogoComponent,
+    // canActivate: [authGuardFn], // opcional si quieres protegerlo
   },
   {
     path: '',
