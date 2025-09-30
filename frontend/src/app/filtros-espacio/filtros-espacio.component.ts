@@ -1,27 +1,24 @@
-import { Component, EventEmitter, Output, Input } from '@angular/core';
+import { Component, EventEmitter, Output, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 
 export interface FiltrosEspacio {
   tipo: string;
   capacidadMinima: number | null;
   precioMinimo: number | null;
   precioMaximo: number | null;
-  wifi: boolean;
-  aireAcondicionado: boolean;
-  cafes: boolean;
-  proyector: boolean;
-  pizarra: boolean;
+  servicios: string[]; // Cambio: ahora es un array de strings
 }
 
 @Component({
   selector: 'app-filtros-espacio',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, HttpClientModule],
   templateUrl: './filtros-espacio.component.html',
   styleUrls: ['./filtros-espacio.component.css']
 })
-export class FiltrosEspacioComponent {
+export class FiltrosEspacioComponent implements OnInit {
 
   @Output() filtrosAplicados = new EventEmitter<FiltrosEspacio>();
   @Input() totalResultados?: number;
@@ -29,18 +26,81 @@ export class FiltrosEspacioComponent {
   // Estado de filtros móviles
   mostrarFiltros = false;
 
+  // Datos dinámicos desde el backend
+  tiposDisponibles: string[] = [];
+  serviciosDisponibles: string[] = [];
+
   // Filtros actuales
   filtros: FiltrosEspacio = {
     tipo: '',
     capacidadMinima: null,
     precioMinimo: null,
     precioMaximo: null,
-    wifi: false,
-    aireAcondicionado: false,
-    cafes: false,
-    proyector: false,
-    pizarra: false
+    servicios: []
   };
+
+  // Servicios seleccionados para checkboxes
+  serviciosSeleccionados: Set<string> = new Set();
+
+  constructor(private http: HttpClient) {}
+
+  ngOnInit(): void {
+    this.cargarTiposDisponibles();
+    this.cargarServiciosDisponibles();
+  }
+
+  /**
+   * Carga los tipos de espacios disponibles desde el backend
+   */
+  cargarTiposDisponibles(): void {
+    this.http.get<string[]>('http://localhost:8080/api/espacio/tipos')
+      .subscribe({
+        next: (tipos) => {
+          this.tiposDisponibles = tipos;
+          console.log('Tipos cargados:', tipos);
+        },
+        error: (error) => {
+          console.error('Error al cargar tipos:', error);
+        }
+      });
+  }
+
+  /**
+   * Carga los servicios disponibles desde el backend
+   */
+  cargarServiciosDisponibles(): void {
+    this.http.get<string[]>('http://localhost:8080/api/espacio/servicios')
+      .subscribe({
+        next: (servicios) => {
+          this.serviciosDisponibles = servicios;
+          console.log('Servicios cargados:', servicios);
+        },
+        error: (error) => {
+          console.error('Error al cargar servicios:', error);
+        }
+      });
+  }
+
+  /**
+   * Toggle de servicio en el filtro
+   */
+  toggleServicio(servicio: string): void {
+    if (this.serviciosSeleccionados.has(servicio)) {
+      this.serviciosSeleccionados.delete(servicio);
+    } else {
+      this.serviciosSeleccionados.add(servicio);
+    }
+    
+    // Actualizar array de filtros
+    this.filtros.servicios = Array.from(this.serviciosSeleccionados);
+  }
+
+  /**
+   * Verifica si un servicio está seleccionado
+   */
+  isServicioSeleccionado(servicio: string): boolean {
+    return this.serviciosSeleccionados.has(servicio);
+  }
 
   /**
    * Toggle filtros en móviles
@@ -87,13 +147,10 @@ export class FiltrosEspacioComponent {
       capacidadMinima: null,
       precioMinimo: null,
       precioMaximo: null,
-      wifi: false,
-      aireAcondicionado: false,
-      cafes: false,
-      proyector: false,
-      pizarra: false
+      servicios: []
     };
-
+    
+    this.serviciosSeleccionados.clear();
     this.aplicarFiltros();
   }
 
@@ -106,11 +163,7 @@ export class FiltrosEspacioComponent {
       this.filtros.capacidadMinima ||
       this.filtros.precioMinimo ||
       this.filtros.precioMaximo ||
-      this.filtros.wifi ||
-      this.filtros.aireAcondicionado ||
-      this.filtros.cafes ||
-      this.filtros.proyector ||
-      this.filtros.pizarra
+      this.filtros.servicios.length > 0
     );
   }
 
@@ -120,7 +173,6 @@ export class FiltrosEspacioComponent {
   onFiltroChange() {
     // Aplicar automáticamente en desktop para mejor UX
     if (window.innerWidth >= 1024) {
-      // Pequeño delay para evitar demasiadas llamadas
       setTimeout(() => {
         this.aplicarFiltros();
       }, 300);

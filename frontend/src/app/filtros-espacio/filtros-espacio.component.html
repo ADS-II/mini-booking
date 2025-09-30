@@ -22,7 +22,7 @@
     <!-- Body con filtros -->
     <div class="filtros-body">
       
-      <!-- Tipo de espacio -->
+      <!-- Tipo de espacio - DINÁMICO -->
       <div class="form-group">
         <label class="form-label" for="tipoEspacio">Tipo de espacio</label>
         <select 
@@ -31,10 +31,9 @@
           [(ngModel)]="filtros.tipo"
           name="tipoEspacio">
           <option value="">Todos los tipos</option>
-          <option value="escritorio">Escritorio</option>
-          <option value="sala de juntas">Sala de Juntas</option>
-          <option value="oficina privada">Oficina Privada</option>
-          <option value="sala">Sala</option>
+          <option *ngFor="let tipo of tiposDisponibles" [value]="tipo">
+            {{ tipo }}
+          </option>
         </select>
       </div>
 
@@ -77,54 +76,18 @@
         </div>
       </div>
 
-      <!-- Servicios -->
+      <!-- Servicios - DINÁMICOS -->
       <div class="form-group">
         <label class="form-label">Servicios incluidos</label>
         <div class="servicios-group">
           
-          <label class="checkbox-item">
+          <label class="checkbox-item" *ngFor="let servicio of serviciosDisponibles">
             <input 
               type="checkbox" 
               class="checkbox-input"
-              [(ngModel)]="filtros.wifi"
-              name="wifi">
-            <span class="checkbox-label">WiFi</span>
-          </label>
-
-          <label class="checkbox-item">
-            <input 
-              type="checkbox" 
-              class="checkbox-input"
-              [(ngModel)]="filtros.aireAcondicionado"
-              name="aireAcondicionado">
-            <span class="checkbox-label">Aire Acondicionado</span>
-          </label>
-
-          <label class="checkbox-item">
-            <input 
-              type="checkbox" 
-              class="checkbox-input"
-              [(ngModel)]="filtros.cafes"
-              name="cafes">
-            <span class="checkbox-label">Cafés</span>
-          </label>
-
-          <label class="checkbox-item">
-            <input 
-              type="checkbox" 
-              class="checkbox-input"
-              [(ngModel)]="filtros.proyector"
-              name="proyector">
-            <span class="checkbox-label">Proyector</span>
-          </label>
-
-          <label class="checkbox-item">
-            <input 
-              type="checkbox" 
-              class="checkbox-input"
-              [(ngModel)]="filtros.pizarra"
-              name="pizarra">
-            <span class="checkbox-label">Pizarra</span>
+              [checked]="isServicioSeleccionado(servicio)"
+              (change)="toggleServicio(servicio)">
+            <span class="checkbox-label">{{ servicio }}</span>
           </label>
 
         </div>

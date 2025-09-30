@@ -112,25 +112,14 @@ export class EspaciosComponent implements OnInit {
         return false;
       }
 
-      // Filtros de servicios
-      if (filtros.wifi && !this.tieneServicio(espacio, 'wifi')) {
-        return false;
-      }
-
-      if (filtros.aireAcondicionado && !this.tieneServicio(espacio, 'aire acondicionado')) {
-        return false;
-      }
-
-      if (filtros.cafes && !this.tieneServicio(espacio, 'cafes')) {
-        return false;
-      }
-
-      if (filtros.proyector && !this.tieneServicio(espacio, 'proyector')) {
-        return false;
-      }
-
-      if (filtros.pizarra && !this.tieneServicio(espacio, 'pizarra')) {
-        return false;
+      // Filtros de servicios - DINÁMICO
+      if (filtros.servicios && filtros.servicios.length > 0) {
+        // El espacio debe tener TODOS los servicios seleccionados
+        for (const servicioRequerido of filtros.servicios) {
+          if (!this.tieneServicio(espacio, servicioRequerido)) {
+            return false;
+          }
+        }
       }
 
       return true;
