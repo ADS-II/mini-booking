@@ -8,8 +8,8 @@ import java.util.Map;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.example.coworking.dto.ConfirmacionDTO;
 import com.example.coworking.dto.ReservaDTO;
-import com.example.coworking.model.Reserva;
 import com.example.coworking.service.ReservaService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -71,7 +71,8 @@ public class ReservaController {
      * JSON esperado:
      * {
      * "idEspacio": "1",
-     * "email": "usuario1@demo.com",
+     * "email": "usuario@demo.com",
+     * "nombre": "nombre usuario",
      * "fechaInicio": "2026-02-24",
      * "fechaFin": "2026-02-24",
      * "horaEntrada": "09:27",
@@ -91,6 +92,7 @@ public class ReservaController {
         try {
             Long idEspacio = Long.parseLong(body.get("idEspacio"));
             String email = body.get("email");
+            String nombre = body.get("nombre");
 
             LocalDateTime[] fechaHoras = formatearFecha(body);
             LocalDateTime fechaHoraEntrada = fechaHoras[0];
@@ -102,9 +104,11 @@ public class ReservaController {
             String metodoPago = body.get("metodoPago");
             Double monto = Double.parseDouble(body.get("monto"));
 
-            Reserva reserva = service.crearReserva(idEspacio, email, fechaHoraEntrada, fechaHoraSalida, estadoPago,
+            // Llamamos al servicio y devolvemos directamente su ResponseEntity
+            return service.crearReserva(idEspacio, email, nombre,
+                    fechaHoraEntrada, fechaHoraSalida, estadoPago,
                     metodoPago, monto);
-            return ResponseEntity.ok(reserva);
+
         } catch (IllegalArgumentException ex) {
             return ResponseEntity.badRequest().body(Map.of("error", ex.getMessage()));
         }

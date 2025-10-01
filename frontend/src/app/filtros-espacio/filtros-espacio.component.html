@@ -31,8 +31,8 @@
           [(ngModel)]="filtros.tipo"
           name="tipoEspacio">
           <option value="">Todos los tipos</option>
-          <option *ngFor="let tipo of tiposDisponibles" [value]="tipo">
-            {{ tipo }}
+          <option *ngFor="let tipo of tiposDisponibles" [value]="tipo.nombre">
+            {{ tipo.nombre }}
           </option>
         </select>
       </div>
@@ -85,9 +85,9 @@
             <input 
               type="checkbox" 
               class="checkbox-input"
-              [checked]="isServicioSeleccionado(servicio)"
-              (change)="toggleServicio(servicio)">
-            <span class="checkbox-label">{{ servicio }}</span>
+              [checked]="isServicioSeleccionado(servicio.nombre)"
+              (change)="toggleServicio(servicio.nombre)">
+            <span class="checkbox-label">{{ servicio.nombre }}</span>
           </label>
 
         </div>

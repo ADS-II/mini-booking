@@ -53,11 +53,10 @@ export class FiltrosEspacioComponent implements OnInit {
    * Carga los tipos de espacios disponibles desde el backend
    */
   cargarTiposDisponibles(): void {
-    this.http.get<string[]>('http://localhost:8080/api/espacio/tipos')
+    this.http.get<string[]>('http://localhost:8080/api/componente/tipos-espacio')
       .subscribe({
         next: (tipos) => {
           this.tiposDisponibles = tipos;
-          console.log('Tipos cargados:', tipos);
         },
         error: (error) => {
           console.error('Error al cargar tipos:', error);
@@ -69,11 +68,10 @@ export class FiltrosEspacioComponent implements OnInit {
    * Carga los servicios disponibles desde el backend
    */
   cargarServiciosDisponibles(): void {
-    this.http.get<string[]>('http://localhost:8080/api/espacio/servicios')
+    this.http.get<string[]>('http://localhost:8080/api/componente/servicios')
       .subscribe({
         next: (servicios) => {
           this.serviciosDisponibles = servicios;
-          console.log('Servicios cargados:', servicios);
         },
         error: (error) => {
           console.error('Error al cargar servicios:', error);
@@ -134,8 +132,6 @@ export class FiltrosEspacioComponent implements OnInit {
     if (window.innerWidth < 1024) {
       this.mostrarFiltros = false;
     }
-
-    console.log('Filtros aplicados:', this.filtros);
   }
 
   /**

@@ -2,9 +2,8 @@ package com.example.coworking.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
-
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 @Table(name = "espacios")
@@ -14,20 +13,27 @@ public class Espacio {
     private Long id;
 
     private String nombre;
-    private String tipo;
     private Integer capacidad;
     private Double precio;
-    private String estado = "disponible";
 
     @Column(name = "created")
     private LocalDateTime created = LocalDateTime.now();
 
     @Column(name = "updated")
     private LocalDateTime updated = LocalDateTime.now();
+    
+    @ManyToOne
+    @JoinColumn(name = "tipo_id", nullable = false)
+    private TipoEspacio tipo;
 
-    @OneToMany(mappedBy = "espacio", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JsonManagedReference
-    private List<Servicio> servicios;
+    @ManyToOne
+    @JoinColumn(name = "estado_id", nullable = false)
+    private Estado estado;
+
+    // relación con la tabla intermedia que conecta con servicios
+    @OneToMany(mappedBy = "espacio", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<EspacioServicio> espacioServicios; 
+
 
     public Long getId() {
         return id;
@@ -43,14 +49,6 @@ public class Espacio {
 
     public void setNombre(String nombre) {
         this.nombre = nombre;
-    }
-
-    public String getTipo() {
-        return tipo;
-    }
-
-    public void setTipo(String tipo) {
-        this.tipo = tipo;
     }
 
     public Integer getCapacidad() {
@@ -69,11 +67,24 @@ public class Espacio {
         this.precio = precio;
     }
 
-    public String getEstado() {
+    public TipoEspacio getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(TipoEspacio tipo) {
+        this.tipo = tipo;
+    }
+
+    public Estado getEstado() {
         return estado;
     }
 
-    public void setEstado(String estado) {
+
+    /**
+     * disponible, ocupado, mantenimiento
+     * @param estado
+     */
+    public void setEstado(Estado estado) {
         this.estado = estado;
     }
 
@@ -93,12 +104,11 @@ public class Espacio {
         this.updated = updated;
     }
 
-    public List<Servicio> getServicios() {
-        return servicios;
+    public List<EspacioServicio> getEspacioServicios() {
+        return espacioServicios;
     }
 
-    public void setServicios(List<Servicio> servicios) {
-        this.servicios = servicios;
+    public void setEspacioServicios(List<EspacioServicio> espacioServicios) {
+        this.espacioServicios = espacioServicios;
     }
-
 }

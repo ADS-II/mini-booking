@@ -2,28 +2,53 @@ package com.example.coworking.service;
 
 import java.util.List;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
 
+import com.example.coworking.dto.EspacioDTO;
+import com.example.coworking.dto.ServicioDTO;
 import com.example.coworking.model.Espacio;
+import com.example.coworking.model.Servicio;
 import com.example.coworking.repository.EspacioRepository;
-import com.example.coworking.repository.ServicioRepository;
 
 @Service
 public class EspacioService {
     private final EspacioRepository repository;
-    private final ServicioRepository servicioRepository;
 
-    public EspacioService(EspacioRepository repository, ServicioRepository servicioRepository) {
+
+    public EspacioService(EspacioRepository repository) {
         this.repository = repository;
-        this.servicioRepository = servicioRepository;
+        
+    }
+
+    public List<EspacioDTO> listar() {
+        List<Espacio> espacios = repository.findAll();
+        return espacios.stream().map(e -> {
+            EspacioDTO dto = new EspacioDTO();
+            dto.setId(e.getId());
+            dto.setNombre(e.getNombre());
+            dto.setTipo(e.getTipo().getNombre());
+            dto.setCapacidad(e.getCapacidad());
+            dto.setPrecio(e.getPrecio());
+            dto.setEstado(e.getEstado().getNombre());
+            dto.setCreated(e.getCreated());
+            dto.setUpdated(e.getUpdated());
+
+            // Recorrer la tabla intermedia espacioServicios
+            List<ServicioDTO> servicios = e.getEspacioServicios().stream().map(es -> {
+                Servicio s = es.getServicio();
+                ServicioDTO sdto = new ServicioDTO();
+                sdto.setId(s.getId());
+                sdto.setNombre(s.getNombre());
+                sdto.setDescripcion(s.getDescripcion());
+                return sdto;
+            }).toList();
+
+            dto.setServicios(servicios);
+            return dto;
+        }).toList();
     }
 
     public Espacio guardar(Espacio espacio) {
         return repository.save(espacio);
-    }
-
-    public List<Espacio> listar() {
-        return repository.findAll();
     }
 
     public Espacio obtener(Long id) {
@@ -34,12 +59,4 @@ public class EspacioService {
         repository.deleteById(id);
     }
 
-    // funcione de complementos de los filtros
-    public List<String> obtenerTiposUnicos() {
-        return repository.findDistinctTipos();
-    }
-
-    public List<String> obtenerNombresServiciosUnicos() {
-        return servicioRepository.findDistinctNombres();
-    }
 }

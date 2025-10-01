@@ -2,7 +2,6 @@ package com.example.coworking.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 
 @Entity
 @Table(name = "reservas", uniqueConstraints = {

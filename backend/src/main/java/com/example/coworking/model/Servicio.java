@@ -1,6 +1,8 @@
 package com.example.coworking.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.*;
 
@@ -16,13 +18,21 @@ public class Servicio {
 
     private String descripcion;
 
-    @ManyToOne
-    @JoinColumn(name = "espacio_id", nullable = false)
-    @JsonBackReference
-    private Espacio espacio;
+    // relación con la tabla intermedia que conecta con espacios
+    @JsonIgnore // evitamos la serialización de la relación espacioServicios
+    @OneToMany(mappedBy = "servicio", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<EspacioServicio> espacioServicios;
 
     public Long getId() {
         return id;
+    }
+
+    public List<EspacioServicio> getEspacioServicios() {
+        return espacioServicios;
+    }
+
+    public void setEspacioServicios(List<EspacioServicio> espacioServicios) {
+        this.espacioServicios = espacioServicios;
     }
 
     public void setId(Long id) {
@@ -43,13 +53,5 @@ public class Servicio {
 
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
-    }
-
-    public Espacio getEspacio() {
-        return espacio;
-    }
-
-    public void setEspacio(Espacio espacio) {
-        this.espacio = espacio;
     }
 }

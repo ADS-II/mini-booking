@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.web.bind.annotation.*;
 
+import com.example.coworking.dto.EspacioDTO;
 import com.example.coworking.model.Espacio;
 import com.example.coworking.service.EspacioService;
 
@@ -28,22 +29,6 @@ public class EspacioController {
     this.service = service;
   }
 
-  // metodos para los filtros
-  @GetMapping("/tipos")
-  public List<String> obtenerTiposUnicos() {
-    return service.obtenerTiposUnicos();
-  }
-
-  @GetMapping("/servicios")
-  public List<String> obtenerNombresServiciosUnicos() {
-    return service.obtenerNombresServiciosUnicos();
-  }
-
-
-
-
-
-
   /**
    * Listar todos los espacios registrados.
    * 
@@ -54,7 +39,7 @@ public class EspacioController {
       @ApiResponse(responseCode = "200", description = "Lista de espacios obtenida correctamente")
   })
   @GetMapping
-  public List<Espacio> listar() {
+  public List<EspacioDTO> listar() {
     return service.listar();
   }
 
@@ -72,20 +57,25 @@ public class EspacioController {
   @PostMapping
   public Espacio crear(
       @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "JSON con datos del espacio y sus servicios", required = true, content = @Content(schema = @Schema(implementation = Espacio.class), examples = @ExampleObject(value = """
-          {
-            "capacidad": 25,
-            "estado": "disponible",
-            "nombre": "cap 26",
-            "precio": 60,
-            "tipo": "sala",
-            "servicios": [
-              {
-                "nombre": "string",
-                "descripcion": "string"
-              }
-            ]
-          }
-          """))) @RequestBody Espacio espacio) {
+                {
+                  "capacidad": 25,
+                  "estado": "disponible",
+                  "nombre": "cap 26",
+                  "precio": 60,
+                  "tipo": "sala",
+                  "servicios": [
+                     {
+                        "id": 1
+                      },
+                      {
+                        "id": 2
+                      },
+                      {
+                        "id": 3
+                      }
+                  ]
+                }
+                """))) @RequestBody Espacio espacio) {
     return service.guardar(espacio);
   }
 

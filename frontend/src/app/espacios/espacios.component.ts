@@ -1,9 +1,11 @@
+
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { FormReservaComponent } from '../form-reserva/form-reserva.component';
 import { FiltrosEspacioComponent, FiltrosEspacio } from '../filtros-espacio/filtros-espacio.component';
-import { FormLoginComponent } from "../form-login/form-login.component";
+
+
 
 interface Servicio {
   id: number;
@@ -25,7 +27,12 @@ interface Espacio {
 @Component({
   selector: 'app-espacios',
   standalone: true,
-  imports: [CommonModule, HttpClientModule, FormReservaComponent, FiltrosEspacioComponent, FormLoginComponent],
+  imports: [
+    CommonModule,
+    HttpClientModule,
+    FormReservaComponent,
+    FiltrosEspacioComponent
+  ],
   templateUrl: './espacios.component.html',
   styleUrls: ['./espacios.component.css']
 })
@@ -34,13 +41,21 @@ export class EspaciosComponent implements OnInit {
   espacios_list: Espacio[] = [];
   espacios_list_filtrados: Espacio[] = [];
   mostrarFormId: number | null = null;
-  mostrarLogin: boolean = false;
 
-  constructor(private http: HttpClient) { }
+
+  constructor(private http: HttpClient) {
+  }
 
   ngOnInit(): void {
     this.cargarEspacios();
   }
+
+  toggleForm(espacioId: number): void {
+
+    this.mostrarFormId = (this.mostrarFormId === espacioId) ? null : espacioId;
+  }
+
+
 
   /**
    * Carga los espacios desde el backend
@@ -51,7 +66,6 @@ export class EspaciosComponent implements OnInit {
         next: (data) => {
           this.espacios_list = data;
           this.espacios_list_filtrados = [...data];
-          console.log('Espacios cargados:', data);
         },
         error: (error) => {
           console.error('Error al cargar espacios:', error);
@@ -60,26 +74,6 @@ export class EspaciosComponent implements OnInit {
       });
   }
 
-  /**
-   * Toggle del formulario de reserva
-   */
-  toggleForm(espacioId: number): void {
-    const usserAutenticado = localStorage.getItem('usserAutenticado');
-
-    if (!usserAutenticado) {
-      this.mostrarLogin = true;
-      return;
-    }
-
-    if (this.mostrarFormId === espacioId) {
-      this.mostrarFormId = null;
-    } else {
-      this.mostrarFormId = espacioId;
-    }
-  }
-  hideLoginForm() {
-    this.mostrarFormId = null; 
-  }
 
   /**
    * Obtiene el nombre del espacio por ID
@@ -101,7 +95,6 @@ export class EspaciosComponent implements OnInit {
    * Aplica los filtros a la lista de espacios
    */
   filtrarEspacios(filtros: FiltrosEspacio): void {
-    console.log('Aplicando filtros:', filtros);
 
     this.espacios_list_filtrados = this.espacios_list.filter(espacio => {
       // Filtro por tipo
@@ -115,12 +108,12 @@ export class EspaciosComponent implements OnInit {
       }
 
       // Filtro por precio mínimo
-      if (filtros.precioMinimo && espacio.precio < filtros.precioMinimo) {
+      if (filtros.precioMinimo && espacio.precio <= filtros.precioMinimo) {
         return false;
       }
 
       // Filtro por precio máximo
-      if (filtros.precioMaximo && espacio.precio > filtros.precioMaximo) {
+      if (filtros.precioMaximo && espacio.precio >= filtros.precioMaximo) {
         return false;
       }
 
@@ -136,8 +129,6 @@ export class EspaciosComponent implements OnInit {
 
       return true;
     });
-
-    console.log('Espacios filtrados:', this.espacios_list_filtrados.length);
   }
 
   /**

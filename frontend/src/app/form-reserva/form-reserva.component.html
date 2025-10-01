@@ -1,15 +1,15 @@
 <!-- Modal overlay -->
 <div class="modal-overlay" (click)="cerrar()">
-  
+
   <!-- Modal container -->
   <div class="modal-container" (click)="$event.stopPropagation()">
-    
+
     <!-- Header -->
     <header class="modal-header">
       <h2 class="modal-title">Reservar {{ espacioNombre || 'Espacio' }}</h2>
       <button type="button" class="btn-close" (click)="cerrar()" aria-label="Cerrar">
         <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
         </svg>
       </button>
     </header>
@@ -17,34 +17,38 @@
     <!-- Body -->
     <div class="modal-body">
       <form (ngSubmit)="reservar()" #reservaForm="ngForm">
-        
+
         <!-- Fechas -->
         <div class="form-section">
           <h3 class="section-title">Fechas de Reserva</h3>
           <div class="form-row">
             <div class="form-group">
               <label class="form-label" for="fechaInicio">Fecha de inicio</label>
-              <input 
-                type="date" 
-                id="fechaInicio" 
-                name="fechaInicio" 
-                class="form-input"
-                [(ngModel)]="fechaInicio" 
+              <input type="date" id="fechaInicio" name="fechaInicio" class="form-input" [(ngModel)]="fechaInicio"
                 required>
             </div>
-            
+
             <div class="form-group">
               <label class="form-label" for="fechaFin">Fecha de fin</label>
-              <input 
-                type="date" 
-                id="fechaFin" 
-                name="fechaFin" 
-                class="form-input"
-                [(ngModel)]="fechaFin" 
-                required>
+              <input type="date" id="fechaFin" name="fechaFin" class="form-input" [(ngModel)]="fechaFin" required>
             </div>
           </div>
         </div>
+        <div class="form-section">
+          <h3 class="section-title">Método de pago</h3>
+          <div class="form-row">
+            <label class="form-label">
+              <input type="radio" name="metodoPago" value="Efectivo" [(ngModel)]="metodoPago">
+              Efectivo
+            </label>
+
+            <label class="form-label" style="margin-left: 20px;">
+              <input type="radio" name="metodoPago" value="Transferencia" [(ngModel)]="metodoPago">
+              Transferencia
+            </label>
+          </div>
+        </div>
+
 
         <!-- Horarios -->
         <div class="form-section">
@@ -52,24 +56,12 @@
           <div class="form-row">
             <div class="form-group">
               <label class="form-label" for="horaInicio">Hora de inicio</label>
-              <input 
-                type="time" 
-                id="horaInicio" 
-                name="horaInicio" 
-                class="form-input"
-                [(ngModel)]="horaInicio" 
-                required>
+              <input type="time" id="horaInicio" name="horaInicio" class="form-input" [(ngModel)]="horaInicio" required>
             </div>
-            
+
             <div class="form-group">
               <label class="form-label" for="horaFin">Hora de fin</label>
-              <input 
-                type="time" 
-                id="horaFin" 
-                name="horaFin" 
-                class="form-input"
-                [(ngModel)]="horaFin" 
-                required>
+              <input type="time" id="horaFin" name="horaFin" class="form-input" [(ngModel)]="horaFin" required>
             </div>
           </div>
         </div>
@@ -82,17 +74,17 @@
               <span class="summary-label">Espacio:</span>
               <span class="summary-value">{{ espacioNombre || 'Espacio ' + espacioId }}</span>
             </div>
-            
+
             <div class="summary-item">
               <span class="summary-label">Duración:</span>
               <span class="summary-value">{{ calcularDuracion() }}</span>
             </div>
-            
+
             <div class="summary-item">
               <span class="summary-label">Precio por hora:</span>
               <span class="summary-value">${{ espacioPrecio || 50 }}</span>
             </div>
-            
+
             <div class="summary-item summary-total">
               <span class="summary-label">Total estimado:</span>
               <span class="summary-value">${{ calcularTotal() }}</span>
@@ -107,13 +99,14 @@
       <button type="button" class="btn-modal btn-cancelar" (click)="cerrar()">
         Cancelar
       </button>
-      <button 
-        type="submit" 
-        class="btn-modal btn-confirmar"
-        [disabled]="!reservaForm.form.valid || !validarFechasHoras()"
-        (click)="reservar()">
+      <button type="submit" class="btn-modal btn-confirmar"
+        [disabled]="!reservaForm.form.valid || !validarFechasHoras()" (click)="reservar()">
         Confirmar Reserva
       </button>
     </div>
   </div>
 </div>
+
+
+<app-form-login [isVisibleForm]="mostrarLogin" (visibilityChange)="mostrarLogin = $event">
+</app-form-login>

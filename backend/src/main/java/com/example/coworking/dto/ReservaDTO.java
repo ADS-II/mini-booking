@@ -2,6 +2,7 @@ package com.example.coworking.dto;
 
 import java.time.LocalDateTime;
 
+// dto para enviar solo los datos necesarios al cliente
 public class ReservaDTO {
     private Long idReserva;
     private String nombreUsuario;
