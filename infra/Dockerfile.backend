@@ -5,6 +5,7 @@ COPY backend/pom.xml .
 COPY backend/src ./src
 RUN mvn clean package -DskipTests
 
+
 # Package stage
 FROM openjdk:17-jdk-slim
 WORKDIR /app
