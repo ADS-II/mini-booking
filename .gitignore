@@ -45,3 +45,5 @@ Thumbs.db
 
 # Auth0 configuration
 auth_config.json
+
+.env
