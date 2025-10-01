@@ -2,6 +2,7 @@ import { Component, EventEmitter, Output, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { environment } from 'src/environments/environment';
 
 export interface FiltrosEspacio {
   tipo: string;
@@ -42,7 +43,7 @@ export class FiltrosEspacioComponent implements OnInit {
   // Servicios seleccionados para checkboxes
   serviciosSeleccionados: Set<string> = new Set();
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   ngOnInit(): void {
     this.cargarTiposDisponibles();
@@ -53,7 +54,7 @@ export class FiltrosEspacioComponent implements OnInit {
    * Carga los tipos de espacios disponibles desde el backend
    */
   cargarTiposDisponibles(): void {
-    this.http.get<string[]>('http://localhost:8080/api/componente/tipos-espacio')
+    this.http.get<string[]>(`${environment.apiUrl}/api/componente/tipos-espacio`)
       .subscribe({
         next: (tipos) => {
           this.tiposDisponibles = tipos;
@@ -68,7 +69,7 @@ export class FiltrosEspacioComponent implements OnInit {
    * Carga los servicios disponibles desde el backend
    */
   cargarServiciosDisponibles(): void {
-    this.http.get<string[]>('http://localhost:8080/api/componente/servicios')
+    this.http.get<string[]>(`${environment.apiUrl}/api/componente/servicios`)
       .subscribe({
         next: (servicios) => {
           this.serviciosDisponibles = servicios;
@@ -88,7 +89,7 @@ export class FiltrosEspacioComponent implements OnInit {
     } else {
       this.serviciosSeleccionados.add(servicio);
     }
-    
+
     // Actualizar array de filtros
     this.filtros.servicios = Array.from(this.serviciosSeleccionados);
   }
@@ -145,7 +146,7 @@ export class FiltrosEspacioComponent implements OnInit {
       precioMaximo: null,
       servicios: []
     };
-    
+
     this.serviciosSeleccionados.clear();
     this.aplicarFiltros();
   }

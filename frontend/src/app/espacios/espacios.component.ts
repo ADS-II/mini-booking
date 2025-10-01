@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { FormReservaComponent } from '../form-reserva/form-reserva.component';
 import { FiltrosEspacioComponent, FiltrosEspacio } from '../filtros-espacio/filtros-espacio.component';
-
+import { environment } from 'src/environments/environment';
 
 
 interface Servicio {
@@ -61,7 +61,7 @@ export class EspaciosComponent implements OnInit {
    * Carga los espacios desde el backend
    */
   cargarEspacios(): void {
-    this.http.get<Espacio[]>('http://localhost:8080/api/espacio')
+    this.http.get<Espacio[]>(`${environment.apiUrl}/api/espacio`)
       .subscribe({
         next: (data) => {
           this.espacios_list = data;

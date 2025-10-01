@@ -11,6 +11,7 @@ import { FooterComponent } from "src/app/components/footer/footer.component";
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { FormReservaComponent } from 'src/app/form-reserva/form-reserva.component';
 import { FormLoginComponent } from "src/app/form-login/form-login.component";
+import { environment } from 'src/environments/environment';
 interface Servicio {
   id: number;
   nombre: string;
@@ -33,10 +34,6 @@ interface Espacio {
   styleUrls: ['./home.component.css'],
   standalone: true,
   imports: [
-    HomeContentComponent,
-    HeroComponent,
-    LoadingComponent,
-    AsyncPipe,
     NgIf,
     RouterLink,
     FooterComponent,
@@ -50,7 +47,7 @@ interface Espacio {
 export class HomeComponent {
   constructor(public auth: AuthService, private http: HttpClient) { }
   espacios_list: Espacio[] = [];
-  mostrarLogin: boolean = false;
+
 
   ngOnInit(): void {
     this.cargarEspacios();
@@ -59,16 +56,13 @@ export class HomeComponent {
   mostrarFormId: number | null = null;
 
   cargarEspacios(): void {
-    this.http.get<Espacio[]>('http://localhost:8080/api/espacio')
+    this.http.get<Espacio[]>(`${environment.apiUrl}/api/espacio`)
       .subscribe({
         next: (data) => {
           this.espacios_list = data;
-
-          console.log('Espacios cargados:', data);
         },
         error: (error) => {
           console.error('Error al cargar espacios:', error);
-          // Puedes mostrar un mensaje al usuario aquí
         }
       });
   }
@@ -78,13 +72,6 @@ export class HomeComponent {
    * Toggle del formulario de reserva
    */
   toggleForm(espacioId: number): void {
-    const usserAutenticado = localStorage.getItem('usserAutenticado');
-
-    if (!usserAutenticado) {
-      this.mostrarLogin = true;
-      return;
-    }
-
     if (this.mostrarFormId === espacioId) {
       this.mostrarFormId = null;
     } else {
@@ -92,9 +79,6 @@ export class HomeComponent {
     }
   }
 
-  hideLoginForm() {
-    this.mostrarFormId = null; // método para que el hijo pueda ocultar el login
-  }
 
   /**
   * Obtiene el nombre del espacio por ID

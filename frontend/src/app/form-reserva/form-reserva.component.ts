@@ -5,7 +5,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { AuthService } from '@auth0/auth0-angular';
-import { FormLoginComponent } from "../form-login/form-login.component"; // 👈 Importar Auth0
+import { FormLoginComponent } from "../form-login/form-login.component";
+import { environment } from 'src/environments/environment';
 
 
 @Component({
@@ -189,8 +190,7 @@ export class FormReservaComponent {
       metodoPago: this.metodoPago,
       monto: montoCalculado
     };
-
-      this.http.post('http://localhost:8080/api/reserva', reservaData)
+      this.http.post(`${environment.apiUrl}/api/reserva`, reservaData)
         .subscribe({
           next: (response) => {
             alert(response['body']?.message || 'Tu Reserva ha sido agendada.');
