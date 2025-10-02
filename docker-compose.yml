@@ -10,9 +10,9 @@ services:
     ports:
       - "8080:8080"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}?sslmode=require
-      SPRING_DATASOURCE_USERNAME: ${DB_USER}
-      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
+      SPRING_DATASOURCE_URL: jdbc:postgresql://${SPRING_DATASOURCE_DB_HOST}:${DB_PORT}/${SPRING_DATASOURCE_DB_NAME}?sslmode=require
+      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
     env_file:
       - .env
     depends_on: []
@@ -26,6 +26,19 @@ services:
       - "4200:80"
     depends_on:
       - ads-coworking-app
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
