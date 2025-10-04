@@ -20,8 +20,6 @@ ENTRYPOINT ["java", "-jar", "app.jar"]
 #levantar frontend y backend
 # docker compose up --build 
 
-#  eliminar contenedores
-# docker compose down
 
 # rutas
 # frontend
@@ -31,6 +29,5 @@ ENTRYPOINT ["java", "-jar", "app.jar"]
 # http://localhost:8080
 
 
-# render backend
-# https://worknest-u0uz.onrender.com
-
+#  eliminar contenedores
+# docker compose down
