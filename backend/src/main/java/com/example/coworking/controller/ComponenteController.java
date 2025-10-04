@@ -10,7 +10,10 @@ import com.example.coworking.service.ComponenteSistemaService;
 
 @RestController
 @RequestMapping("/api/componente")
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = {
+    "http://localhost:4200",
+    "https://magnificent-sopapillas-2ebba0.netlify.app"
+})
 public class ComponenteController {
     // http://localhost:8080/swagger-ui/index.html
 

@@ -19,7 +19,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
 @RestController
 @RequestMapping("/api/reserva")
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = {
+    "http://localhost:4200",
+    "https://magnificent-sopapillas-2ebba0.netlify.app"
+})
 @Tag(name = "Reservas", description = "Operaciones para gestionar reservas de espacios")
 public class ReservaController {
 
