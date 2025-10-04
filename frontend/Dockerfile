@@ -22,7 +22,7 @@ CMD ["nginx", "-g", "daemon off;"]
 
 
 
-
+# // "apiUri": "http://localhost:8080",
 
 
 
