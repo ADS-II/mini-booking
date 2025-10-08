@@ -10,6 +10,7 @@ const { domain, clientId, audience, apiUri, errorPath } = config as {
 
 export const environment = {
   production: true,
+  apiUrl: apiUri,
   auth: {
     domain,
     clientId,

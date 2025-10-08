@@ -7,8 +7,6 @@ import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import com.example.coworking.dto.ConfirmacionDTO;
 import com.example.coworking.dto.ReservaDTO;
 import com.example.coworking.service.ReservaService;
 
