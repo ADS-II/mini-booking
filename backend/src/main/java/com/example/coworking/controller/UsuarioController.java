@@ -19,8 +19,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @RestController
 @RequestMapping("/api/usuarios")
 @CrossOrigin(origins = {
-    "http://localhost:4200",
-    "https://magnificent-sopapillas-2ebba0.netlify.app"
+        "http://localhost:4200",
+        "https://mini-booking.netlify.app"
 })
 public class UsuarioController {
     private final UsuarioService service;
@@ -31,9 +31,7 @@ public class UsuarioController {
 
     @Operation(summary = "Lista todos los usuarios", description = "Obtiene la lista completa de usuarios registrados")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Lista de usuarios obtenida correctamente",
-                     content = @Content(mediaType = "application/json", 
-                     schema = @Schema(implementation = Usuario.class)))
+            @ApiResponse(responseCode = "200", description = "Lista de usuarios obtenida correctamente", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Usuario.class)))
     })
     @GetMapping
     public List<Usuario> listar() {
@@ -42,11 +40,8 @@ public class UsuarioController {
 
     @Operation(summary = "Crea un nuevo usuario", description = "Registra un usuario nuevo si el email no está duplicado")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Usuario creado correctamente",
-                     content = @Content(mediaType = "application/json",
-                     schema = @Schema(implementation = Usuario.class))),
-        @ApiResponse(responseCode = "400", description = "El email ya está registrado",
-                     content = @Content(mediaType = "application/json"))
+            @ApiResponse(responseCode = "200", description = "Usuario creado correctamente", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Usuario.class))),
+            @ApiResponse(responseCode = "400", description = "El email ya está registrado", content = @Content(mediaType = "application/json"))
     })
     @PostMapping
     public ResponseEntity<?> crear(@Valid @RequestBody Usuario usuario) {
@@ -62,11 +57,8 @@ public class UsuarioController {
 
     @Operation(summary = "Obtiene un usuario por ID", description = "Busca un usuario por su identificador único")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Usuario encontrado",
-                     content = @Content(mediaType = "application/json",
-                     schema = @Schema(implementation = Usuario.class))),
-        @ApiResponse(responseCode = "404", description = "Usuario no encontrado",
-                     content = @Content)
+            @ApiResponse(responseCode = "200", description = "Usuario encontrado", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Usuario.class))),
+            @ApiResponse(responseCode = "404", description = "Usuario no encontrado", content = @Content)
     })
     @GetMapping("/{id}")
     public Usuario obtener(@PathVariable Long id) {
@@ -75,8 +67,8 @@ public class UsuarioController {
 
     @Operation(summary = "Elimina un usuario por ID", description = "Elimina un usuario existente de la base de datos")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Usuario eliminado correctamente"),
-        @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
+            @ApiResponse(responseCode = "200", description = "Usuario eliminado correctamente"),
+            @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
     })
     @DeleteMapping("/{id}")
     public void eliminar(@PathVariable Long id) {

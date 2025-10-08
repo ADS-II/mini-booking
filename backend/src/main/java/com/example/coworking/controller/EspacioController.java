@@ -21,7 +21,7 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 @RequestMapping("/api/espacio")
 @CrossOrigin(origins = {
     "http://localhost:4200",
-    "https://magnificent-sopapillas-2ebba0.netlify.app"
+     "https://mini-booking.netlify.app"
 })
 @Tag(name = "Espacios", description = "Operaciones para gestionar los espacios disponibles")
 public class EspacioController {
