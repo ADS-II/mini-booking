@@ -69,7 +69,6 @@ export class EspaciosComponent implements OnInit {
         },
         error: (error) => {
           console.error('Error al cargar espacios:', error);
-          // Puedes mostrar un mensaje al usuario aquí
         }
       });
   }

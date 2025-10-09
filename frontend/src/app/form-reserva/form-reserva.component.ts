@@ -177,7 +177,7 @@ export class FormReservaComponent {
 
     // Calcular monto dinámico
     const montoCalculado = parseInt(this.calcularTotal().replace(/,/g, ''));
-
+    // procesamos la rserva del espacio
     const reservaData = {
       idEspacio: this.espacioId.toString(),
       email: this.email,
