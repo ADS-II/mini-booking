@@ -24,6 +24,19 @@
       
       <!-- Tipo de espacio - DINÁMICO -->
       <div class="form-group">
+        <label class="form-label" for="tipoZona">Tipo de zona</label>
+        <select 
+          id="tipoZona" 
+          class="form-control" 
+          [(ngModel)]="filtros.zona"
+          name="tipoZona">
+          <option value="">Todos los tipos</option>
+          <option *ngFor="let ubicacion of ubiicaciones" [value]="ubicacion.zona">
+            {{ ubicacion.zona }}
+          </option>
+        </select>
+      </div>
+      <div class="form-group">
         <label class="form-label" for="tipoEspacio">Tipo de espacio</label>
         <select 
           id="tipoEspacio" 

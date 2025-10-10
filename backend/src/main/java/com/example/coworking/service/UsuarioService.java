@@ -27,11 +27,11 @@ public class UsuarioService {
         return repository.save(usuario);
     }
 
-    public Usuario obtener(Long id) {
+    public Usuario obtener(Integer id) {
         return repository.findById(id).orElse(null);
     }
 
-    public void eliminar(Long id) {
+    public void eliminar(Integer id) {
         repository.deleteById(id);
     }
 }

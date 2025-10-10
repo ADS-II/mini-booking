@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.example.coworking.model.Servicio;
 import com.example.coworking.model.TipoEspacio;
+import com.example.coworking.model.Ubicacion;
 import com.example.coworking.service.ComponenteSistemaService;
 
 @RestController
@@ -33,6 +34,12 @@ public class ComponenteController {
     @GetMapping("/servicios")
     public List<Servicio> listarServicios() {
         return service.listarServicios();
+    }
+
+    // listamos todos los servicios existentes
+    @GetMapping("/ubicaciones")
+    public List<Ubicacion> listarUbicaciones() {
+        return service.listarUbicaciones();
     }
 
 }

@@ -373,6 +373,9 @@ a {
 }
 
 
+
+
+
 .carousel-container {
     max-width: 100%;
     overflow: hidden;
@@ -386,7 +389,11 @@ a {
     animation: scroll 30s linear infinite;
     width: fit-content;
 }
-
+@media (max-width: 767px) {
+    .spaces-section-carrusel{
+        width: 100%;      
+    }
+}
 
 
 .carousel-wrapper:hover {

@@ -1,24 +1,16 @@
 package com.example.coworking.model;
-
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "estados")
-public class Estado {
+@Table(name = "metodo_pago")
+public class MetodoPago {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(nullable = false, unique = true)
     private String nombre;
 
-    public String getNombre() {
-        return nombre;
-    }
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
 
     public Integer getId() {
         return id;
@@ -28,4 +20,11 @@ public class Estado {
         this.id = id;
     }
 
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
 }

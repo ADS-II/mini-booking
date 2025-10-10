@@ -8,15 +8,21 @@ import java.time.LocalDateTime;
 public class Pago {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "reserva_id")
     private Reserva reserva;
 
     private Double monto;
-    private String metodo = "stripe";
-    private String estado = "pendiente";
+    
+    @ManyToOne
+    @JoinColumn(name = "metodo_pago_id", nullable = false)
+    private MetodoPago metodoPago;
+
+    @ManyToOne
+    @JoinColumn(name = "estado_id", nullable = false)
+    private EstadoPago estado;
 
     @Column(name = "comprobante_url")
     private String comprobanteUrl;
@@ -27,14 +33,7 @@ public class Pago {
     @Column(name = "updated")
     private LocalDateTime updated = LocalDateTime.now();
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
+    
     public Reserva getReserva() {
         return reserva;
     }
@@ -49,22 +48,6 @@ public class Pago {
 
     public void setMonto(Double monto) {
         this.monto = monto;
-    }
-
-    public String getMetodo() {
-        return metodo;
-    }
-
-    public void setMetodo(String metodo) {
-        this.metodo = metodo;
-    }
-
-    public String getEstado() {
-        return estado;
-    }
-
-    public void setEstado(String estado) {
-        this.estado = estado;
     }
 
     public String getComprobanteUrl() {
@@ -89,6 +72,30 @@ public class Pago {
 
     public void setUpdated(LocalDateTime updated) {
         this.updated = updated;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public MetodoPago getMetodoPago() {
+        return metodoPago;
+    }
+
+    public void setMetodoPago(MetodoPago metodoPago) {
+        this.metodoPago = metodoPago;
+    }
+
+    public EstadoPago getEstado() {
+        return estado;
+    }
+
+    public void setEstado(EstadoPago estado) {
+        this.estado = estado;
     }
 
 }

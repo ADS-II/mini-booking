@@ -9,7 +9,7 @@ import java.util.List;
 public class Espacio {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     private String nombre;
     private Integer capacidad;
@@ -20,7 +20,7 @@ public class Espacio {
 
     @Column(name = "updated")
     private LocalDateTime updated = LocalDateTime.now();
-    
+
     @ManyToOne
     @JoinColumn(name = "tipo_id", nullable = false)
     private TipoEspacio tipo;
@@ -31,16 +31,7 @@ public class Espacio {
 
     // relación con la tabla intermedia que conecta con servicios
     @OneToMany(mappedBy = "espacio", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<EspacioServicio> espacioServicios; 
-
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
+    private List<EspacioServicio> espacioServicios;
 
     public String getNombre() {
         return nombre;
@@ -78,9 +69,9 @@ public class Espacio {
         return estado;
     }
 
-
     /**
      * disponible, ocupado, mantenimiento
+     * 
      * @param estado
      */
     public void setEstado(Estado estado) {
@@ -110,4 +101,14 @@ public class Espacio {
     public void setEspacioServicios(List<EspacioServicio> espacioServicios) {
         this.espacioServicios = espacioServicios;
     }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+
 }

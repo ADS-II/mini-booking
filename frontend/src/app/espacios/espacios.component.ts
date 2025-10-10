@@ -17,6 +17,7 @@ interface Espacio {
   id: number;
   nombre: string;
   tipo: string;
+  zona: string;
   capacidad: number;
   precio: number;
   estado: string;
@@ -42,6 +43,12 @@ export class EspaciosComponent implements OnInit {
   espacios_list_filtrados: Espacio[] = [];
   mostrarFormId: number | null = null;
 
+  // actualizamos los espacios cada vez que se procese una reserva
+  onReservaExitosa(exito: boolean) {
+    if (exito) {
+      this.cargarEspacios()
+    }
+  }
 
   constructor(private http: HttpClient) {
   }
@@ -94,8 +101,14 @@ export class EspaciosComponent implements OnInit {
    * Aplica los filtros a la lista de espacios
    */
   filtrarEspacios(filtros: FiltrosEspacio): void {
+    console.log(filtros);
 
     this.espacios_list_filtrados = this.espacios_list.filter(espacio => {
+
+      // Filtro por tipo
+      if (filtros.zona && espacio.zona !== filtros.zona) {
+        return false;
+      }
       // Filtro por tipo
       if (filtros.tipo && espacio.tipo !== filtros.tipo) {
         return false;

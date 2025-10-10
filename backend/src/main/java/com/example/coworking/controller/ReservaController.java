@@ -91,7 +91,7 @@ public class ReservaController {
     @PostMapping
     public ResponseEntity<?> crearReserva(@RequestBody Map<String, String> body) {
         try {
-            Long idEspacio = Long.parseLong(body.get("idEspacio"));
+            Integer idEspacio = Integer.parseInt(body.get("idEspacio"));
             String email = body.get("email");
             String nombre = body.get("nombre");
 
@@ -136,7 +136,7 @@ public class ReservaController {
     @PutMapping
     public ResponseEntity<?> actualizarReserva(@RequestBody Map<String, String> body) {
         try {
-            Long idReserva = Long.parseLong(body.get("idReserva"));
+            Integer idReserva = Integer.parseInt(body.get("idReserva"));
             String estado = body.get("estado");
 
             LocalDateTime[] fechaHoras = formatearFecha(body);

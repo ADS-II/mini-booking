@@ -5,6 +5,7 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 
 export interface FiltrosEspacio {
+  zona: string;
   tipo: string;
   capacidadMinima: number | null;
   precioMinimo: number | null;
@@ -30,9 +31,11 @@ export class FiltrosEspacioComponent implements OnInit {
   // Datos dinámicos desde el backend
   tiposDisponibles: string[] = [];
   serviciosDisponibles: string[] = [];
+  ubiicaciones: string[] = [];
 
   // Filtros actuales
   filtros: FiltrosEspacio = {
+    zona: '',
     tipo: '',
     capacidadMinima: null,
     precioMinimo: null,
@@ -48,6 +51,7 @@ export class FiltrosEspacioComponent implements OnInit {
   ngOnInit(): void {
     this.cargarTiposDisponibles();
     this.cargarServiciosDisponibles();
+    this.cargarUbicaciones();
   }
 
   /**
@@ -61,6 +65,17 @@ export class FiltrosEspacioComponent implements OnInit {
         },
         error: (error) => {
           console.error('Error al cargar tipos:', error);
+        }
+      });
+  }
+  cargarUbicaciones(): void {
+    this.http.get<string[]>(`${environment.apiUrl}/api/componente/ubicaciones`)
+      .subscribe({
+        next: (ubicacion) => {
+          this.ubiicaciones = ubicacion;
+        },
+        error: (error) => {
+          console.error('Error al cargar ubicaciones:', error);
         }
       });
   }
@@ -140,6 +155,7 @@ export class FiltrosEspacioComponent implements OnInit {
    */
   limpiarFiltros() {
     this.filtros = {
+      zona: '',
       tipo: '',
       capacidadMinima: null,
       precioMinimo: null,
@@ -156,6 +172,7 @@ export class FiltrosEspacioComponent implements OnInit {
    */
   hayFiltrosActivos(): boolean {
     return !!(
+      this.filtros.zona ||
       this.filtros.tipo ||
       this.filtros.capacidadMinima ||
       this.filtros.precioMinimo ||

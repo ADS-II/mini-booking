@@ -10,7 +10,7 @@ import jakarta.validation.constraints.NotBlank;
 public class Usuario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     @NotBlank(message = "El nombre no puede estar vacío")
     private String nombre;
@@ -20,22 +20,11 @@ public class Usuario {
     @Column(unique = true)
     private String email;
 
-    // @NotBlank(message = "La contraseña no puede estar vacía")
-    // private String password;
-
     @Column(name = "created")
     private LocalDateTime created = LocalDateTime.now();
 
     @Column(name = "updated")
     private LocalDateTime updated = LocalDateTime.now();
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getNombre() {
         return nombre;
@@ -69,14 +58,12 @@ public class Usuario {
         this.updated = updated;
     }
 
-    // public String getPassword() {
-    // return password;
-    // }
+    public Integer getId() {
+        return id;
+    }
 
-    // public void setPassword(String password) {
-    // this.password = password;
-    // }
-
-
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
 }

@@ -11,7 +11,7 @@ import jakarta.persistence.*;
 public class Servicio {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     @Column(nullable = false)
     private String nombre;
@@ -23,9 +23,6 @@ public class Servicio {
     @OneToMany(mappedBy = "servicio", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<EspacioServicio> espacioServicios;
 
-    public Long getId() {
-        return id;
-    }
 
     public List<EspacioServicio> getEspacioServicios() {
         return espacioServicios;
@@ -35,9 +32,7 @@ public class Servicio {
         this.espacioServicios = espacioServicios;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+
 
     public String getNombre() {
         return nombre;
@@ -54,4 +49,14 @@ public class Servicio {
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
     }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+   
 }

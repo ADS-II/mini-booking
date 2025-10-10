@@ -2,20 +2,20 @@ package com.example.coworking.dto;
 
 // dto para enviar solo los datos necesarios al cliente
 public class ServicioDTO {
-    private Long id;
+    private Integer id;
     private String nombre;
     private String descripcion;
 
-    public Long getId() {
+    public String getNombre() {
+        return nombre;
+    }
+
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
-    }
-
-    public String getNombre() {
-        return nombre;
     }
 
     public void setNombre(String nombre) {

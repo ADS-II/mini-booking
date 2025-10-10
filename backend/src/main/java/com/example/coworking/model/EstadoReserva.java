@@ -3,8 +3,8 @@ package com.example.coworking.model;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "estados")
-public class Estado {
+@Table(name = "estado_reserva")
+public class EstadoReserva {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;

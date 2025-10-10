@@ -94,7 +94,7 @@ public class EspacioController {
       @ApiResponse(responseCode = "404", description = "Espacio no encontrado")
   })
   @GetMapping("/{id}")
-  public Espacio obtener(@PathVariable Long id) {
+  public Espacio obtener(@PathVariable Integer id) {
     return service.obtener(id);
   }
 
@@ -109,7 +109,7 @@ public class EspacioController {
       @ApiResponse(responseCode = "404", description = "Espacio no encontrado")
   })
   @DeleteMapping("/{id}")
-  public void eliminar(@PathVariable Long id) {
+  public void eliminar(@PathVariable Integer id) {
     service.eliminar(id);
   }
 }

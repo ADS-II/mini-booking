@@ -11,7 +11,7 @@ import com.example.coworking.dto.ReservaDTO;
 import com.example.coworking.model.Espacio;
 import com.example.coworking.model.Reserva;
 
-public interface ReservaRepository extends JpaRepository<Reserva, Long> {
+public interface ReservaRepository extends JpaRepository<Reserva, Integer> {
         // Verifica si existe alguna reserva que se cruce con las fechas dadas
         boolean existsByEspacioAndFechaInicioBeforeAndFechaFinAfter(
                         Espacio espacio, LocalDateTime fechaFin, LocalDateTime fechaInicio);
@@ -22,10 +22,10 @@ public interface ReservaRepository extends JpaRepository<Reserva, Long> {
         boolean existsByEspacioAndFechaInicioBetweenAndFechaFinBetweenAndIdNot(@Param("espacio") Espacio espacio,
                         @Param("fechaInicio") LocalDateTime fechaInicio,
                         @Param("fechaFin") LocalDateTime fechaFin,
-                        @Param("id") Long id);
+                        @Param("id") Integer id);
 
         @Query("SELECT new com.example.coworking.dto.ReservaDTO(" +
-                        "r.id, u.nombre, u.email, e.nombre, r.fechaInicio, r.fechaFin, p.estado, p.monto) " +
+                        "r.id, u.nombre, u.email, e.nombre, r.fechaInicio, r.fechaFin, p.estado.nombre, p.monto) " +
                         "FROM Pago p " +
                         "JOIN p.reserva r " +
                         "JOIN r.usuario u " +

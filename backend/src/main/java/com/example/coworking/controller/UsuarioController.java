@@ -61,7 +61,7 @@ public class UsuarioController {
             @ApiResponse(responseCode = "404", description = "Usuario no encontrado", content = @Content)
     })
     @GetMapping("/{id}")
-    public Usuario obtener(@PathVariable Long id) {
+    public Usuario obtener(@PathVariable Integer id) {
         return service.obtener(id);
     }
 
@@ -71,7 +71,7 @@ public class UsuarioController {
             @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
     })
     @DeleteMapping("/{id}")
-    public void eliminar(@PathVariable Long id) {
+    public void eliminar(@PathVariable Integer id) {
         service.eliminar(id);
     }
 }

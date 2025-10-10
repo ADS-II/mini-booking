@@ -5,8 +5,11 @@ import java.util.List;
 
 // dto para enviar solo los datos necesarios al cliente
 public class EspacioDTO {
-    private Long id;
+    private Integer id;
     private String nombre;
+    private String direccion;
+    private String zona;
+    private String horario;
     private String tipo; // ahora String tomado de TipoEspacio.nombre
     private Integer capacidad;
     private Double precio;
@@ -15,12 +18,29 @@ public class EspacioDTO {
     private LocalDateTime updated;
     private List<ServicioDTO> servicios; // lista de servicios asignados
 
-    public Long getId() {
-        return id;
+    
+    public String getDireccion() {
+        return direccion;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setDireccion(String direccion) {
+        this.direccion = direccion;
+    }
+
+    public String getZona() {
+        return zona;
+    }
+
+    public void setZona(String zona) {
+        this.zona = zona;
+    }
+
+    public String getHorario() {
+        return horario;
+    }
+
+    public void setHorario(String horario) {
+        this.horario = horario;
     }
 
     public String getNombre() {
@@ -85,6 +105,14 @@ public class EspacioDTO {
 
     public void setServicios(List<ServicioDTO> servicios) {
         this.servicios = servicios;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
 }

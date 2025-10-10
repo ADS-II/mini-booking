@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 public class Reserva {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "usuario_id")
@@ -26,21 +26,15 @@ public class Reserva {
     @Column(name = "fecha_fin")
     private LocalDateTime fechaFin;
 
-    private String estado = "pendiente";
+    @ManyToOne
+    @JoinColumn(name = "estado_reserva_id", nullable = false)
+    private EstadoReserva estado;
 
     @Column(name = "created")
     private LocalDateTime created = LocalDateTime.now();
 
     @Column(name = "updated")
     private LocalDateTime updated = LocalDateTime.now();
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public Usuario getUsuario() {
         return usuario;
@@ -74,13 +68,6 @@ public class Reserva {
         this.fechaFin = fechaFin;
     }
 
-    public String getEstado() {
-        return estado;
-    }
-
-    public void setEstado(String estado) {
-        this.estado = estado;
-    }
 
     public LocalDateTime getCreated() {
         return created;
@@ -98,5 +85,20 @@ public class Reserva {
         this.updated = updated;
     }
 
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public EstadoReserva getEstado() {
+        return estado;
+    }
+
+    public void setEstado(EstadoReserva estado) {
+        this.estado = estado;
+    }
 
 }

@@ -7,22 +7,23 @@ import com.example.coworking.dto.EspacioDTO;
 import com.example.coworking.dto.ServicioDTO;
 import com.example.coworking.model.Espacio;
 import com.example.coworking.model.Servicio;
+import com.example.coworking.model.Ubicacion;
 import com.example.coworking.repository.EspacioRepository;
 
 @Service
 public class EspacioService {
     private final EspacioRepository repository;
 
-
     public EspacioService(EspacioRepository repository) {
         this.repository = repository;
-        
+
     }
 
     public List<EspacioDTO> listar() {
         List<Espacio> espacios = repository.findAll();
         return espacios.stream().map(e -> {
             EspacioDTO dto = new EspacioDTO();
+
             dto.setId(e.getId());
             dto.setNombre(e.getNombre());
             dto.setTipo(e.getTipo().getNombre());
@@ -32,7 +33,13 @@ public class EspacioService {
             dto.setCreated(e.getCreated());
             dto.setUpdated(e.getUpdated());
 
-            // Recorrer la tabla intermedia espacioServicios
+            // obtengo los datos de la ubicacion
+            Ubicacion ubicacion = e.getTipo().getUbicacion();
+            dto.setDireccion(ubicacion.getDireccion());
+            dto.setZona(ubicacion.getZona());
+            dto.setHorario(ubicacion.getHorario());
+
+            // Recorro la tabla intermedia espacioServicios
             List<ServicioDTO> servicios = e.getEspacioServicios().stream().map(es -> {
                 Servicio s = es.getServicio();
                 ServicioDTO sdto = new ServicioDTO();
@@ -51,11 +58,11 @@ public class EspacioService {
         return repository.save(espacio);
     }
 
-    public Espacio obtener(Long id) {
+    public Espacio obtener(Integer id) {
         return repository.findById(id).orElse(null);
     }
 
-    public void eliminar(Long id) {
+    public void eliminar(Integer id) {
         repository.deleteById(id);
     }
 

@@ -1,23 +1,20 @@
 package com.example.coworking.model;
+
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "tipos_espacios")
+@Table(name = "tipos_espacio")
 public class TipoEspacio {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     @Column(nullable = false, unique = true)
     private String nombre;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
+    @ManyToOne
+    @JoinColumn(name = "ubicacion_id", nullable = false)
+    private Ubicacion ubicacion;
 
     public String getNombre() {
         return nombre;
@@ -27,5 +24,20 @@ public class TipoEspacio {
         this.nombre = nombre;
     }
 
-    
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public Ubicacion getUbicacion() {
+        return ubicacion;
+    }
+
+    public void setUbicacion(Ubicacion ubicacion) {
+        this.ubicacion = ubicacion;
+    }
+
 }

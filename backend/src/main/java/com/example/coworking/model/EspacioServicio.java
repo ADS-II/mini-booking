@@ -8,7 +8,7 @@ public class EspacioServicio {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     // relación con Espacio
     @ManyToOne
@@ -19,14 +19,6 @@ public class EspacioServicio {
     @ManyToOne
     @JoinColumn(name = "servicio_id", nullable = false)
     private Servicio servicio;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public Espacio getEspacio() {
         return espacio;
@@ -43,4 +35,13 @@ public class EspacioServicio {
     public void setServicio(Servicio servicio) {
         this.servicio = servicio;
     }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
 }

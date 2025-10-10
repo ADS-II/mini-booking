@@ -23,13 +23,14 @@ export class FormReservaComponent {
   @Input() espacioNombre?: string;
   @Input() espacioPrecio?: number;
   @Output() cerrarForm = new EventEmitter<void>();
+  @Output() reservaExitosa = new EventEmitter<boolean>();
 
   // Datos del usuario autenticado
   email: string | null = null;
   nombre: string | null = null;
   picture: string | null = null;
 
-  estadoPago = 'completado';
+  estadoPago = 'Completado';
   metodoPago = 'Efectivo';
 
   // Datos del formulario
@@ -39,6 +40,7 @@ export class FormReservaComponent {
   horaFin!: string;
 
   constructor(private http: HttpClient, private auth: AuthService) {
+
     const today = new Date();
     this.fechaInicio = today.toISOString().split('T')[0];
     this.fechaFin = today.toISOString().split('T')[0];
@@ -190,39 +192,41 @@ export class FormReservaComponent {
       metodoPago: this.metodoPago,
       monto: montoCalculado
     };
-      this.http.post(`${environment.apiUrl}/api/reserva`, reservaData)
-        .subscribe({
-          next: (response) => {
-            alert(response['body']?.message || 'Tu Reserva ha sido agendada.');
-            this.resetForm();
-            this.cerrarForm.emit();
-          },
-          error: (err) => {
-            alert(err.error?.message || err.message || 'Error desconocido.');
-          }
-        });
-    }
- 
-
-    /**
-     * Resetea el formulario a valores por defecto
-     */
-    resetForm() {
-      const today = new Date();
-      this.fechaInicio = today.toISOString().split('T')[0];
-      this.fechaFin = today.toISOString().split('T')[0];
-
-      const currentHour = today.getHours();
-      this.horaInicio = `${currentHour.toString().padStart(2, '0')}:00`;
-      this.horaFin = `${(currentHour + 1).toString().padStart(2, '0')}:00`;
-    }
-
-    /**
-     * Cierra el modal
-     */
-    cerrar() {
-      this.resetForm();
-      this.cerrarForm.emit();
-    }
+    this.http.post(`${environment.apiUrl}/api/reserva`, reservaData)
+      .subscribe({
+        next: (response) => {
+          alert(response['body']?.message || 'Tu Reserva ha sido agendada.');
+          this.resetForm();
+          this.reservaExitosa.emit(true);
+          console.log(this.reservaExitosa);
+          this.cerrarForm.emit();
+        },
+        error: (err) => {
+          alert(err.error?.message || err.message || 'Error desconocido.');
+        }
+      });
   }
+
+
+  /**
+   * Resetea el formulario a valores por defecto
+   */
+  resetForm() {
+    const today = new Date();
+    this.fechaInicio = today.toISOString().split('T')[0];
+    this.fechaFin = today.toISOString().split('T')[0];
+
+    const currentHour = today.getHours();
+    this.horaInicio = `${currentHour.toString().padStart(2, '0')}:00`;
+    this.horaFin = `${(currentHour + 1).toString().padStart(2, '0')}:00`;
+  }
+
+  /**
+   * Cierra el modal
+   */
+  cerrar() {
+    this.resetForm();
+    this.cerrarForm.emit();
+  }
+}
 

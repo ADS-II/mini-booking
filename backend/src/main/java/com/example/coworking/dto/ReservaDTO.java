@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 
 // dto para enviar solo los datos necesarios al cliente
 public class ReservaDTO {
-    private Long idReserva;
+    private Integer idReserva;
     private String nombreUsuario;
     private String nombreEspacio;
     private LocalDateTime fechaInicio;
@@ -14,7 +14,7 @@ public class ReservaDTO {
     private String email;
 
     // Constructor
-    public ReservaDTO(Long idReserva, String nombreUsuario, String email, String nombreEspacio,
+    public ReservaDTO(Integer idReserva, String nombreUsuario, String email, String nombreEspacio,
             LocalDateTime fechaInicio, LocalDateTime fechaFin,
             String estadoPago, Double monto) {
         this.idReserva = idReserva;
@@ -27,13 +27,7 @@ public class ReservaDTO {
         this.email = email;
     }
 
-    public Long getIdReserva() {
-        return idReserva;
-    }
-
-    public void setIdReserva(Long idReserva) {
-        this.idReserva = idReserva;
-    }
+ 
 
     public String getNombreUsuario() {
         return nombreUsuario;
@@ -89,6 +83,18 @@ public class ReservaDTO {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+
+
+    public Integer getIdReserva() {
+        return idReserva;
+    }
+
+
+
+    public void setIdReserva(Integer idReserva) {
+        this.idReserva = idReserva;
     }
 
 }

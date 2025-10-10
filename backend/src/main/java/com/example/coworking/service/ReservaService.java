@@ -11,8 +11,14 @@ import com.example.coworking.model.Pago;
 import com.example.coworking.model.Reserva;
 import com.example.coworking.model.Usuario;
 import com.example.coworking.model.Estado;
+import com.example.coworking.model.EstadoPago;
+import com.example.coworking.model.EstadoReserva;
+import com.example.coworking.model.MetodoPago;
 import com.example.coworking.repository.EspacioRepository;
+import com.example.coworking.repository.EstadoPagoRepository;
 import com.example.coworking.repository.EstadoRepository;
+import com.example.coworking.repository.EstadoReservaRepository;
+import com.example.coworking.repository.MetodoPagoRepository;
 import com.example.coworking.repository.PagoRepository;
 import com.example.coworking.repository.ReservaRepository;
 import com.example.coworking.repository.UsuarioRepository;
@@ -27,38 +33,38 @@ public class ReservaService {
     private final EspacioRepository espacioRepo;
     private final PagoRepository pagoRepo;
     private final EstadoRepository estadoRepo;
+    private final EstadoReservaRepository estadoReservaRepository;
+    private final EstadoPagoRepository estadoPagoRepository;
+    private final MetodoPagoRepository metodoPagoRepository;
 
     public ReservaService(ReservaRepository reservaRepo,
             UsuarioRepository usuarioRepo,
             EspacioRepository espacioRepo,
             PagoRepository pagoRepo,
+            EstadoReservaRepository estadoReservaRepository,
+            EstadoPagoRepository estadoPagoRepository,
+            MetodoPagoRepository metodoPagoRepository,
             EstadoRepository estadoRepo) {
         this.reservaRepo = reservaRepo;
         this.usuarioRepo = usuarioRepo;
         this.espacioRepo = espacioRepo;
         this.pagoRepo = pagoRepo;
         this.estadoRepo = estadoRepo;
+        this.estadoReservaRepository = estadoReservaRepository;
+        this.estadoPagoRepository = estadoPagoRepository;
+        this.metodoPagoRepository = metodoPagoRepository;
+
     }
 
     public List<ReservaDTO> listarReservas() {
         return reservaRepo.findAllWithDetails();
     }
 
-    public ResponseEntity<ConfirmacionDTO> crearReserva(Long idEspacio, String email, String nombre,
+    public ResponseEntity<ConfirmacionDTO> crearReserva(Integer idEspacio, String email, String nombre,
             LocalDateTime fechaInicio,
             LocalDateTime fechaFin,
             String estadoPago, String metodoPago, Double monto) {
         try {
-
-            // buscamos el email, para relacionarlo
-            Usuario usuario = usuarioRepo.findByEmail(email);
-            if (usuario == null) {
-                usuario = new Usuario();
-                usuario.setEmail(email);
-                usuario.setNombre(nombre);
-
-                usuarioRepo.save(usuario);
-            }
 
             // buscamos el espacio
             Espacio espacio = espacioRepo.findById(idEspacio)
@@ -76,10 +82,37 @@ public class ReservaService {
             }
 
             // actualizmos el estado del espacio a ocupado
-            Estado estado = estadoRepo.findById(2L)
+            Estado estado = estadoRepo.findById(2)
                     .orElseThrow(() -> new IllegalArgumentException("Estado de reserva no encontrado"));
+
+            // buscar el id de "pendiente"
+            EstadoReserva estadoReserva = estadoReservaRepository.findByNombre("Pendiente");
+            if (estadoReserva == null) {
+                throw new IllegalArgumentException("Estado de reserva no encontrado");
+            }
+
+            MetodoPago metodoPagoEncontrado = metodoPagoRepository.findByNombre(metodoPago);
+            if (metodoPagoEncontrado == null) {
+                throw new IllegalArgumentException("Metodo de pago no encontrado");
+            }
+
+            EstadoPago estadoPagoEncontrado = estadoPagoRepository.findByNombre(estadoPago);
+            if (estadoPagoEncontrado == null) {
+                throw new IllegalArgumentException("Estado de pago no encontrado");
+            }
+
             espacio.setEstado(estado);
             espacioRepo.save(espacio);
+
+            // buscamos el email, para relacionarlo
+            Usuario usuario = usuarioRepo.findByEmail(email);
+            if (usuario == null) {
+                usuario = new Usuario();
+                usuario.setEmail(email);
+                usuario.setNombre(nombre);
+
+                usuarioRepo.save(usuario);
+            }
 
             // creamos y devolvemos respuesta
             Reserva reserva = new Reserva();
@@ -87,7 +120,8 @@ public class ReservaService {
             reserva.setEspacio(espacio);
             reserva.setFechaInicio(fechaInicio);
             reserva.setFechaFin(fechaFin);
-            reserva.setEstado("pendiente");
+
+            reserva.setEstado(estadoReserva);
 
             reserva = reservaRepo.save(reserva);
 
@@ -95,8 +129,10 @@ public class ReservaService {
             Pago pago = new Pago();
             pago.setReserva(reserva);
             pago.setMonto(monto);
-            pago.setMetodo(metodoPago);
-            pago.setEstado(estadoPago);
+
+            pago.setMetodoPago(metodoPagoEncontrado);
+
+            pago.setEstado(estadoPagoEncontrado);
             // Guardar el pago
             pagoRepo.save(pago);
             // Devolver un mensaje de confirmación
@@ -109,7 +145,7 @@ public class ReservaService {
 
     }
 
-    public void actualizarReserva(Long idReserva, LocalDateTime fechaInicio, LocalDateTime fechaFin, String estado) {
+    public void actualizarReserva(Integer idReserva, LocalDateTime fechaInicio, LocalDateTime fechaFin, String estado) {
 
         // buscamos por el id de reserva si existe
         Reserva reserva = reservaRepo.findById(idReserva)
@@ -130,7 +166,11 @@ public class ReservaService {
         // actualizamos con la informacion nueva
         reserva.setFechaInicio(fechaInicio);
         reserva.setFechaFin(fechaFin);
-        reserva.setEstado(estado);
+        EstadoReserva estadoReserva = estadoReservaRepository.findByNombre(estado);
+        if (estadoReserva == null) {
+            throw new IllegalArgumentException("Estado de reserva no encontrado");
+        }
+        reserva.setEstado(estadoReserva);
 
         // guardamos la informacion
         reservaRepo.save(reserva);
