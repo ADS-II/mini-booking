@@ -19,6 +19,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 @RequestMapping("/api/reserva")
 @CrossOrigin(origins = {
     "http://localhost:4200",
+    "https://mini-booking-frontend.onrender.com",
      "https://mini-booking.netlify.app"
 })
 @Tag(name = "Reservas", description = "Operaciones para gestionar reservas de espacios")

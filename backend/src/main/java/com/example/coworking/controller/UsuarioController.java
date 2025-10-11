@@ -20,6 +20,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @RequestMapping("/api/usuarios")
 @CrossOrigin(origins = {
         "http://localhost:4200",
+        "https://mini-booking-frontend.onrender.com",
         "https://mini-booking.netlify.app"
 })
 public class UsuarioController {
