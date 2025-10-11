@@ -17,82 +17,12 @@ services:
       - .env
     depends_on: []
 
-  frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
-    container_name: coworking_front
-    ports:
-      - "4200:80"
-    depends_on:
-      - ads-coworking-app
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# PARA DESARROLLO LOCAL
-
-# version: "3.9"
-# services:
-#   db:
-#     image: postgres:15
-#     container_name: coworking_db
-#     restart: always
-#     environment:
-#       POSTGRES_DB: ${DB_NAME}
-#       POSTGRES_USER: ${DB_USER}
-#       POSTGRES_PASSWORD: ${DB_PASSWORD}
-#     ports:
-#       - "${DB_PORT}:5432"
-#     volumes:
-#       - db_data:/var/lib/postgresql/data
-
-#   ads-coworking-app:
-#     build:
-#       context: .
-#       dockerfile: Dockerfile
-#     container_name: coworking_app
-#     ports:
-#       - "8080:8080"
-#     environment:
-#       SPRING_DATASOURCE_URL: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}
-#       SPRING_DATASOURCE_USERNAME: ${DB_USER}
-#       SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
-#     env_file:
-#       - .env
-#     depends_on:
-#       - db
-
-#   frontend:
-#     build:
-#       context: ./frontend
-#       dockerfile: Dockerfile
-#     container_name: coworking_front
-#     ports:
-#       - "4200:80"
-#     depends_on:
-#       - ads-coworking-app
-
-# volumes:
-#   db_data:
-
-
-
-
-
+  # frontend:
+  #   build:
+  #     context: ./frontend
+  #     dockerfile: Dockerfile
+  #   container_name: coworking_front
+  #   ports:
+  #     - "4200:80"
+  #   depends_on:
+  #     - ads-coworking-app
