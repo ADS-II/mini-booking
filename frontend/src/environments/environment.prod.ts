@@ -15,7 +15,7 @@ export const environment = {
     domain,
     clientId,
     ...(audience && audience !== "{yourApiIdentifier}" ? { audience } : null),
-    redirectUri: window.location.origin,
+    redirect_uri: window.location.origin,
     errorPath,
   },
   httpInterceptor: {
