@@ -61,7 +61,7 @@ deploy_all() {
     log_info "Deteniendo todos los contenedores..."
     sudo docker compose down
     
-    log_info "Eliminando volumenes huerfanos..."
+    log_info "Eliminando volumenes hgituerfanos..."
     sudo docker volume prune -f
     
     log_info "Reconstruyendo todas las imagenes..."
