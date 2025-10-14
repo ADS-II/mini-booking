@@ -19,10 +19,6 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 
 @RestController
 @RequestMapping("/api/espacio")
-@CrossOrigin(origins = {
-    "http://localhost:4200",
-     "https://worknest-71nj.onrender.com"
-})
 @Tag(name = "Espacios", description = "Operaciones para gestionar los espacios disponibles")
 public class EspacioController {
 

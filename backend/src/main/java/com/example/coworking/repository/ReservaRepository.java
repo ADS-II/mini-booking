@@ -33,6 +33,12 @@ public interface ReservaRepository extends JpaRepository<Reserva, Integer> {
         List<ReservaDTO> findAllWithDetails();
 
 
+
+
+
+        
+
+
         
 
 }

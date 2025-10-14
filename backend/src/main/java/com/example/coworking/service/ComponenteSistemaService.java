@@ -2,10 +2,9 @@ package com.example.coworking.service;
 
 import java.util.List;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
-
 import com.example.coworking.dto.EspacioDTO;
 import com.example.coworking.dto.ReservaDTO;
+import com.example.coworking.dto.ReservasUsuarioDTO;
 import com.example.coworking.dto.ServicioDTO;
 import com.example.coworking.model.Espacio;
 import com.example.coworking.model.Servicio;
@@ -16,10 +15,7 @@ import com.example.coworking.repository.ReservaRepository;
 import com.example.coworking.repository.ServicioRepository;
 import com.example.coworking.repository.TipoEspacioRepository;
 import com.example.coworking.repository.UbicacionRepository;
-
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import com.example.coworking.repository.UsuarioRepository;
 
 @Service
 public class ComponenteSistemaService {
@@ -29,14 +25,21 @@ public class ComponenteSistemaService {
     private final EspacioRepository espacioRepository;
     private final ReservaRepository reservaRepo;
 
+    private final UsuarioRepository usuarioRepository;
+
     public ComponenteSistemaService(TipoEspacioRepository tipoEspacioRepo, ServicioRepository servicioRepo,
             UbicacionRepository ubicacionRepository, EspacioRepository espacioRepository,
-            ReservaRepository reservaRepo) {
+            ReservaRepository reservaRepo, UsuarioRepository usuarioRepository) {
         this.tipoEspacioRepo = tipoEspacioRepo;
         this.servicioRepo = servicioRepo;
         this.ubicacionRepository = ubicacionRepository;
         this.espacioRepository = espacioRepository;
         this.reservaRepo = reservaRepo;
+        this.usuarioRepository = usuarioRepository;
+    }
+
+    public List<ReservasUsuarioDTO> listarReservasUsuario(String email) {
+        return usuarioRepository.findReservasByUsuarioEmail(email);
     }
 
     public List<ReservaDTO> listarReservas() {

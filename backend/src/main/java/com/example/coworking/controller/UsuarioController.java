@@ -18,10 +18,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 @RestController
 @RequestMapping("/api/usuarios")
-@CrossOrigin(origins = {
-        "http://localhost:4200",
-        "https://worknest-71nj.onrender.com"
-})
 public class UsuarioController {
     private final UsuarioService service;
 
