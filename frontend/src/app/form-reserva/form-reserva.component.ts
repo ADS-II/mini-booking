@@ -1,5 +1,5 @@
-import { Component, Input, EventEmitter, Output, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, Input, EventEmitter, Output, OnInit, Inject  } from '@angular/core';
+import { CommonModule, DOCUMENT  } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { AuthService } from '@auth0/auth0-angular';
@@ -30,9 +30,11 @@ interface ValidacionResult {
   styleUrls: ['./form-reserva.component.css']
 })
 export class FormReservaComponent implements OnInit {
-  mostrarLogin: boolean = false;
-  validandoDisponibilidad: boolean = false;
 
+
+  mostrarLogin: boolean = false;
+  mostrarEsteForm: boolean = false
+  validandoDisponibilidad: boolean = false;
   @Input() espacioId!: number;
   @Input() espacioNombre?: string;
   @Input() espacioPrecio?: number;
@@ -72,16 +74,17 @@ export class FormReservaComponent implements OnInit {
     horaInicio: boolean;
     horaFin: boolean;
   } = {
-    fechaInicio: false,
-    fechaFin: false,
-    horaInicio: false,
-    horaFin: false
-  };
+      fechaInicio: false,
+      fechaFin: false,
+      horaInicio: false,
+      horaFin: false
+    };
 
   constructor(
-    private http: HttpClient, 
+    private http: HttpClient,
     private auth: AuthService,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+        @Inject(DOCUMENT) private doc: Document
   ) {
     const today = new Date();
     this.fechaInicio = today.toISOString().split('T')[0];
@@ -95,17 +98,51 @@ export class FormReservaComponent implements OnInit {
     const maxDate = new Date(today.getTime() + 30 * 24 * 60 * 60 * 1000);
     this.fechaMaxima = maxDate.toISOString().split('T')[0];
 
+    // recuperamos la data de auth
     this.auth.user$.subscribe((user) => {
+      // si se ha logeado actualizamos la infoirmacion
       if (user) {
-        this.email = user.email ?? null;
-        this.nombre = user.name ?? null;
-        this.picture = user.picture ?? null;
-        this.mostrarLogin = false;
+
+        // cargamos informacion de usuario
+        this.establecerUsuario(user.email, user.name, user.picture);
+        this.actualizarVista(false);
       } else {
-        this.mostrarLogin = true;
+        // en caso que solo se haya registrado sin usar auth
+        const usuarioLocal = JSON.parse(localStorage.getItem('usserAutenticado'));
+        // cargamos informacion de usuario
+        if (usuarioLocal) {
+          this.establecerUsuario(usuarioLocal.email, usuarioLocal.email);
+          this.actualizarVista(false);
+        } else {
+          this.actualizarVista(true);
+        }
       }
     });
   }
+  // metodo que se encarga de actualizar la infromacion del usuario
+  private establecerUsuario(email: string | null, nombre?: string | null, picture?: string | null): void {
+    this.email = email ?? null;
+    this.nombre = nombre ?? null;
+    this.picture = picture ?? null;
+  }
+
+  // metodo que se encarga de mostrar/ocultar el login o formulario de reserva
+  private actualizarVista(mostrarLogin: boolean): void {
+    this.mostrarLogin = mostrarLogin;
+    this.mostrarEsteForm = !mostrarLogin;
+    this.actualizarScroll();
+  }
+
+  // metodo que se encarga de habilitar y desactivar el scroll al body
+  private actualizarScroll(): void {
+    if (this.mostrarEsteForm) {
+      this.doc.body.classList.add('no-scroll');
+    } else {
+      this.doc.body.classList.remove('no-scroll');
+    }
+  }
+
+
 
   ngOnInit(): void {
     this.cargarReservasEspacio();
@@ -184,12 +221,12 @@ export class FormReservaComponent implements OnInit {
    * Retorna si el formulario es válido
    */
   esFormularioValido(): boolean {
-    return Object.keys(this.errores).length === 0 && 
-           this.fechaInicio && 
-           this.fechaFin && 
-           this.horaInicio && 
-           this.horaFin &&
-           this.email !== null;
+    return Object.keys(this.errores).length === 0 &&
+      this.fechaInicio &&
+      this.fechaFin &&
+      this.horaInicio &&
+      this.horaFin &&
+      this.email !== null;
   }
 
   /**
@@ -351,9 +388,9 @@ export class FormReservaComponent implements OnInit {
 
   formatearFecha(fecha: string): string {
     const date = new Date(fecha);
-    return date.toLocaleDateString('es-ES', { 
-      day: '2-digit', 
-      month: 'short', 
+    return date.toLocaleDateString('es-ES', {
+      day: '2-digit',
+      month: 'short',
       year: 'numeric',
       hour: '2-digit',
       minute: '2-digit'
@@ -365,7 +402,7 @@ export class FormReservaComponent implements OnInit {
    */
   limpiarFormulario(): void {
     const confirmar = confirm('¿Estás seguro de que deseas limpiar el formulario?');
-    
+
     if (confirmar) {
       this.resetForm();
       this.errores = {};
@@ -411,7 +448,7 @@ export class FormReservaComponent implements OnInit {
         if (!resultado.disponible && resultado.conflicto) {
           const fechaInicio = this.formatearFecha(resultado.conflicto.fechaInicio);
           const fechaFin = this.formatearFecha(resultado.conflicto.fechaFin);
-          
+
           this.notificationService.espacioNoDisponible(
             this.espacioNombre || 'El espacio',
             fechaInicio,
@@ -451,7 +488,7 @@ export class FormReservaComponent implements OnInit {
       .subscribe({
         next: (response: any) => {
           this.validandoDisponibilidad = false;
-          
+
           this.notificationService.reservaExitosa(
             this.espacioNombre || 'Espacio',
             this.calcularDuracion(),
@@ -467,7 +504,7 @@ export class FormReservaComponent implements OnInit {
         error: (err) => {
           this.validandoDisponibilidad = false;
           console.error('Error al crear reserva:', err);
-          
+
           if (err.status === 400) {
             const mensaje = err.error?.error || 'Los datos de la reserva no son válidos';
             this.notificationService.error(mensaje, 'Error en la Reserva');
@@ -507,5 +544,8 @@ export class FormReservaComponent implements OnInit {
   cerrar() {
     this.resetForm();
     this.cerrarForm.emit();
+     // agregamos para que cuando se cierre el form de reserva se habilite nuevamente el scroll
+    this.mostrarEsteForm = !this.mostrarEsteForm;
+    this.actualizarScroll();
   }
 }
