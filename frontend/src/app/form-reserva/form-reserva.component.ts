@@ -19,7 +19,7 @@ interface ReservaExistente {
 @Component({
   selector: 'app-form-reserva',
   standalone: true,
-  imports: [CommonModule, FormsModule, HttpClientModule, FormLoginComponent],
+  imports: [CommonModule, FormsModule, HttpClientModule, FormLoginComponent,],
   templateUrl: './form-reserva.component.html',
   styleUrls: ['./form-reserva.component.css']
 })
