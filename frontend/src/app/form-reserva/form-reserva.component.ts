@@ -1,13 +1,20 @@
-
-
-import { Component, Input, EventEmitter, Output } from '@angular/core';
+import { Component, Input, EventEmitter, Output, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { AuthService } from '@auth0/auth0-angular';
 import { FormLoginComponent } from "../form-login/form-login.component";
 import { environment } from 'src/environments/environment';
+import { NotificationService } from '../services/notification.service';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
+interface ReservaExistente {
+  idReserva: number;
+  nombreEspacio: string;
+  fechaInicio: string;
+  fechaFin: string;
+}
 
 @Component({
   selector: 'app-form-reserva',
@@ -16,8 +23,9 @@ import { environment } from 'src/environments/environment';
   templateUrl: './form-reserva.component.html',
   styleUrls: ['./form-reserva.component.css']
 })
-export class FormReservaComponent {
+export class FormReservaComponent implements OnInit {
   mostrarLogin: boolean = false;
+  validandoDisponibilidad: boolean = false;
 
   @Input() espacioId!: number;
   @Input() espacioNombre?: string;
@@ -25,7 +33,6 @@ export class FormReservaComponent {
   @Output() cerrarForm = new EventEmitter<void>();
   @Output() reservaExitosa = new EventEmitter<boolean>();
 
-  // Datos del usuario autenticado
   email: string | null = null;
   nombre: string | null = null;
   picture: string | null = null;
@@ -33,23 +40,30 @@ export class FormReservaComponent {
   estadoPago = 'Completado';
   metodoPago = 'Efectivo';
 
-  // Datos del formulario
   fechaInicio!: string;
   fechaFin!: string;
   horaInicio!: string;
   horaFin!: string;
 
-  constructor(private http: HttpClient, private auth: AuthService) {
+  fechaMinima: string;
+  fechaMaxima: string;
 
+  constructor(
+    private http: HttpClient, 
+    private auth: AuthService,
+    private notificationService: NotificationService
+  ) {
     const today = new Date();
     this.fechaInicio = today.toISOString().split('T')[0];
     this.fechaFin = today.toISOString().split('T')[0];
 
-    // Hora por defecto
     const currentHour = today.getHours();
     this.horaInicio = `${currentHour.toString().padStart(2, '0')}:00`;
     this.horaFin = `${(currentHour + 1).toString().padStart(2, '0')}:00`;
 
+    this.fechaMinima = today.toISOString().split('T')[0];
+    const maxDate = new Date(today.getTime() + 30 * 24 * 60 * 60 * 1000);
+    this.fechaMaxima = maxDate.toISOString().split('T')[0];
 
     this.auth.user$.subscribe((user) => {
       if (user) {
@@ -61,13 +75,51 @@ export class FormReservaComponent {
         this.mostrarLogin = true;
       }
     });
-
   }
 
+  ngOnInit(): void {
+    this.cargarReservasEspacio();
+  }
 
-  /**
-   * Calcula la duración entre fechas y horas
-   */
+  cargarReservasEspacio(): void {
+    this.http.get<ReservaExistente[]>(`${environment.apiUrl}/api/reserva`)
+      .subscribe({
+        next: (reservas) => {
+          const reservasEspacio = reservas.filter(
+            r => r.nombreEspacio === this.espacioNombre
+          );
+          console.log(`Reservas existentes para ${this.espacioNombre}:`, reservasEspacio);
+        },
+        error: (err) => {
+          console.error('Error al cargar reservas:', err);
+        }
+      });
+  }
+
+  validarDisponibilidad(): Observable<{ disponible: boolean; conflicto?: ReservaExistente }> {
+    return this.http.get<ReservaExistente[]>(`${environment.apiUrl}/api/reserva`).pipe(
+      map(reservas => {
+        const inicioNueva = new Date(`${this.fechaInicio}T${this.horaInicio}`);
+        const finNueva = new Date(`${this.fechaFin}T${this.horaFin}`);
+
+        const reservasEspacio = reservas.filter(
+          r => r.nombreEspacio === this.espacioNombre
+        );
+
+        for (const reserva of reservasEspacio) {
+          const inicioExistente = new Date(reserva.fechaInicio);
+          const finExistente = new Date(reserva.fechaFin);
+
+          if (inicioNueva < finExistente && finNueva > inicioExistente) {
+            return { disponible: false, conflicto: reserva };
+          }
+        }
+
+        return { disponible: true };
+      })
+    );
+  }
+
   calcularDuracion(): string {
     if (!this.fechaInicio || !this.fechaFin || !this.horaInicio || !this.horaFin) {
       return '---';
@@ -100,9 +152,6 @@ export class FormReservaComponent {
     }
   }
 
-  /**
-   * Calcula el total basado en la duración y precio por hora
-   */
   calcularTotal(): string {
     if (!this.fechaInicio || !this.fechaFin || !this.horaInicio || !this.horaFin) {
       return '0';
@@ -128,12 +177,9 @@ export class FormReservaComponent {
     }
   }
 
-  /**
-   * Valida que las fechas y horas sean correctas
-   */
-  validarFechasHoras(): boolean {
+  validarFechasHoras(): { valido: boolean; tipo?: string } {
     if (!this.fechaInicio || !this.fechaFin || !this.horaInicio || !this.horaFin) {
-      return false;
+      return { valido: false };
     }
 
     try {
@@ -141,45 +187,84 @@ export class FormReservaComponent {
       const fin = new Date(`${this.fechaFin}T${this.horaFin}`);
       const ahora = new Date();
 
-      // No puede ser en el pasado (con 5 minutos de tolerancia)
       const tolerancia = new Date(ahora.getTime() - 5 * 60 * 1000);
       if (inicio < tolerancia) {
-        return false;
+        return { valido: false, tipo: 'pasado' };
       }
 
-      // Fecha fin debe ser mayor a fecha inicio
       if (fin <= inicio) {
-        return false;
+        return { valido: false, tipo: 'invalido' };
       }
 
-      // No más de 30 días en el futuro
       const maxFuturo = new Date(ahora.getTime() + 30 * 24 * 60 * 60 * 1000);
       if (fin > maxFuturo) {
-        return false;
+        return { valido: false, tipo: 'maximo' };
       }
 
-      return true;
+      return { valido: true };
     } catch (error) {
-      return false;
+      return { valido: false };
     }
   }
 
-  /**
-   * Procesa la reserva
-   */
+  formatearFecha(fecha: string): string {
+    const date = new Date(fecha);
+    return date.toLocaleDateString('es-ES', { 
+      day: '2-digit', 
+      month: 'short', 
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  }
+
   reservar() {
-    // Validaciones finales
-    if (!this.validarFechasHoras()) {
-      alert('Por favor, verifica que las fechas y horas sean correctas.\n\n' +
-        '• La reserva no puede ser en el pasado\n' +
-        '• La fecha de fin debe ser posterior a la de inicio\n' +
-        '• Máximo 30 días en el futuro');
+    if (!this.email) {
+      this.notificationService.warning('Debes iniciar sesión para realizar una reserva', 'Autenticación Requerida');
       return;
     }
 
-    // Calcular monto dinámico
+    const validacion = this.validarFechasHoras();
+    if (!validacion.valido) {
+      if (validacion.tipo) {
+        this.notificationService.validacionFechas(validacion.tipo as any);
+      } else {
+        this.notificationService.warning('Por favor verifica las fechas y horas ingresadas', 'Datos Inválidos');
+      }
+      return;
+    }
+
+    this.validandoDisponibilidad = true;
+    this.notificationService.info('Verificando disponibilidad...', 'Validando', 2000);
+
+    this.validarDisponibilidad().subscribe({
+      next: (resultado) => {
+        if (!resultado.disponible && resultado.conflicto) {
+          const fechaInicio = this.formatearFecha(resultado.conflicto.fechaInicio);
+          const fechaFin = this.formatearFecha(resultado.conflicto.fechaFin);
+          
+          this.notificationService.espacioNoDisponible(
+            this.espacioNombre || 'El espacio',
+            fechaInicio,
+            fechaFin
+          );
+          this.validandoDisponibilidad = false;
+          return;
+        }
+
+        this.procesarReserva();
+      },
+      error: (err) => {
+        console.error('Error al validar disponibilidad:', err);
+        this.notificationService.errorServidor('No se pudo validar la disponibilidad del espacio');
+        this.validandoDisponibilidad = false;
+      }
+    });
+  }
+
+  private procesarReserva(): void {
     const montoCalculado = parseInt(this.calcularTotal().replace(/,/g, ''));
-    // procesamos la rserva del espacio
+
     const reservaData = {
       idEspacio: this.espacioId.toString(),
       email: this.email,
@@ -192,25 +277,44 @@ export class FormReservaComponent {
       metodoPago: this.metodoPago,
       monto: montoCalculado
     };
+
     this.http.post(`${environment.apiUrl}/api/reserva`, reservaData)
       .subscribe({
-        next: (response) => {
-          alert(response['body']?.message || 'Tu Reserva ha sido agendada.');
+        next: (response: any) => {
+          this.validandoDisponibilidad = false;
+          
+          this.notificationService.reservaExitosa(
+            this.espacioNombre || 'Espacio',
+            this.calcularDuracion(),
+            this.calcularTotal()
+          );
+
           this.resetForm();
           this.reservaExitosa.emit(true);
-          console.log(this.reservaExitosa);
           this.cerrarForm.emit();
         },
         error: (err) => {
-          alert(err.error?.message || err.message || 'Error desconocido.');
+          this.validandoDisponibilidad = false;
+          console.error('Error al crear reserva:', err);
+          
+          if (err.status === 400) {
+            const mensaje = err.error?.error || 'Los datos de la reserva no son válidos';
+            this.notificationService.error(mensaje, 'Error en la Reserva');
+          } else if (err.status === 409) {
+            this.notificationService.espacioNoDisponible(
+              this.espacioNombre || 'El espacio',
+              this.fechaInicio,
+              this.fechaFin
+            );
+          } else if (err.status === 0) {
+            this.notificationService.errorServidor('No se pudo conectar con el servidor');
+          } else {
+            this.notificationService.errorServidor(err.error?.message);
+          }
         }
       });
   }
 
-
-  /**
-   * Resetea el formulario a valores por defecto
-   */
   resetForm() {
     const today = new Date();
     this.fechaInicio = today.toISOString().split('T')[0];
@@ -221,12 +325,8 @@ export class FormReservaComponent {
     this.horaFin = `${(currentHour + 1).toString().padStart(2, '0')}:00`;
   }
 
-  /**
-   * Cierra el modal
-   */
   cerrar() {
     this.resetForm();
     this.cerrarForm.emit();
   }
 }
-
