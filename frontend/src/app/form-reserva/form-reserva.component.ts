@@ -1,5 +1,5 @@
-import { Component, Input, EventEmitter, Output, OnInit, SimpleChanges, Inject } from '@angular/core';
-import { CommonModule, DOCUMENT } from '@angular/common';
+import { Component, Input, EventEmitter, Output, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { AuthService } from '@auth0/auth0-angular';
@@ -16,18 +16,22 @@ interface ReservaExistente {
   fechaFin: string;
 }
 
+interface ValidacionResult {
+  valido: boolean;
+  tipo?: 'pasado' | 'invalido' | 'maximo' | 'vacio';
+  mensaje?: string;
+}
+
 @Component({
   selector: 'app-form-reserva',
   standalone: true,
-  imports: [CommonModule, FormsModule, HttpClientModule, FormLoginComponent,],
+  imports: [CommonModule, FormsModule, HttpClientModule, FormLoginComponent],
   templateUrl: './form-reserva.component.html',
   styleUrls: ['./form-reserva.component.css']
 })
 export class FormReservaComponent implements OnInit {
   mostrarLogin: boolean = false;
-  mostrarEsteForm: boolean = false
   validandoDisponibilidad: boolean = false;
-
 
   @Input() espacioId!: number;
   @Input() espacioNombre?: string;
@@ -35,6 +39,7 @@ export class FormReservaComponent implements OnInit {
   @Output() cerrarForm = new EventEmitter<void>();
   @Output() reservaExitosa = new EventEmitter<boolean>();
 
+  // Datos del usuario autenticado
   email: string | null = null;
   nombre: string | null = null;
   picture: string | null = null;
@@ -42,6 +47,7 @@ export class FormReservaComponent implements OnInit {
   estadoPago = 'Completado';
   metodoPago = 'Efectivo';
 
+  // Datos del formulario
   fechaInicio!: string;
   fechaFin!: string;
   horaInicio!: string;
@@ -50,11 +56,32 @@ export class FormReservaComponent implements OnInit {
   fechaMinima: string;
   fechaMaxima: string;
 
+  // Estados de validación para feedback visual
+  errores: {
+    fechaInicio?: string;
+    fechaFin?: string;
+    horaInicio?: string;
+    horaFin?: string;
+    general?: string;
+  } = {};
+
+  // Para controlar si el usuario ha interactuado con los campos
+  touched: {
+    fechaInicio: boolean;
+    fechaFin: boolean;
+    horaInicio: boolean;
+    horaFin: boolean;
+  } = {
+    fechaInicio: false,
+    fechaFin: false,
+    horaInicio: false,
+    horaFin: false
+  };
+
   constructor(
-    private http: HttpClient,
+    private http: HttpClient, 
     private auth: AuthService,
-    private notificationService: NotificationService,
-    @Inject(DOCUMENT) private doc: Document
+    private notificationService: NotificationService
   ) {
     const today = new Date();
     this.fechaInicio = today.toISOString().split('T')[0];
@@ -68,62 +95,132 @@ export class FormReservaComponent implements OnInit {
     const maxDate = new Date(today.getTime() + 30 * 24 * 60 * 60 * 1000);
     this.fechaMaxima = maxDate.toISOString().split('T')[0];
 
-    // recuperamos la data de auth
-     this.auth.user$.subscribe((user) => {
-      // si se ha logeado actualizamos la infoirmacion
+    this.auth.user$.subscribe((user) => {
       if (user) {
-
-        // cargamos informacion de usuario
-        this.establecerUsuario(user.email, user.name, user.picture);
-        this.actualizarVista(false);
+        this.email = user.email ?? null;
+        this.nombre = user.name ?? null;
+        this.picture = user.picture ?? null;
+        this.mostrarLogin = false;
       } else {
-        // en caso que solo se haya registrado sin usar auth
-        const usuarioLocal = JSON.parse(localStorage.getItem('usserAutenticado'));
-        // cargamos informacion de usuario
-        if (usuarioLocal) {
-          this.establecerUsuario(usuarioLocal.email, usuarioLocal.email);
-          this.actualizarVista(false);
-        } else {
-          this.actualizarVista(true);
-        }
+        this.mostrarLogin = true;
       }
     });
   }
-  // metodo que se encarga de actualizar la infromacion del usuario
-  private establecerUsuario(email: string | null, nombre?: string | null, picture?: string | null): void {
-    this.email = email ?? null;
-    this.nombre = nombre ?? null;
-    this.picture = picture ?? null;
-  }
-
-  // metodo que se encarga de mostrar/ocultar el login o formulario de reserva
-  private actualizarVista(mostrarLogin: boolean): void {
-    this.mostrarLogin = mostrarLogin;
-    this.mostrarEsteForm = !mostrarLogin;
-    this.actualizarScroll();
-  }
-
-  // metodo que se encarga de habilitar y desactivar el scroll al body
-  private actualizarScroll(): void {
-    if (this.mostrarEsteForm) {
-      this.doc.body.classList.add('no-scroll');
-    } else {
-      this.doc.body.classList.remove('no-scroll');
-    }
-  }
-
-  cerrar(): void {
-    this.resetForm();
-    this.cerrarForm.emit();
-    // agregamos para que cuando se cierre el form de reserva se habilite nuevamente el scroll
-    this.mostrarEsteForm = !this.mostrarEsteForm;
-    this.actualizarScroll();
-  }
-
-
 
   ngOnInit(): void {
     this.cargarReservasEspacio();
+    this.validarFormularioCompleto();
+  }
+
+  /**
+   * Marca un campo como tocado
+   */
+  marcarTocado(campo: 'fechaInicio' | 'fechaFin' | 'horaInicio' | 'horaFin'): void {
+    this.touched[campo] = true;
+    this.validarFormularioCompleto();
+  }
+
+  /**
+   * Validación completa del formulario en tiempo real
+   */
+  validarFormularioCompleto(): void {
+    this.errores = {};
+
+    if (!this.fechaInicio || !this.fechaFin || !this.horaInicio || !this.horaFin) {
+      return;
+    }
+
+    try {
+      const inicio = new Date(`${this.fechaInicio}T${this.horaInicio}`);
+      const fin = new Date(`${this.fechaFin}T${this.horaFin}`);
+      const ahora = new Date();
+
+      // Validar fecha de inicio no sea en el pasado
+      const tolerancia = new Date(ahora.getTime() - 5 * 60 * 1000);
+      if (inicio < tolerancia) {
+        this.errores.fechaInicio = 'La fecha de inicio no puede ser en el pasado';
+      }
+
+      // Validar que fecha fin sea mayor a fecha inicio
+      if (fin <= inicio) {
+        this.errores.fechaFin = 'La fecha de fin debe ser posterior a la de inicio';
+        this.errores.horaFin = 'La hora de fin debe ser posterior a la de inicio';
+      }
+
+      // Validar que no exceda 30 días
+      const maxFuturo = new Date(ahora.getTime() + 30 * 24 * 60 * 60 * 1000);
+      if (fin > maxFuturo) {
+        this.errores.fechaFin = 'La reserva no puede exceder 30 días en el futuro';
+      }
+
+      // Validar duración mínima (al menos 1 hora)
+      const diffMs = fin.getTime() - inicio.getTime();
+      const diffHours = diffMs / (1000 * 60 * 60);
+      if (diffHours < 1 && diffHours > 0) {
+        this.errores.horaFin = 'La reserva debe ser de al menos 1 hora';
+      }
+
+    } catch (error) {
+      this.errores.general = 'Error al validar las fechas y horas';
+    }
+  }
+
+  /**
+   * Obtiene el estado de un campo (valid, invalid, neutral)
+   */
+  getFieldStatus(campo: 'fechaInicio' | 'fechaFin' | 'horaInicio' | 'horaFin'): string {
+    if (!this.touched[campo]) {
+      return 'neutral';
+    }
+
+    if (this.errores[campo]) {
+      return 'invalid';
+    }
+
+    return 'valid';
+  }
+
+  /**
+   * Retorna si el formulario es válido
+   */
+  esFormularioValido(): boolean {
+    return Object.keys(this.errores).length === 0 && 
+           this.fechaInicio && 
+           this.fechaFin && 
+           this.horaInicio && 
+           this.horaFin &&
+           this.email !== null;
+  }
+
+  /**
+   * Obtiene el mensaje de tooltip para el botón deshabilitado
+   */
+  getMensajeBotonDeshabilitado(): string {
+    if (!this.email) {
+      return 'Debes iniciar sesión para reservar';
+    }
+
+    if (!this.fechaInicio || !this.fechaFin || !this.horaInicio || !this.horaFin) {
+      return 'Completa todos los campos del formulario';
+    }
+
+    if (this.errores.fechaInicio) {
+      return this.errores.fechaInicio;
+    }
+
+    if (this.errores.fechaFin) {
+      return this.errores.fechaFin;
+    }
+
+    if (this.errores.horaInicio || this.errores.horaFin) {
+      return this.errores.horaFin || this.errores.horaInicio || '';
+    }
+
+    if (this.validandoDisponibilidad) {
+      return 'Validando disponibilidad...';
+    }
+
+    return '';
   }
 
   cargarReservasEspacio(): void {
@@ -133,7 +230,7 @@ export class FormReservaComponent implements OnInit {
           const reservasEspacio = reservas.filter(
             r => r.nombreEspacio === this.espacioNombre
           );
-          // console.log(`Reservas existentes para ${this.espacioNombre}:`, reservasEspacio);
+          console.log(`Reservas existentes para ${this.espacioNombre}:`, reservasEspacio);
         },
         error: (err) => {
           console.error('Error al cargar reservas:', err);
@@ -222,9 +319,9 @@ export class FormReservaComponent implements OnInit {
     }
   }
 
-  validarFechasHoras(): { valido: boolean; tipo?: string } {
+  validarFechasHoras(): ValidacionResult {
     if (!this.fechaInicio || !this.fechaFin || !this.horaInicio || !this.horaFin) {
-      return { valido: false };
+      return { valido: false, tipo: 'vacio' };
     }
 
     try {
@@ -254,16 +351,43 @@ export class FormReservaComponent implements OnInit {
 
   formatearFecha(fecha: string): string {
     const date = new Date(fecha);
-    return date.toLocaleDateString('es-ES', {
-      day: '2-digit',
-      month: 'short',
+    return date.toLocaleDateString('es-ES', { 
+      day: '2-digit', 
+      month: 'short', 
       year: 'numeric',
       hour: '2-digit',
       minute: '2-digit'
     });
   }
 
+  /**
+   * Limpia el formulario y resetea a valores por defecto
+   */
+  limpiarFormulario(): void {
+    const confirmar = confirm('¿Estás seguro de que deseas limpiar el formulario?');
+    
+    if (confirmar) {
+      this.resetForm();
+      this.errores = {};
+      this.touched = {
+        fechaInicio: false,
+        fechaFin: false,
+        horaInicio: false,
+        horaFin: false
+      };
+      this.notificationService.info('Formulario limpiado', 'Información', 2000);
+    }
+  }
+
   reservar() {
+    // Marcar todos los campos como tocados
+    this.touched = {
+      fechaInicio: true,
+      fechaFin: true,
+      horaInicio: true,
+      horaFin: true
+    };
+
     if (!this.email) {
       this.notificationService.warning('Debes iniciar sesión para realizar una reserva', 'Autenticación Requerida');
       return;
@@ -287,7 +411,7 @@ export class FormReservaComponent implements OnInit {
         if (!resultado.disponible && resultado.conflicto) {
           const fechaInicio = this.formatearFecha(resultado.conflicto.fechaInicio);
           const fechaFin = this.formatearFecha(resultado.conflicto.fechaFin);
-
+          
           this.notificationService.espacioNoDisponible(
             this.espacioNombre || 'El espacio',
             fechaInicio,
@@ -327,7 +451,7 @@ export class FormReservaComponent implements OnInit {
       .subscribe({
         next: (response: any) => {
           this.validandoDisponibilidad = false;
-
+          
           this.notificationService.reservaExitosa(
             this.espacioNombre || 'Espacio',
             this.calcularDuracion(),
@@ -343,7 +467,7 @@ export class FormReservaComponent implements OnInit {
         error: (err) => {
           this.validandoDisponibilidad = false;
           console.error('Error al crear reserva:', err);
-
+          
           if (err.status === 400) {
             const mensaje = err.error?.error || 'Los datos de la reserva no son válidos';
             this.notificationService.error(mensaje, 'Error en la Reserva');
@@ -370,6 +494,18 @@ export class FormReservaComponent implements OnInit {
     const currentHour = today.getHours();
     this.horaInicio = `${currentHour.toString().padStart(2, '0')}:00`;
     this.horaFin = `${(currentHour + 1).toString().padStart(2, '0')}:00`;
+
+    this.errores = {};
+    this.touched = {
+      fechaInicio: false,
+      fechaFin: false,
+      horaInicio: false,
+      horaFin: false
+    };
   }
 
+  cerrar() {
+    this.resetForm();
+    this.cerrarForm.emit();
+  }
 }
