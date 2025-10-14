@@ -24,16 +24,32 @@
           <div class="form-row">
             <div class="form-group">
               <label class="form-label" for="fechaInicio">Fecha de inicio</label>
-              <input type="date" id="fechaInicio" name="fechaInicio" class="form-input" [(ngModel)]="fechaInicio"
+              <input 
+                type="date" 
+                id="fechaInicio" 
+                name="fechaInicio" 
+                class="form-input" 
+                [(ngModel)]="fechaInicio"
+                [min]="fechaMinima"
+                [max]="fechaMaxima"
                 required>
             </div>
 
             <div class="form-group">
               <label class="form-label" for="fechaFin">Fecha de fin</label>
-              <input type="date" id="fechaFin" name="fechaFin" class="form-input" [(ngModel)]="fechaFin" required>
+              <input 
+                type="date" 
+                id="fechaFin" 
+                name="fechaFin" 
+                class="form-input" 
+                [(ngModel)]="fechaFin"
+                [min]="fechaMinima"
+                [max]="fechaMaxima"
+                required>
             </div>
           </div>
         </div>
+
         <div class="form-section">
           <h3 class="section-title">Método de pago</h3>
           <div class="form-row">
@@ -48,7 +64,6 @@
             </label>
           </div>
         </div>
-
 
         <!-- Horarios -->
         <div class="form-section">
@@ -96,17 +111,20 @@
 
     <!-- Actions -->
     <div class="modal-actions">
-      <button type="button" class="btn-modal btn-cancelar" (click)="cerrar()">
+      <button type="button" class="btn-modal btn-cancelar" (click)="cerrar()" [disabled]="validandoDisponibilidad">
         Cancelar
       </button>
-      <button type="submit" class="btn-modal btn-confirmar"
-        [disabled]="!reservaForm.form.valid || !validarFechasHoras()" (click)="reservar()">
-        Confirmar Reserva
+      <button 
+        type="submit" 
+        class="btn-modal btn-confirmar"
+        [disabled]="!reservaForm.form.valid || !validarFechasHoras().valido || validandoDisponibilidad" 
+        (click)="reservar()">
+        <span *ngIf="!validandoDisponibilidad">Confirmar Reserva</span>
+        <span *ngIf="validandoDisponibilidad">Validando...</span>
       </button>
     </div>
   </div>
 </div>
-
 
 <app-form-login [isVisibleForm]="mostrarLogin" (visibilityChange)="mostrarLogin = $event">
 </app-form-login>
