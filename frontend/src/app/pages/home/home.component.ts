@@ -56,7 +56,7 @@ export class HomeComponent {
   mostrarFormId: number | null = null;
 
   cargarEspacios(): void {
-    this.http.get<Espacio[]>(`${environment.apiUrl}/api/espacio`)
+    this.http.get<Espacio[]>(`${environment.apiUrl}/api/componente/espacios`)
       .subscribe({
         next: (data) => {
           this.espacios_list = data;

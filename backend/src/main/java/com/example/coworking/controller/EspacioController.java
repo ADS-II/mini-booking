@@ -33,20 +33,6 @@ public class EspacioController {
   }
 
   /**
-   * Listar todos los espacios registrados.
-   * 
-   * @return Lista de objetos Espacio
-   */
-  @Operation(summary = "Listar espacios", description = "Obtiene todos los espacios registrados en el sistema")
-  @ApiResponses({
-      @ApiResponse(responseCode = "200", description = "Lista de espacios obtenida correctamente")
-  })
-  @GetMapping
-  public List<EspacioDTO> listar() {
-    return service.listar();
-  }
-
-  /**
    * Crear un nuevo espacio junto con sus servicios.
    * 
    * @param espacio Objeto Espacio a registrar con su lista de servicios

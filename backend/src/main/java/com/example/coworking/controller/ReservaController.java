@@ -30,20 +30,6 @@ public class ReservaController {
         this.service = service;
     }
 
-    /**
-     * Listar todas las reservas existentes.
-     * 
-     * @return Lista de objetos ReservaDTO
-     */
-    @Operation(summary = "Listar reservas", description = "Obtiene todas las reservas registradas en el sistema")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Lista de reservas obtenida correctamente")
-    })
-    @GetMapping
-    public List<ReservaDTO> listarReservas() {
-        return service.listarReservas();
-    }
-
     // Métodos privados para validar y formatear fechas
     private void validarRangoFechasHora(LocalDateTime horaEntrada, LocalDateTime horaSalida) {
         if (horaSalida.isBefore(horaEntrada)) {
@@ -88,7 +74,7 @@ public class ReservaController {
             @ApiResponse(responseCode = "200", description = "Reserva creada correctamente"),
             @ApiResponse(responseCode = "400", description = "Datos inválidos o conflictivos")
     })
-    @PostMapping
+    @PostMapping("crear")
     public ResponseEntity<?> crearReserva(@RequestBody Map<String, String> body) {
         try {
             Integer idEspacio = Integer.parseInt(body.get("idEspacio"));

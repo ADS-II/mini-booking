@@ -127,7 +127,7 @@ export class FormReservaComponent implements OnInit {
   }
 
   cargarReservasEspacio(): void {
-    this.http.get<ReservaExistente[]>(`${environment.apiUrl}/api/reserva`)
+    this.http.get<ReservaExistente[]>(`${environment.apiUrl}/api/componente/espacios`)
       .subscribe({
         next: (reservas) => {
           const reservasEspacio = reservas.filter(
@@ -142,7 +142,7 @@ export class FormReservaComponent implements OnInit {
   }
 
   validarDisponibilidad(): Observable<{ disponible: boolean; conflicto?: ReservaExistente }> {
-    return this.http.get<ReservaExistente[]>(`${environment.apiUrl}/api/reserva`).pipe(
+    return this.http.get<ReservaExistente[]>(`${environment.apiUrl}/api/componente/espacios`).pipe(
       map(reservas => {
         const inicioNueva = new Date(`${this.fechaInicio}T${this.horaInicio}`);
         const finNueva = new Date(`${this.fechaFin}T${this.horaFin}`);
@@ -323,7 +323,7 @@ export class FormReservaComponent implements OnInit {
       monto: montoCalculado
     };
 
-    this.http.post(`${environment.apiUrl}/api/reserva`, reservaData)
+    this.http.post(`${environment.apiUrl}/api/componente/espacios`, reservaData)
       .subscribe({
         next: (response: any) => {
           this.validandoDisponibilidad = false;

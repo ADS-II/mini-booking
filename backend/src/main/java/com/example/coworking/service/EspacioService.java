@@ -16,42 +16,6 @@ public class EspacioService {
 
     public EspacioService(EspacioRepository repository) {
         this.repository = repository;
-
-    }
-
-    public List<EspacioDTO> listar() {
-        List<Espacio> espacios = repository.findAll();
-        return espacios.stream().map(e -> {
-            EspacioDTO dto = new EspacioDTO();
-
-            dto.setId(e.getId());
-            dto.setNombre(e.getNombre());
-            dto.setTipo(e.getTipo().getNombre());
-            dto.setCapacidad(e.getCapacidad());
-            dto.setPrecio(e.getPrecio());
-            dto.setEstado(e.getEstado().getNombre());
-            dto.setCreated(e.getCreated());
-            dto.setUpdated(e.getUpdated());
-
-            // obtengo los datos de la ubicacion
-            Ubicacion ubicacion = e.getTipo().getUbicacion();
-            dto.setDireccion(ubicacion.getDireccion());
-            dto.setZona(ubicacion.getZona());
-            dto.setHorario(ubicacion.getHorario());
-
-            // Recorro la tabla intermedia espacioServicios
-            List<ServicioDTO> servicios = e.getEspacioServicios().stream().map(es -> {
-                Servicio s = es.getServicio();
-                ServicioDTO sdto = new ServicioDTO();
-                sdto.setId(s.getId());
-                sdto.setNombre(s.getNombre());
-                sdto.setDescripcion(s.getDescripcion());
-                return sdto;
-            }).toList();
-
-            dto.setServicios(servicios);
-            return dto;
-        }).toList();
     }
 
     public Espacio guardar(Espacio espacio) {

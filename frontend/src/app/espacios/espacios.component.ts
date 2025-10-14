@@ -68,7 +68,7 @@ export class EspaciosComponent implements OnInit {
    * Carga los espacios desde el backend
    */
   cargarEspacios(): void {
-    this.http.get<Espacio[]>(`${environment.apiUrl}/api/espacio`)
+    this.http.get<Espacio[]>(`${environment.apiUrl}/api/componente/espacios`)
       .subscribe({
         next: (data) => {
           this.espacios_list = data;
