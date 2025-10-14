@@ -122,17 +122,17 @@ public class DataFactory implements CommandLineRunner {
 
         if (tipoEspacioRepo.count() == 0) {
             TipoEspacio tipo1 = new TipoEspacio();
-            tipo1.setNombre("Sala");
+            tipo1.setNombre("Escritorio Flexible");
             tipo1.setUbicacion(ubicacionRepo.findByZona("San Salvador Norte"));
             tipoEspacioRepo.save(tipo1);
 
             TipoEspacio tipo2 = new TipoEspacio();
-            tipo2.setNombre("Escritorio");
+            tipo2.setNombre("Sala de Reuniones");
             tipo2.setUbicacion(ubicacionRepo.findByZona("San Salvador Sur"));
             tipoEspacioRepo.save(tipo2);
 
             TipoEspacio tipo3 = new TipoEspacio();
-            tipo3.setNombre("Sala de Juntas");
+            tipo3.setNombre("Oficina Privada");
             tipo3.setUbicacion(ubicacionRepo.findByZona("San Salvador Este"));
             tipoEspacioRepo.save(tipo3);
 

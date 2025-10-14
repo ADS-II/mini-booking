@@ -25,6 +25,8 @@ export class FormLoginComponent implements OnChanges {
     }
   }
 
+
+
   login(form: NgForm) {
     if (form.valid) {
       const { email, password, remember } = form.value;
@@ -39,10 +41,10 @@ export class FormLoginComponent implements OnChanges {
   socialLogin() {
     this.auth.loginWithRedirect();
   }
-hideForm() {
-  this.isVisibleForm = false;
-  this.visibilityChange.emit(false); // el padre actualiza su variable
-}
+  hideForm() {
+    this.isVisibleForm = false;
+    this.visibilityChange.emit(false); // el padre actualiza su variable
+  }
 
 }
 

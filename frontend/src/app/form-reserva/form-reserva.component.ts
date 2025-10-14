@@ -49,7 +49,7 @@ export class FormReservaComponent implements OnInit {
   fechaMaxima: string;
 
   constructor(
-    private http: HttpClient, 
+    private http: HttpClient,
     private auth: AuthService,
     private notificationService: NotificationService
   ) {
@@ -65,14 +65,29 @@ export class FormReservaComponent implements OnInit {
     const maxDate = new Date(today.getTime() + 30 * 24 * 60 * 60 * 1000);
     this.fechaMaxima = maxDate.toISOString().split('T')[0];
 
+
     this.auth.user$.subscribe((user) => {
+        console.log('Auth0 user emitido:', user);
       if (user) {
         this.email = user.email ?? null;
         this.nombre = user.name ?? null;
         this.picture = user.picture ?? null;
+
         this.mostrarLogin = false;
       } else {
-        this.mostrarLogin = true;
+        // en caso de no logearse con auth
+        const usuarioAutenticado = JSON.parse(localStorage.getItem('usserAutenticado'));
+        console.log(usuarioAutenticado);
+
+        if (usuarioAutenticado) {
+          this.email = usuarioAutenticado.email;
+          this.mostrarLogin = false;
+          return
+        } else {
+
+          this.mostrarLogin = true;
+        }
+
       }
     });
   }
@@ -88,7 +103,7 @@ export class FormReservaComponent implements OnInit {
           const reservasEspacio = reservas.filter(
             r => r.nombreEspacio === this.espacioNombre
           );
-          console.log(`Reservas existentes para ${this.espacioNombre}:`, reservasEspacio);
+          // console.log(`Reservas existentes para ${this.espacioNombre}:`, reservasEspacio);
         },
         error: (err) => {
           console.error('Error al cargar reservas:', err);
@@ -209,9 +224,9 @@ export class FormReservaComponent implements OnInit {
 
   formatearFecha(fecha: string): string {
     const date = new Date(fecha);
-    return date.toLocaleDateString('es-ES', { 
-      day: '2-digit', 
-      month: 'short', 
+    return date.toLocaleDateString('es-ES', {
+      day: '2-digit',
+      month: 'short',
       year: 'numeric',
       hour: '2-digit',
       minute: '2-digit'
@@ -242,7 +257,7 @@ export class FormReservaComponent implements OnInit {
         if (!resultado.disponible && resultado.conflicto) {
           const fechaInicio = this.formatearFecha(resultado.conflicto.fechaInicio);
           const fechaFin = this.formatearFecha(resultado.conflicto.fechaFin);
-          
+
           this.notificationService.espacioNoDisponible(
             this.espacioNombre || 'El espacio',
             fechaInicio,
@@ -282,7 +297,7 @@ export class FormReservaComponent implements OnInit {
       .subscribe({
         next: (response: any) => {
           this.validandoDisponibilidad = false;
-          
+
           this.notificationService.reservaExitosa(
             this.espacioNombre || 'Espacio',
             this.calcularDuracion(),
@@ -296,7 +311,7 @@ export class FormReservaComponent implements OnInit {
         error: (err) => {
           this.validandoDisponibilidad = false;
           console.error('Error al crear reserva:', err);
-          
+
           if (err.status === 400) {
             const mensaje = err.error?.error || 'Los datos de la reserva no son válidos';
             this.notificationService.error(mensaje, 'Error en la Reserva');

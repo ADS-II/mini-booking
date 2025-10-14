@@ -12,8 +12,8 @@ import com.example.coworking.service.ComponenteSistemaService;
 @RestController
 @RequestMapping("/api/componente")
 @CrossOrigin(origins = {
-    "http://localhost:4200",
-    "https://mini-booking.netlify.app"
+        "http://localhost:4200",
+        "https://worknest-71nj.onrender.com"
 })
 public class ComponenteController {
     // http://localhost:8080/swagger-ui/index.html
