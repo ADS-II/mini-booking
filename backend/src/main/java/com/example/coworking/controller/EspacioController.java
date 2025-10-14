@@ -21,7 +21,7 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 @RequestMapping("/api/espacio")
 @CrossOrigin(origins = {
     "http://localhost:4200",
-     "https://mini-booking.netlify.app"
+    "https://worknest-71nj.onrender.com"
 })
 @Tag(name = "Espacios", description = "Operaciones para gestionar los espacios disponibles")
 public class EspacioController {
@@ -60,25 +60,25 @@ public class EspacioController {
   @PostMapping
   public Espacio crear(
       @io.swagger.v3.oas.annotations.parameters.RequestBody(description = "JSON con datos del espacio y sus servicios", required = true, content = @Content(schema = @Schema(implementation = Espacio.class), examples = @ExampleObject(value = """
+          {
+            "capacidad": 25,
+            "estado": "disponible",
+            "nombre": "cap 26",
+            "precio": 60,
+            "tipo": "sala",
+            "servicios": [
+               {
+                  "id": 1
+                },
                 {
-                  "capacidad": 25,
-                  "estado": "disponible",
-                  "nombre": "cap 26",
-                  "precio": 60,
-                  "tipo": "sala",
-                  "servicios": [
-                     {
-                        "id": 1
-                      },
-                      {
-                        "id": 2
-                      },
-                      {
-                        "id": 3
-                      }
-                  ]
+                  "id": 2
+                },
+                {
+                  "id": 3
                 }
-                """))) @RequestBody Espacio espacio) {
+            ]
+          }
+          """))) @RequestBody Espacio espacio) {
     return service.guardar(espacio);
   }
 

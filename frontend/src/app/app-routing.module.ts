@@ -15,19 +15,18 @@ export const routes: Routes = [
     canActivate: [authGuardFn],
   },
   {
-    path: 'external-api',
-    component: ExternalApiComponent,
-    canActivate: [authGuardFn],
-  },
-  {
     path: 'error',
     component: ErrorComponent,
   },
-  // agregar una nueva ruta que redirija a catalogo
+  // esta ruta dirige al catalogo
   {
-    path: 'catalogo',   // 👈 nueva ruta
+    path: 'catalogo',
     component: CatalogoComponent,
-    // canActivate: [authGuardFn], // opcional si quieres protegerlo
+  },
+  // esta ruta dirige a las reservas del usuario
+  {
+    path: 'Mis Reservas',
+    component: CatalogoComponent,
   },
   {
     path: '',
