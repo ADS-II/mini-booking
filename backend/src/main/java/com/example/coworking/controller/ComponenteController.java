@@ -13,7 +13,6 @@ import com.example.coworking.service.ComponenteSistemaService;
 @RequestMapping("/api/componente")
 @CrossOrigin(origins = {
     "http://localhost:4200",
-    "https://mini-booking-frontend.onrender.com",
     "https://mini-booking.netlify.app"
 })
 public class ComponenteController {

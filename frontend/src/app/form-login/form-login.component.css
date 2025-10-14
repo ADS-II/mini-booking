@@ -1,14 +1,18 @@
+
+
+
 section {
     width: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
     padding: 40px 20px;
-    position: absolute;
+    position: fixed;
     z-index: 9999;
     top: 0;
     left: 0;
     height: 100vh;
+    background-color: rgba(0, 0, 0, 0.4);
 }
 
 .login-container {

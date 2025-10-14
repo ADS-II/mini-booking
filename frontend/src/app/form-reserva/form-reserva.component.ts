@@ -1,5 +1,5 @@
-import { Component, Input, EventEmitter, Output, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, Input, EventEmitter, Output, OnInit, SimpleChanges, Inject } from '@angular/core';
+import { CommonModule, DOCUMENT } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { AuthService } from '@auth0/auth0-angular';
@@ -25,7 +25,9 @@ interface ReservaExistente {
 })
 export class FormReservaComponent implements OnInit {
   mostrarLogin: boolean = false;
+  mostrarEsteForm: boolean = false
   validandoDisponibilidad: boolean = false;
+
 
   @Input() espacioId!: number;
   @Input() espacioNombre?: string;
@@ -49,9 +51,10 @@ export class FormReservaComponent implements OnInit {
   fechaMaxima: string;
 
   constructor(
-    private http: HttpClient, 
+    private http: HttpClient,
     private auth: AuthService,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    @Inject(DOCUMENT) private doc: Document
   ) {
     const today = new Date();
     this.fechaInicio = today.toISOString().split('T')[0];
@@ -65,17 +68,59 @@ export class FormReservaComponent implements OnInit {
     const maxDate = new Date(today.getTime() + 30 * 24 * 60 * 60 * 1000);
     this.fechaMaxima = maxDate.toISOString().split('T')[0];
 
-    this.auth.user$.subscribe((user) => {
+    // recuperamos la data de auth
+     this.auth.user$.subscribe((user) => {
+      // si se ha logeado actualizamos la infoirmacion
       if (user) {
-        this.email = user.email ?? null;
-        this.nombre = user.name ?? null;
-        this.picture = user.picture ?? null;
-        this.mostrarLogin = false;
+
+        // cargamos informacion de usuario
+        this.establecerUsuario(user.email, user.name, user.picture);
+        this.actualizarVista(false);
       } else {
-        this.mostrarLogin = true;
+        // en caso que solo se haya registrado sin usar auth
+        const usuarioLocal = JSON.parse(localStorage.getItem('usserAutenticado'));
+        // cargamos informacion de usuario
+        if (usuarioLocal) {
+          this.establecerUsuario(usuarioLocal.email, usuarioLocal.email);
+          this.actualizarVista(false);
+        } else {
+          this.actualizarVista(true);
+        }
       }
     });
   }
+  // metodo que se encarga de actualizar la infromacion del usuario
+  private establecerUsuario(email: string | null, nombre?: string | null, picture?: string | null): void {
+    this.email = email ?? null;
+    this.nombre = nombre ?? null;
+    this.picture = picture ?? null;
+  }
+
+  // metodo que se encarga de mostrar/ocultar el login o formulario de reserva
+  private actualizarVista(mostrarLogin: boolean): void {
+    this.mostrarLogin = mostrarLogin;
+    this.mostrarEsteForm = !mostrarLogin;
+    this.actualizarScroll();
+  }
+
+  // metodo que se encarga de habilitar y desactivar el scroll al body
+  private actualizarScroll(): void {
+    if (this.mostrarEsteForm) {
+      this.doc.body.classList.add('no-scroll');
+    } else {
+      this.doc.body.classList.remove('no-scroll');
+    }
+  }
+
+  cerrar(): void {
+    this.resetForm();
+    this.cerrarForm.emit();
+    // agregamos para que cuando se cierre el form de reserva se habilite nuevamente el scroll
+    this.mostrarEsteForm = !this.mostrarEsteForm;
+    this.actualizarScroll();
+  }
+
+
 
   ngOnInit(): void {
     this.cargarReservasEspacio();
@@ -88,7 +133,7 @@ export class FormReservaComponent implements OnInit {
           const reservasEspacio = reservas.filter(
             r => r.nombreEspacio === this.espacioNombre
           );
-          console.log(`Reservas existentes para ${this.espacioNombre}:`, reservasEspacio);
+          // console.log(`Reservas existentes para ${this.espacioNombre}:`, reservasEspacio);
         },
         error: (err) => {
           console.error('Error al cargar reservas:', err);
@@ -209,9 +254,9 @@ export class FormReservaComponent implements OnInit {
 
   formatearFecha(fecha: string): string {
     const date = new Date(fecha);
-    return date.toLocaleDateString('es-ES', { 
-      day: '2-digit', 
-      month: 'short', 
+    return date.toLocaleDateString('es-ES', {
+      day: '2-digit',
+      month: 'short',
       year: 'numeric',
       hour: '2-digit',
       minute: '2-digit'
@@ -242,7 +287,7 @@ export class FormReservaComponent implements OnInit {
         if (!resultado.disponible && resultado.conflicto) {
           const fechaInicio = this.formatearFecha(resultado.conflicto.fechaInicio);
           const fechaFin = this.formatearFecha(resultado.conflicto.fechaFin);
-          
+
           this.notificationService.espacioNoDisponible(
             this.espacioNombre || 'El espacio',
             fechaInicio,
@@ -282,7 +327,7 @@ export class FormReservaComponent implements OnInit {
       .subscribe({
         next: (response: any) => {
           this.validandoDisponibilidad = false;
-          
+
           this.notificationService.reservaExitosa(
             this.espacioNombre || 'Espacio',
             this.calcularDuracion(),
@@ -296,7 +341,7 @@ export class FormReservaComponent implements OnInit {
         error: (err) => {
           this.validandoDisponibilidad = false;
           console.error('Error al crear reserva:', err);
-          
+
           if (err.status === 400) {
             const mensaje = err.error?.error || 'Los datos de la reserva no son válidos';
             this.notificationService.error(mensaje, 'Error en la Reserva');
@@ -325,8 +370,4 @@ export class FormReservaComponent implements OnInit {
     this.horaFin = `${(currentHour + 1).toString().padStart(2, '0')}:00`;
   }
 
-  cerrar() {
-    this.resetForm();
-    this.cerrarForm.emit();
-  }
 }

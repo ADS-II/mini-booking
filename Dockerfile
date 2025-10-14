@@ -21,6 +21,9 @@ ENTRYPOINT ["java", "-jar", "app.jar"]
 # docker compose up --build 
 
 
+#  eliminar contenedores
+# docker compose down
+
 # rutas
 # frontend
 # http://localhost:4200/
@@ -28,6 +31,3 @@ ENTRYPOINT ["java", "-jar", "app.jar"]
 # backend
 # http://localhost:8080
 
-
-#  eliminar contenedores
-# docker compose down
