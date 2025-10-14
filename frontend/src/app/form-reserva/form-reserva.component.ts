@@ -16,6 +16,12 @@ interface ReservaExistente {
   fechaFin: string;
 }
 
+interface ValidacionResult {
+  valido: boolean;
+  tipo?: 'pasado' | 'invalido' | 'maximo' | 'vacio';
+  mensaje?: string;
+}
+
 @Component({
   selector: 'app-form-reserva',
   standalone: true,
@@ -33,6 +39,7 @@ export class FormReservaComponent implements OnInit {
   @Output() cerrarForm = new EventEmitter<void>();
   @Output() reservaExitosa = new EventEmitter<boolean>();
 
+  // Datos del usuario autenticado
   email: string | null = null;
   nombre: string | null = null;
   picture: string | null = null;
@@ -40,6 +47,7 @@ export class FormReservaComponent implements OnInit {
   estadoPago = 'Completado';
   metodoPago = 'Efectivo';
 
+  // Datos del formulario
   fechaInicio!: string;
   fechaFin!: string;
   horaInicio!: string;
@@ -47,6 +55,28 @@ export class FormReservaComponent implements OnInit {
 
   fechaMinima: string;
   fechaMaxima: string;
+
+  // Estados de validación para feedback visual
+  errores: {
+    fechaInicio?: string;
+    fechaFin?: string;
+    horaInicio?: string;
+    horaFin?: string;
+    general?: string;
+  } = {};
+
+  // Para controlar si el usuario ha interactuado con los campos
+  touched: {
+    fechaInicio: boolean;
+    fechaFin: boolean;
+    horaInicio: boolean;
+    horaFin: boolean;
+  } = {
+    fechaInicio: false,
+    fechaFin: false,
+    horaInicio: false,
+    horaFin: false
+  };
 
   constructor(
     private http: HttpClient, 
@@ -79,6 +109,118 @@ export class FormReservaComponent implements OnInit {
 
   ngOnInit(): void {
     this.cargarReservasEspacio();
+    this.validarFormularioCompleto();
+  }
+
+  /**
+   * Marca un campo como tocado
+   */
+  marcarTocado(campo: 'fechaInicio' | 'fechaFin' | 'horaInicio' | 'horaFin'): void {
+    this.touched[campo] = true;
+    this.validarFormularioCompleto();
+  }
+
+  /**
+   * Validación completa del formulario en tiempo real
+   */
+  validarFormularioCompleto(): void {
+    this.errores = {};
+
+    if (!this.fechaInicio || !this.fechaFin || !this.horaInicio || !this.horaFin) {
+      return;
+    }
+
+    try {
+      const inicio = new Date(`${this.fechaInicio}T${this.horaInicio}`);
+      const fin = new Date(`${this.fechaFin}T${this.horaFin}`);
+      const ahora = new Date();
+
+      // Validar fecha de inicio no sea en el pasado
+      const tolerancia = new Date(ahora.getTime() - 5 * 60 * 1000);
+      if (inicio < tolerancia) {
+        this.errores.fechaInicio = 'La fecha de inicio no puede ser en el pasado';
+      }
+
+      // Validar que fecha fin sea mayor a fecha inicio
+      if (fin <= inicio) {
+        this.errores.fechaFin = 'La fecha de fin debe ser posterior a la de inicio';
+        this.errores.horaFin = 'La hora de fin debe ser posterior a la de inicio';
+      }
+
+      // Validar que no exceda 30 días
+      const maxFuturo = new Date(ahora.getTime() + 30 * 24 * 60 * 60 * 1000);
+      if (fin > maxFuturo) {
+        this.errores.fechaFin = 'La reserva no puede exceder 30 días en el futuro';
+      }
+
+      // Validar duración mínima (al menos 1 hora)
+      const diffMs = fin.getTime() - inicio.getTime();
+      const diffHours = diffMs / (1000 * 60 * 60);
+      if (diffHours < 1 && diffHours > 0) {
+        this.errores.horaFin = 'La reserva debe ser de al menos 1 hora';
+      }
+
+    } catch (error) {
+      this.errores.general = 'Error al validar las fechas y horas';
+    }
+  }
+
+  /**
+   * Obtiene el estado de un campo (valid, invalid, neutral)
+   */
+  getFieldStatus(campo: 'fechaInicio' | 'fechaFin' | 'horaInicio' | 'horaFin'): string {
+    if (!this.touched[campo]) {
+      return 'neutral';
+    }
+
+    if (this.errores[campo]) {
+      return 'invalid';
+    }
+
+    return 'valid';
+  }
+
+  /**
+   * Retorna si el formulario es válido
+   */
+  esFormularioValido(): boolean {
+    return Object.keys(this.errores).length === 0 && 
+           this.fechaInicio && 
+           this.fechaFin && 
+           this.horaInicio && 
+           this.horaFin &&
+           this.email !== null;
+  }
+
+  /**
+   * Obtiene el mensaje de tooltip para el botón deshabilitado
+   */
+  getMensajeBotonDeshabilitado(): string {
+    if (!this.email) {
+      return 'Debes iniciar sesión para reservar';
+    }
+
+    if (!this.fechaInicio || !this.fechaFin || !this.horaInicio || !this.horaFin) {
+      return 'Completa todos los campos del formulario';
+    }
+
+    if (this.errores.fechaInicio) {
+      return this.errores.fechaInicio;
+    }
+
+    if (this.errores.fechaFin) {
+      return this.errores.fechaFin;
+    }
+
+    if (this.errores.horaInicio || this.errores.horaFin) {
+      return this.errores.horaFin || this.errores.horaInicio || '';
+    }
+
+    if (this.validandoDisponibilidad) {
+      return 'Validando disponibilidad...';
+    }
+
+    return '';
   }
 
   cargarReservasEspacio(): void {
@@ -177,9 +319,9 @@ export class FormReservaComponent implements OnInit {
     }
   }
 
-  validarFechasHoras(): { valido: boolean; tipo?: string } {
+  validarFechasHoras(): ValidacionResult {
     if (!this.fechaInicio || !this.fechaFin || !this.horaInicio || !this.horaFin) {
-      return { valido: false };
+      return { valido: false, tipo: 'vacio' };
     }
 
     try {
@@ -218,7 +360,34 @@ export class FormReservaComponent implements OnInit {
     });
   }
 
+  /**
+   * Limpia el formulario y resetea a valores por defecto
+   */
+  limpiarFormulario(): void {
+    const confirmar = confirm('¿Estás seguro de que deseas limpiar el formulario?');
+    
+    if (confirmar) {
+      this.resetForm();
+      this.errores = {};
+      this.touched = {
+        fechaInicio: false,
+        fechaFin: false,
+        horaInicio: false,
+        horaFin: false
+      };
+      this.notificationService.info('Formulario limpiado', 'Información', 2000);
+    }
+  }
+
   reservar() {
+    // Marcar todos los campos como tocados
+    this.touched = {
+      fechaInicio: true,
+      fechaFin: true,
+      horaInicio: true,
+      horaFin: true
+    };
+
     if (!this.email) {
       this.notificationService.warning('Debes iniciar sesión para realizar una reserva', 'Autenticación Requerida');
       return;
@@ -323,6 +492,14 @@ export class FormReservaComponent implements OnInit {
     const currentHour = today.getHours();
     this.horaInicio = `${currentHour.toString().padStart(2, '0')}:00`;
     this.horaFin = `${(currentHour + 1).toString().padStart(2, '0')}:00`;
+
+    this.errores = {};
+    this.touched = {
+      fechaInicio: false,
+      fechaFin: false,
+      horaInicio: false,
+      horaFin: false
+    };
   }
 
   cerrar() {
