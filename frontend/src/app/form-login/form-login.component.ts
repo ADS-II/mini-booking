@@ -20,8 +20,18 @@ export class FormLoginComponent implements OnChanges {
   ) { }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes['isVisibleForm'] && this.isVisibleForm) {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (changes['isVisibleForm']) {
+      if (this.isVisibleForm) {
+        // modemos la vista al inicio
+        // window.scrollTo({ top: 0, behavior: 'smooth' });
+        
+        //  desactivamos el scroll
+        this.doc.body.classList.add('no-scroll');
+
+      } else {
+        // restauramos el scroll del body
+        this.doc.body.classList.remove('no-scroll');
+      }
     }
   }
 
@@ -32,6 +42,7 @@ export class FormLoginComponent implements OnChanges {
       const { email, password, remember } = form.value;
       const loginData = { email, password, remember };
       localStorage.setItem('usserAutenticado', JSON.stringify(loginData));
+      this.hideForm()
       alert(`Iniciando sesión para ${loginData.email}`);
     } else {
       alert('Por favor completa todos los campos');
@@ -43,7 +54,8 @@ export class FormLoginComponent implements OnChanges {
   }
   hideForm() {
     this.isVisibleForm = false;
-    this.visibilityChange.emit(false); // el padre actualiza su variable
+    this.doc.body.classList.remove('no-scroll'); // agregamos la clase al body para que no permita hacer scroll mediante se superponga esta ventana
+    this.visibilityChange.emit(false); // actualizamos la visibilidad
   }
 
 }

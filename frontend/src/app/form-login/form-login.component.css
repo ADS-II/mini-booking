@@ -1,3 +1,6 @@
+
+
+
 section {
     width: 100%;
     display: flex;
@@ -10,8 +13,6 @@ section {
     left: 0;
     height: 100vh;
     background-color: rgba(0, 0, 0, 0.4);
-
-    background:  !important;
 }
 
 .login-container {

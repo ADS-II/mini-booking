@@ -1,5 +1,5 @@
-import { Component, Input, EventEmitter, Output, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, Input, EventEmitter, Output, OnInit, SimpleChanges, Inject } from '@angular/core';
+import { CommonModule, DOCUMENT } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { AuthService } from '@auth0/auth0-angular';
@@ -25,7 +25,9 @@ interface ReservaExistente {
 })
 export class FormReservaComponent implements OnInit {
   mostrarLogin: boolean = false;
+  mostrarEsteForm: boolean = false
   validandoDisponibilidad: boolean = false;
+
 
   @Input() espacioId!: number;
   @Input() espacioNombre?: string;
@@ -51,7 +53,8 @@ export class FormReservaComponent implements OnInit {
   constructor(
     private http: HttpClient,
     private auth: AuthService,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    @Inject(DOCUMENT) private doc: Document
   ) {
     const today = new Date();
     this.fechaInicio = today.toISOString().split('T')[0];
@@ -65,32 +68,59 @@ export class FormReservaComponent implements OnInit {
     const maxDate = new Date(today.getTime() + 30 * 24 * 60 * 60 * 1000);
     this.fechaMaxima = maxDate.toISOString().split('T')[0];
 
-
-    this.auth.user$.subscribe((user) => {
-        console.log('Auth0 user emitido:', user);
+    // recuperamos la data de auth
+     this.auth.user$.subscribe((user) => {
+      // si se ha logeado actualizamos la infoirmacion
       if (user) {
-        this.email = user.email ?? null;
-        this.nombre = user.name ?? null;
-        this.picture = user.picture ?? null;
 
-        this.mostrarLogin = false;
+        // cargamos informacion de usuario
+        this.establecerUsuario(user.email, user.name, user.picture);
+        this.actualizarVista(false);
       } else {
-        // en caso de no logearse con auth
-        const usuarioAutenticado = JSON.parse(localStorage.getItem('usserAutenticado'));
-        console.log(usuarioAutenticado);
-
-        if (usuarioAutenticado) {
-          this.email = usuarioAutenticado.email;
-          this.mostrarLogin = false;
-          return
+        // en caso que solo se haya registrado sin usar auth
+        const usuarioLocal = JSON.parse(localStorage.getItem('usserAutenticado'));
+        // cargamos informacion de usuario
+        if (usuarioLocal) {
+          this.establecerUsuario(usuarioLocal.email, usuarioLocal.email);
+          this.actualizarVista(false);
         } else {
-
-          this.mostrarLogin = true;
+          this.actualizarVista(true);
         }
-
       }
     });
   }
+  // metodo que se encarga de actualizar la infromacion del usuario
+  private establecerUsuario(email: string | null, nombre?: string | null, picture?: string | null): void {
+    this.email = email ?? null;
+    this.nombre = nombre ?? null;
+    this.picture = picture ?? null;
+  }
+
+  // metodo que se encarga de mostrar/ocultar el login o formulario de reserva
+  private actualizarVista(mostrarLogin: boolean): void {
+    this.mostrarLogin = mostrarLogin;
+    this.mostrarEsteForm = !mostrarLogin;
+    this.actualizarScroll();
+  }
+
+  // metodo que se encarga de habilitar y desactivar el scroll al body
+  private actualizarScroll(): void {
+    if (this.mostrarEsteForm) {
+      this.doc.body.classList.add('no-scroll');
+    } else {
+      this.doc.body.classList.remove('no-scroll');
+    }
+  }
+
+  cerrar(): void {
+    this.resetForm();
+    this.cerrarForm.emit();
+    // agregamos para que cuando se cierre el form de reserva se habilite nuevamente el scroll
+    this.mostrarEsteForm = !this.mostrarEsteForm;
+    this.actualizarScroll();
+  }
+
+
 
   ngOnInit(): void {
     this.cargarReservasEspacio();
@@ -340,8 +370,4 @@ export class FormReservaComponent implements OnInit {
     this.horaFin = `${(currentHour + 1).toString().padStart(2, '0')}:00`;
   }
 
-  cerrar() {
-    this.resetForm();
-    this.cerrarForm.emit();
-  }
 }

@@ -1,15 +1,23 @@
 <!DOCTYPE html>
 <html lang="en" class="h-100" data-critters-container>
-  <head>
-    <meta charset="utf-8">
-    <title>WorkNest - Coworking</title>
-    <base href="/">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="icon" type="image/x-icon" href="assets/logo.jpg">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdn.auth0.com/js/auth0-samples-theme/1.0/css/auth0-theme.min.css">
-  <style>:root{--primary-50:#eff6ff;--primary-100:#dbeafe;--primary-200:#bfdbfe;--primary-300:#93c5fd;--primary-400:#60a5fa;--primary-500:#3b82f6;--primary-600:#2563eb;--primary-700:#1d4ed8;--primary-800:#1e40af;--primary-900:#1e3a8a;--gray-50:#f9fafb;--gray-100:#f3f4f6;--gray-200:#e5e7eb;--gray-300:#d1d5db;--gray-400:#9ca3af;--gray-500:#6b7280;--gray-600:#4b5563;--gray-700:#374151;--gray-800:#1f2937;--gray-900:#111827;--success:#10b981;--warning:#f59e0b;--error:#ef4444;--info:#3b82f6;--shadow-xs:0 1px 2px 0 rgb(0 0 0 / .05);--shadow-sm:0 1px 3px 0 rgb(0 0 0 / .1), 0 1px 2px -1px rgb(0 0 0 / .1);--shadow-md:0 4px 6px -1px rgb(0 0 0 / .1), 0 2px 4px -2px rgb(0 0 0 / .1);--shadow-lg:0 10px 15px -3px rgb(0 0 0 / .1), 0 4px 6px -4px rgb(0 0 0 / .1);--shadow-xl:0 20px 25px -5px rgb(0 0 0 / .1), 0 8px 10px -6px rgb(0 0 0 / .1);--radius-none:0;--radius-sm:.125rem;--radius-md:.375rem;--radius-lg:.5rem;--radius-xl:.75rem;--radius-2xl:1rem;--radius-full:9999px;--spacing-1:.25rem;--spacing-2:.5rem;--spacing-3:.75rem;--spacing-4:1rem;--spacing-5:1.25rem;--spacing-6:1.5rem;--spacing-8:2rem;--spacing-10:2.5rem;--spacing-12:3rem;--spacing-16:4rem;--font-family-sans:"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", sans-serif;--font-size-xs:.75rem;--font-size-sm:.875rem;--font-size-base:1rem;--font-size-lg:1.125rem;--font-size-xl:1.25rem;--font-size-2xl:1.5rem;--font-size-3xl:1.875rem;--bp-sm:640px;--bp-md:768px;--bp-lg:1024px;--bp-xl:1280px}*{box-sizing:border-box;margin:0;padding:0}body{font-family:var(--font-family-sans);font-size:var(--font-size-base);line-height:1.5;color:var(--gray-900);background-color:var(--gray-50);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}</style><link rel="stylesheet" href="styles.e35c9710a05d133a.css" media="print" onload="this.media='all'"><noscript><link rel="stylesheet" href="styles.e35c9710a05d133a.css"></noscript></head>
-  <body class="h-100">
-    <app-root></app-root>
-  <script src="runtime.3b370fee0476256e.js" type="module"></script><script src="polyfills.f9f53df8c105eb31.js" type="module"></script><script src="main.a6c5b03de9397090.js" type="module"></script></body>
+
+<head>
+  <meta charset="utf-8">
+  <title>WorkNest - Coworking</title>
+  <base href="/">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/x-icon" href="assets/logo.jpg">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.auth0.com/js/auth0-samples-theme/1.0/css/auth0-theme.min.css">
+<style>:root{--primary-50:#eff6ff;--primary-100:#dbeafe;--primary-200:#bfdbfe;--primary-300:#93c5fd;--primary-400:#60a5fa;--primary-500:#3b82f6;--primary-600:#2563eb;--primary-700:#1d4ed8;--primary-800:#1e40af;--primary-900:#1e3a8a;--gray-50:#f9fafb;--gray-100:#f3f4f6;--gray-200:#e5e7eb;--gray-300:#d1d5db;--gray-400:#9ca3af;--gray-500:#6b7280;--gray-600:#4b5563;--gray-700:#374151;--gray-800:#1f2937;--gray-900:#111827;--success:#10b981;--warning:#f59e0b;--error:#ef4444;--info:#3b82f6;--shadow-xs:0 1px 2px 0 rgb(0 0 0 / .05);--shadow-sm:0 1px 3px 0 rgb(0 0 0 / .1), 0 1px 2px -1px rgb(0 0 0 / .1);--shadow-md:0 4px 6px -1px rgb(0 0 0 / .1), 0 2px 4px -2px rgb(0 0 0 / .1);--shadow-lg:0 10px 15px -3px rgb(0 0 0 / .1), 0 4px 6px -4px rgb(0 0 0 / .1);--shadow-xl:0 20px 25px -5px rgb(0 0 0 / .1), 0 8px 10px -6px rgb(0 0 0 / .1);--radius-none:0;--radius-sm:.125rem;--radius-md:.375rem;--radius-lg:.5rem;--radius-xl:.75rem;--radius-2xl:1rem;--radius-full:9999px;--spacing-1:.25rem;--spacing-2:.5rem;--spacing-3:.75rem;--spacing-4:1rem;--spacing-5:1.25rem;--spacing-6:1.5rem;--spacing-8:2rem;--spacing-10:2.5rem;--spacing-12:3rem;--spacing-16:4rem;--font-family-sans:"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", sans-serif;--font-size-xs:.75rem;--font-size-sm:.875rem;--font-size-base:1rem;--font-size-lg:1.125rem;--font-size-xl:1.25rem;--font-size-2xl:1.5rem;--font-size-3xl:1.875rem;--bp-sm:640px;--bp-md:768px;--bp-lg:1024px;--bp-xl:1280px}*{box-sizing:border-box;margin:0;padding:0}body{font-family:var(--font-family-sans);font-size:var(--font-size-base);line-height:1.5;color:var(--gray-900);background-color:var(--gray-50);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}</style><link rel="stylesheet" href="styles.e35c9710a05d133a.css" media="print" onload="this.media='all'"><noscript><link rel="stylesheet" href="styles.e35c9710a05d133a.css"></noscript></head>
+<style>
+  body.no-scroll {
+    overflow: hidden;
+  }
+</style>
+
+<body class="h-100">
+  <app-root></app-root>
+<script src="runtime.3b370fee0476256e.js" type="module"></script><script src="polyfills.f9f53df8c105eb31.js" type="module"></script><script src="main.ef55bbf9212b7135.js" type="module"></script></body>
+
 </html>
