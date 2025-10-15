@@ -23,19 +23,20 @@ export class ReservasusuarioComponent {
     private auth: AuthService,
     private notificationService: NotificationService
   ) {
-    // Recuperamos la data de auth
-    this.auth.user$.subscribe((user) => {
-      if (user) {
-        this.email = user.email;
-        this.getReservarUsser();
-      } else {
-        const usuarioLocal = JSON.parse(localStorage.getItem('usserAutenticado') || '{}');
-        if (usuarioLocal) {
-          this.email = usuarioLocal.email;
+    const usuarioLocal = JSON.parse(localStorage.getItem('usserAutenticado') || '{}');
+    if (usuarioLocal) {
+      this.email = usuarioLocal.email;
+      this.getReservarUsser();
+    } else {
+
+      // Recuperamos la data de auth
+      this.auth.user$.subscribe((user) => {
+        if (user) {
+          this.email = user.email;
           this.getReservarUsser();
         }
-      }
-    });
+      });
+    }
   }
 
   // buscamos las reservas del usuario
@@ -54,8 +55,8 @@ export class ReservasusuarioComponent {
             this.notificationService.error('Error al cargar tus reservas');
           }
         });
-    }else{
-            this.notificationService.error('No te has registrado aun');
+    } else {
+      this.notificationService.error('No te has registrado aun');
     }
   }
   formatearFecha(fecha: string): string {
