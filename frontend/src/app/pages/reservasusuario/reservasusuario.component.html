@@ -1,0 +1,112 @@
+<div class="reservas-container">
+  <h1>Mis Reservas</h1>
+
+  <div class="grid-reservas">
+    <div *ngFor="let reserva of reservas_usuario" class="card-reserva">
+
+      <div class="card-imagen">
+        <div class="imagen-placeholder">
+          <!-- <img src="https://wearecloudworks.com/wp-content/uploads/2022/01/beneficios-coworking.jpeg" loading="lazy"> -->
+        </div>
+
+
+
+        <div class="badge-estado" [ngClass]="reserva.editable ? 'no_ocupado' : 'ocupado'">
+          {{ reserva.estadoReserva }}
+        </div>
+
+      </div>
+
+      <div class="card-contenido">
+
+        <h3 class="nombre-espacio">{{ reserva.nombreEspacio }}</h3>
+
+
+        <div class="tipo-espacio">
+          <span class="icon">📋</span>
+          <span>{{ reserva.tipoEspacio }}</span>
+        </div>
+
+
+
+        <div class="info-ubicacion">
+          <div class="ubicacion-item">
+            <svg class="icon-svg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+            <span>{{ reserva.zona }}</span>
+          </div>
+          <div class="ubicacion-item secondary">
+            <svg class="icon-svg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+            <span>{{ reserva.direccion }}</span>
+          </div>
+        </div>
+
+
+        <div class="info-usuario">
+          <div class="usuario-item">
+            <svg class="icon-svg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+            </svg>
+            <span>{{ reserva.nombreUsuario }}</span>
+          </div>
+          <div class="usuario-item">
+            <svg class="icon-svg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+            </svg>
+            <span>{{ reserva.emailUsuario }}</span>
+          </div>
+        </div>
+
+
+        <div class="info-fechas">
+          <div class="fecha-item">
+            <svg class="icon-svg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+            <span>Inicio: {{ formatearFecha(reserva.fechaInicio) }}</span>
+          </div>
+          <div class="fecha-item">
+            <svg class="icon-svg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span>Fin: {{ formatearFecha(reserva.fechaFin) }}</span>
+          </div>
+        </div>
+
+
+        <div class="info-precio">
+          <div class="precio">
+            <span class="signo">$</span>
+            <span class="monto">{{ reserva.monto }}</span>
+          </div>
+          <span class="estado-reserva">{{ reserva.estadoReserva }}</span>
+        </div>
+
+        <button class="btn-accion disponible" (click)="filtrarRerserva(reserva.reservaId)"
+          [disabled]="!reserva.editable">
+          GESTIONAR RESERVA
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-form-editar-reserva *ngIf="selectedReserva" [reservaId]="selectedReserva.reservaId"
+  [espacioId]="selectedReserva.espacioId" [espacioNombre]="selectedReserva.nombreEspacio"
+  [fechaInicioOriginal]="selectedReserva.fechaInicio" [fechaFinOriginal]="selectedReserva.fechaFin"
+  (cerrarModal)="selectedReserva = null" (reservaActualizada)="handleReservaActualizada($event)">
+</app-form-editar-reserva>
+<app-footer />

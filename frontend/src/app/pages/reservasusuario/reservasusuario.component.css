@@ -1,0 +1,247 @@
+/* tu css */
+/* Contenedor principal */
+.reservas-container {
+  min-height: 100vh;
+  background-color: #f9fafb;
+  padding: 1.5rem;
+}
+
+.reservas-container h1 {
+  font-size: 1.875rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 2rem;
+  max-width: 80rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Grid de tarjetas */
+.grid-reservas {
+  max-width: 80rem;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  gap: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .grid-reservas {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .grid-reservas {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* Tarjeta individual */
+.card-reserva {
+  background-color: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+  transition: box-shadow 0.3s ease;
+}
+
+.card-reserva:hover {
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* Sección de imagen */
+.card-imagen {
+  position: relative;
+  height: 12rem;
+  background-image: url(https://wearecloudworks.com/wp-content/uploads/2022/01/beneficios-coworking.jpeg);
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.imagen-placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+
+
+
+/* Badge de estado */
+.badge-estado {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  text-transform: uppercase;
+}
+
+.badge-estado.ocupado {
+  background-color: #ef4444;
+}
+.badge-estado.no_ocupado {
+  background-color: #7c67db;
+}
+
+.badge-estado.disponible {
+  background-color: #10b981;
+}
+
+/* Contenido de la tarjeta */
+.card-contenido {
+  padding: 1.25rem;
+}
+
+/* Nombre del espacio */
+.nombre-espacio {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 0.25rem;
+}
+
+/* Tipo de espacio */
+.tipo-espacio {
+  display: flex;
+  align-items: center;
+  color: #6b7280;
+  font-size: 0.875rem;
+  margin-bottom: 1rem;
+}
+
+.tipo-espacio .icon {
+  margin-right: 0.5rem;
+}
+
+/* Información de ubicación */
+.info-ubicacion {
+  margin-bottom: 1rem;
+}
+
+.ubicacion-item {
+  display: flex;
+  align-items: flex-start;
+  font-size: 0.875rem;
+  color: #374151;
+  margin-bottom: 0.5rem;
+}
+
+.ubicacion-item.secondary {
+  color: #6b7280;
+}
+
+/* Información del usuario */
+.info-usuario {
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.usuario-item {
+  display: flex;
+  align-items: center;
+  font-size: 0.875rem;
+  color: #374151;
+  margin-bottom: 0.5rem;
+  overflow: hidden;
+}
+
+.usuario-item span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Iconos SVG */
+.icon-svg {
+  width: 1rem;
+  height: 1rem;
+  margin-right: 0.5rem;
+  flex-shrink: 0;
+  color: #6b7280;
+}
+
+/* Información de fechas */
+.info-fechas {
+  margin-bottom: 1rem;
+}
+
+.fecha-item {
+  display: flex;
+  align-items: center;
+  font-size: 0.75rem;
+  color: #374151;
+  margin-bottom: 0.5rem;
+}
+
+/* Información de precio */
+.info-precio {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.precio {
+  display: flex;
+  align-items: center;
+  color: #2563eb;
+}
+
+.precio .signo {
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.precio .monto {
+  font-size: 1.875rem;
+  font-weight: 700;
+}
+
+.estado-reserva {
+  font-size: 0.875rem;
+  color: #6b7280;
+  background-color: #f3f4f6;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+}
+
+/* Botón de acción */
+.btn-accion {
+  width: 100%;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.btn-accion.disponible {
+  background-color: #2563eb;
+  color: white;
+}
+
+.btn-accion.disponible:hover {
+  background-color: #1d4ed8;
+}
+
+.btn-accion.no-disponible {
+  background-color: #d1d5db;
+  color: #9ca3af;
+  cursor: not-allowed;
+}
+
+.btn-accion:disabled {
+  background-color: #d1d5db;
+  color: #9ca3af;
+  cursor: not-allowed;
+}

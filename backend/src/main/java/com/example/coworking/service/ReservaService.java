@@ -69,13 +69,13 @@ public class ReservaService {
             LocalDateTime ahora = LocalDateTime.now();
             if (fechaInicio.isBefore(ahora.minusMinutes(5))) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(Map.of("error", "La fecha de inicio no puede ser en el pasado"));
+                        .body(Map.of("error", "La fecha de inicio no puede ser en el pasado"));
             }
 
             // Validar que no exceda 30 días
             if (fechaFin.isAfter(ahora.plusDays(30))) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(Map.of("error", "La reserva no puede exceder 30 días en el futuro"));
+                        .body(Map.of("error", "La reserva no puede exceder 30 días en el futuro"));
             }
 
             // Buscar el espacio
@@ -83,14 +83,15 @@ public class ReservaService {
                     .orElseThrow(() -> new IllegalArgumentException("Espacio no encontrado"));
 
             // CORRECCION CRITICA: Validar disponibilidad con parámetros en orden correcto
-            // Parámetros correctos: espacio, fechaFin (para comparar con inicio existente), fechaInicio (para comparar con fin existente)
+            // Parámetros correctos: espacio, fechaFin (para comparar con inicio existente),
+            // fechaInicio (para comparar con fin existente)
             boolean ocupado = reservaRepo.existsByEspacioAndFechaInicioBeforeAndFechaFinAfter(
                     espacio, fechaFin, fechaInicio);
 
             // Si está ocupado, retornar 409 Conflict
             if (ocupado) {
                 return ResponseEntity.status(HttpStatus.CONFLICT)
-                    .body(Map.of("error", "El espacio ya está ocupado en esas fechas y horarios"));
+                        .body(Map.of("error", "El espacio ya está ocupado en esas fechas y horarios"));
             }
 
             // Actualizar el estado del espacio a ocupado
@@ -98,7 +99,7 @@ public class ReservaService {
                     .orElseThrow(() -> new IllegalArgumentException("Estado no encontrado"));
 
             // Buscar estado de reserva "Pendiente"
-            EstadoReserva estadoReserva = estadoReservaRepository.findByNombre("Pendiente");
+            EstadoReserva estadoReserva = estadoReservaRepository.findByNombre("Confirmada/Reservada");
             if (estadoReserva == null) {
                 throw new IllegalArgumentException("Estado de reserva no encontrado");
             }
@@ -141,50 +142,68 @@ public class ReservaService {
             pago.setMonto(monto);
             pago.setMetodoPago(metodoPagoEncontrado);
             pago.setEstado(estadoPagoEncontrado);
-            
+
             pagoRepo.save(pago);
-            
+
             // Retornar confirmación con status 200
             ConfirmacionDTO confirmacionDTO = new ConfirmacionDTO("Reserva creada exitosamente");
             return new ResponseEntity<>(confirmacionDTO, HttpStatus.OK);
-            
+
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(Map.of("error", e.getMessage()));
+                    .body(Map.of("error", e.getMessage()));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(Map.of("error", "Error interno del servidor: " + e.getMessage()));
+                    .body(Map.of("error", "Error interno del servidor: " + e.getMessage()));
         }
     }
 
-    public void actualizarReserva(Integer idReserva, LocalDateTime fechaInicio, LocalDateTime fechaFin, String estado) {
-
-        // Buscar por el id de reserva si existe
+    public void actualizarReserva(Integer idReserva, LocalDateTime fechaInicio, LocalDateTime fechaFin) {
         Reserva reserva = reservaRepo.findById(idReserva)
                 .orElseThrow(() -> new IllegalArgumentException("La reserva no existe."));
 
-        // Validar si está disponible para las nuevas fechas
         boolean espacioOcupado = reservaRepo.existsByEspacioAndFechaInicioBetweenAndFechaFinBetweenAndIdNot(
                 reserva.getEspacio(),
                 fechaInicio,
                 fechaFin,
                 reserva.getId());
 
-        // En caso de que ya esté ocupado (siempre se excluye la actual)
         if (espacioOcupado) {
             throw new IllegalArgumentException("El espacio está ocupado en las fechas indicadas.");
         }
-
-        // Actualizar con la información nueva
         reserva.setFechaInicio(fechaInicio);
         reserva.setFechaFin(fechaFin);
-        EstadoReserva estadoReserva = estadoReservaRepository.findByNombre(estado);
+
+        reservaRepo.save(reserva);
+    }
+
+    public void actualizarReservaCancelar(Integer idReserva, Integer idEspacio) {
+        // Aquí solo actualizamos dos cosas: pasamos el espacio a disponible y la
+        // reserva a cancelada
+
+        Reserva reserva = reservaRepo.findById(idReserva)
+                .orElseThrow(() -> new IllegalArgumentException("La reserva no existe."));
+
+        EstadoReserva estadoReserva = estadoReservaRepository.findByNombre("Cancelada");
         if (estadoReserva == null) {
             throw new IllegalArgumentException("Estado de reserva no encontrado");
         }
+
+        Espacio espacio = espacioRepo.findById(idEspacio)
+                .orElseThrow(() -> new IllegalArgumentException("Espacio no encontrado"));
+
+        Estado estado = estadoRepo.findById(1) // Suponiendo que el estado "Disponible" tiene id = 1
+                .orElseThrow(() -> new IllegalArgumentException("Estado no encontrado"));
+
+        // Actualizar el estado de la reserva
         reserva.setEstado(estadoReserva);
 
-        // Guardar la información
-        reservaRepo.save(reserva);
+        // Actualizar el estado del espacio a "Disponible"
+        espacio.setEstado(estado);
+
+        // Guardar la información actualizada en la base de datos
+        reservaRepo.save(reserva); // Guardar la reserva con el estado actualizado
+        espacioRepo.save(espacio); // Guardar el espacio con el estado actualizado
+
     }
 }

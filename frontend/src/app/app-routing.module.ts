@@ -7,7 +7,7 @@ import { ExternalApiComponent } from './pages/external-api/external-api.componen
 import { ErrorComponent } from './pages/error/error.component';
 import { authGuardFn } from '@auth0/auth0-angular';
 import { CatalogoComponent } from './pages/catalogo/catalogo.component';
-
+import { ReservasusuarioComponent } from './pages/reservasusuario/reservasusuario.component';
 export const routes: Routes = [
   {
     path: 'profile',
@@ -25,8 +25,8 @@ export const routes: Routes = [
   },
   // esta ruta dirige a las reservas del usuario
   {
-    path: 'Mis Reservas',
-    component: CatalogoComponent,
+    path: 'MisReservas',
+    component: ReservasusuarioComponent,
   },
   {
     path: '',

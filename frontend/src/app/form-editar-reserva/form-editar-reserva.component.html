@@ -1,0 +1,133 @@
+<!-- Modal overlay -->
+<div class="modal-overlay" (click)="cerrar()">
+
+  <div class="modal-container" (click)="$event.stopPropagation()">
+
+    <header class="modal-header">
+      <h2 class="modal-title">Gestionar Reserva {{ espacioNombre || 'Espacio' }}</h2>
+      <button type="button" class="btn-close" (click)="cerrar()" aria-label="Cerrar">
+        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </header>
+
+    <div class="modal-body">
+      <form (ngSubmit)="reservar()" #reservaForm="ngForm">
+
+        <!-- Fechas -->
+        <div class="form-section">
+          <h3 class="section-title">Fechas de Reserva</h3>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="fechaInicio">
+                Fecha de inicio
+              </label>
+              <input 
+                type="date" 
+                id="fechaInicio" 
+                name="fechaInicio" 
+                class="form-input"
+                [(ngModel)]="fechaInicio">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="fechaFin">
+                Fecha de fin
+              </label>
+              <input 
+                type="date" 
+                id="fechaFin" 
+                name="fechaFin" 
+                class="form-input"
+                [(ngModel)]="fechaFin">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <h3 class="section-title">Horario</h3>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="horaInicio">
+                Hora de inicio
+              </label>
+              <input 
+                type="time" 
+                id="horaInicio" 
+                name="horaInicio" 
+                class="form-input"
+                [(ngModel)]="horaInicio">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="horaFin">
+                Hora de fin
+              </label>
+              <input 
+                type="time" 
+                id="horaFin" 
+                name="horaFin" 
+                class="form-input"
+                [(ngModel)]="horaFin">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <h3 class="section-title">Acción</h3>
+          <div class="payment-options">
+            <label class="radio-option">
+              <input 
+                type="radio" 
+                name="accionReserva" 
+                value="no-cancelar" 
+                [(ngModel)]="accionReserva">
+              <span class="radio-label">
+                <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                No cancelar
+              </span>
+            </label>
+
+            <label class="radio-option">
+              <input 
+                type="radio" 
+                name="accionReserva" 
+                value="cancelar" 
+                [(ngModel)]="accionReserva">
+              <span class="radio-label">
+                <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                Cancelar reserva
+              </span>
+            </label>
+          </div>
+        </div>
+
+      </form>
+    </div>
+
+    <div class="modal-actions">
+      <button 
+        type="button" 
+        class="btn-modal btn-cancelar" 
+        (click)="cerrar()">
+        Cerrar
+      </button>
+      <button 
+        type="submit" 
+        class="btn-modal btn-confirmar"
+        (click)="reservar()">
+        <span class="btn-content">
+          <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+          </svg>
+          Confirmar
+        </span>
+      </button>
+    </div>
+  </div>
+</div>

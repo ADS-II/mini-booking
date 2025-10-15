@@ -1,6 +1,8 @@
 package com.example.coworking.controller;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
@@ -115,20 +117,49 @@ public class ReservaController {
             @ApiResponse(responseCode = "400", description = "Datos inválidos o conflictivos"),
             @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     })
-    @PutMapping
+    private LocalDateTime[] formatearFecha_up(Map<String, String> body) {
+        LocalDate fechaInicio = LocalDate.parse(body.get("fechaInicio"));
+        LocalDate fechaFin = LocalDate.parse(body.get("fechaFin"));
+        LocalTime horaEntrada = LocalTime.parse(body.get("horaEntrada"), DateTimeFormatter.ofPattern("H:mm"));
+        LocalTime horaSalida = LocalTime.parse(body.get("horaSalida"), DateTimeFormatter.ofPattern("H:mm"));
+
+        return new LocalDateTime[] {
+                LocalDateTime.of(fechaInicio, horaEntrada),
+                LocalDateTime.of(fechaFin, horaSalida)
+        };
+    }
+
+    @PutMapping("actualizar/tiempo")
     public ResponseEntity<?> actualizarReserva(@RequestBody Map<String, String> body) {
         try {
-            Integer idReserva = Integer.parseInt(body.get("idReserva"));
-            String estado = body.get("estado");
+            Integer idReserva = Integer.parseInt(body.get("reservaId"));
 
-            LocalDateTime[] fechaHoras = formatearFecha(body);
+            LocalDateTime[] fechaHoras = formatearFecha_up(body);
             LocalDateTime fechaHoraEntrada = fechaHoras[0];
             LocalDateTime fechaHoraSalida = fechaHoras[1];
 
             validarRangoFechasHora(fechaHoraEntrada, fechaHoraSalida);
 
-            service.actualizarReserva(idReserva, fechaHoraEntrada, fechaHoraSalida, estado);
+            service.actualizarReserva(idReserva, fechaHoraEntrada, fechaHoraSalida);
             return ResponseEntity.ok(Map.of("message", "Reserva actualizada correctamente"));
+        } catch (IllegalArgumentException ex) {
+            return ResponseEntity.badRequest().body(Map.of("error", ex.getMessage()));
+        } catch (Exception ex) {
+            return ResponseEntity.status(500).body(Map.of("error", "Error interno del servidor"));
+        }
+    }
+
+    @PutMapping("actualizar/cancelar")
+    public ResponseEntity<?> actualizarReservaCancelar(@RequestBody Map<String, String> body) {
+        try {
+            // aqui solo actualizamos 2 cosas pasamos el espacio a disponible
+            // y la reserva a cancelada
+            Integer idReserva = Integer.parseInt(body.get("reservaId"));
+            Integer idEspacio = Integer.parseInt(body.get("espacioId"));
+
+
+            service.actualizarReservaCancelar(idReserva, idEspacio);
+            return ResponseEntity.ok(Map.of("message", "Reserva cancelada correctamente"));
         } catch (IllegalArgumentException ex) {
             return ResponseEntity.badRequest().body(Map.of("error", ex.getMessage()));
         } catch (Exception ex) {

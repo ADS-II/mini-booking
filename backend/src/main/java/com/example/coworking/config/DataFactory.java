@@ -189,13 +189,21 @@ public class DataFactory implements CommandLineRunner {
             estadoReservaRepo.save(estadoReserva1);
 
             EstadoReserva estadoReserva2 = new EstadoReserva();
-            estadoReserva2.setNombre("Cancelado");
+            estadoReserva2.setNombre("Confirmada/Reservada");
             estadoReservaRepo.save(estadoReserva2);
 
+            
             EstadoReserva estadoReserva3 = new EstadoReserva();
-            estadoReserva3.setNombre("Completado");
+            estadoReserva3.setNombre("En curso");
             estadoReservaRepo.save(estadoReserva3);
+            
+            EstadoReserva estadoReserva4 = new EstadoReserva();
+            estadoReserva4.setNombre("Completada");
+            estadoReservaRepo.save(estadoReserva4);
 
+            EstadoReserva estadoReserva5 = new EstadoReserva();
+            estadoReserva5.setNombre("Cancelada");
+            estadoReservaRepo.save(estadoReserva5);
             System.out.println("Estados de reserva creados");
         }
 

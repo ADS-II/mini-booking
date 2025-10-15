@@ -15,15 +15,14 @@ public class ReservasUsuarioDTO {
     private LocalDateTime fechaFin;
     private String estadoReserva;
     private Double monto;
-
+    private Integer espacioId;
     private String estadoEspacio;
-    private boolean isEditable = true;
-
+    private boolean isEditable = false;
 
     public ReservasUsuarioDTO(Integer reservaId, String nombreUsuario, String emailUsuario,
             String nombreEspacio, String tipoEspacio, String zona,
             String direccion, LocalDateTime fechaInicio, LocalDateTime fechaFin,
-            String estadoReserva, String estadoEspacio, Double monto) {
+            String estadoReserva, String estadoEspacio, Double monto, Integer espacioId) {
         this.reservaId = reservaId;
         this.nombreUsuario = nombreUsuario;
         this.emailUsuario = emailUsuario;
@@ -36,10 +35,11 @@ public class ReservasUsuarioDTO {
         this.estadoReserva = estadoReserva;
         this.estadoEspacio = estadoEspacio;
         this.monto = monto;
+        this.espacioId = espacioId;
+        if(estadoReserva.equals("Confirmada/Reservada") || estadoReserva.equals("En curso")){
+            this.isEditable = true;
+        }
     }
-
-
-    
 
     public Integer getReservaId() {
         return reservaId;
@@ -143,6 +143,14 @@ public class ReservasUsuarioDTO {
 
     public void setEstadoEspacio(String estadoEspacio) {
         this.estadoEspacio = estadoEspacio;
+    }
+
+    public Integer getEspacioId() {
+        return espacioId;
+    }
+
+    public void setEspacioId(Integer espacioId) {
+        this.espacioId = espacioId;
     }
 
 }
