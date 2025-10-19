@@ -1141,13 +1141,20 @@ class FormEditarReservaComponent {
   fechaFinOriginal = '';
   cerrarModal = new _angular_core__WEBPACK_IMPORTED_MODULE_0__.EventEmitter();
   reservaActualizada = new _angular_core__WEBPACK_IMPORTED_MODULE_0__.EventEmitter();
+  scrollChange = new _angular_core__WEBPACK_IMPORTED_MODULE_0__.EventEmitter();
   fechaInicio = '';
   fechaFin = '';
   horaInicio = '';
   horaFin = '';
   accionReserva = 'no-cancelar';
-  mostrarLogin = false;
+  cerrar() {
+    this.cerrarModal.emit();
+    // cuando presione el boton de cerrar actualizacion el valor de la variable
+    this.scrollChange.emit(false);
+  }
   ngOnInit() {
+    // cuando se habre el formulario hacemos que se desabilite el formulario
+    this.scrollChange.emit(true);
     // Inicializar fechas y horas
     if (this.fechaInicioOriginal) {
       const inicio = new Date(this.fechaInicioOriginal);
@@ -1172,9 +1179,6 @@ class FormEditarReservaComponent {
     const horas = String(fecha.getHours()).padStart(2, '0');
     const minutos = String(fecha.getMinutes()).padStart(2, '0');
     return `${horas}:${minutos}`;
-  }
-  cerrar() {
-    this.cerrarModal.emit();
   }
   reservar() {
     if (this.accionReserva === 'cancelar') {
@@ -1224,7 +1228,8 @@ class FormEditarReservaComponent {
     },
     outputs: {
       cerrarModal: "cerrarModal",
-      reservaActualizada: "reservaActualizada"
+      reservaActualizada: "reservaActualizada",
+      scrollChange: "scrollChange"
     },
     standalone: true,
     features: [_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵStandaloneFeature"]],
@@ -1427,15 +1432,6 @@ class FormLoginComponent {
   }
   login(form) {
     this.auth.loginWithRedirect();
-    // if (form.valid) {
-    //   const { email, password, remember } = form.value;
-    //   const loginData = { email, password, remember };
-    //   localStorage.setItem('usserAutenticado', JSON.stringify(loginData));
-    //   this.hideForm()
-    //   alert(`Iniciando sesión para ${loginData.email}`);
-    // } else {
-    //   alert('Por favor completa todos los campos');
-    // }
   }
   socialLogin() {
     this.auth.loginWithRedirect();
@@ -1733,32 +1729,28 @@ class FormReservaComponent {
       // si se ha logeado actualizamos la infoirmacion
       if (user) {
         // cargamos informacion de usuario
-        this.establecerUsuario(user.email, user.name, user.picture);
+        // this.establecerUsuario(user.email, user.name, user.picture);
+        this.email = user.email;
+        this.nombre = user.name;
+        this.picture = user.picture;
         this.actualizarVista(false);
       } else {
         this.actualizarVista(true);
       }
     });
   }
-  // metodo que se encarga de actualizar la infromacion del usuario
-  establecerUsuario(email, nombre, picture) {
-    this.email = email ?? null;
-    this.nombre = nombre ?? null;
-    this.picture = picture ?? null;
-  }
   // metodo que se encarga de mostrar/ocultar el login o formulario de reserva
   actualizarVista(mostrarLogin) {
     this.mostrarLogin = mostrarLogin;
-    this.mostrarEsteForm = !mostrarLogin;
-    this.actualizarScroll();
+    this.actualizarScroll(this.email != null ? true : false);
   }
   // metodo que se encarga de habilitar y desactivar el scroll al body
-  actualizarScroll() {
-    console.log(this.mostrarEsteForm);
+  actualizarScroll(abrirForm) {
+    this.mostrarEsteForm = abrirForm;
     if (this.mostrarEsteForm) {
-      this.doc.body.classList.remove('no-scroll');
-    } else {
       this.doc.body.classList.add('no-scroll');
+    } else {
+      this.doc.body.classList.remove('no-scroll');
     }
   }
   ngOnInit() {
@@ -1855,7 +1847,6 @@ class FormReservaComponent {
     this.http.get(`${src_environments_environment__WEBPACK_IMPORTED_MODULE_1__.environment.apiUrl}/api/componente/reservas/verificar`).subscribe({
       next: reservas => {
         const reservasEspacio = reservas.filter(r => r.nombreEspacio === this.espacioNombre);
-        console.log(`Reservas existentes para ${this.espacioNombre}:`, reservasEspacio);
       },
       error: err => {
         console.error('Error al cargar reservas:', err);
@@ -2109,8 +2100,7 @@ class FormReservaComponent {
     this.resetForm();
     this.cerrarForm.emit();
     // agregamos para que cuando se cierre el form de reserva se habilite nuevamente el scroll
-    this.mostrarEsteForm = !this.mostrarEsteForm;
-    this.actualizarScroll();
+    this.actualizarScroll(false);
   }
   static ɵfac = function FormReservaComponent_Factory(t) {
     return new (t || FormReservaComponent)(_angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵdirectiveInject"](_angular_common_http__WEBPACK_IMPORTED_MODULE_5__.HttpClient), _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵdirectiveInject"](_auth0_auth0_angular__WEBPACK_IMPORTED_MODULE_6__.AuthService), _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵdirectiveInject"](_services_notification_service__WEBPACK_IMPORTED_MODULE_2__.NotificationService), _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵdirectiveInject"](_angular_common__WEBPACK_IMPORTED_MODULE_7__.DOCUMENT));
@@ -3167,6 +3157,10 @@ function ReservasusuarioComponent_app_form_editar_reserva_5_Template(rf, ctx) {
       _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵrestoreView"](_r4);
       const ctx_r2 = _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵnextContext"]();
       return _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵresetView"](ctx_r2.handleReservaActualizada($event));
+    })("scrollChange", function ReservasusuarioComponent_app_form_editar_reserva_5_Template_app_form_editar_reserva_scrollChange_0_listener($event) {
+      _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵrestoreView"](_r4);
+      const ctx_r2 = _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵnextContext"]();
+      return _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵresetView"](ctx_r2.actualizarScroll($event));
     });
     _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵelementEnd"]();
   }
@@ -3179,13 +3173,15 @@ class ReservasusuarioComponent {
   http;
   auth;
   notificationService;
+  doc;
   reservas_usuario = [];
   email = null;
   selectedReserva = null;
-  constructor(http, auth, notificationService) {
+  constructor(http, auth, notificationService, doc) {
     this.http = http;
     this.auth = auth;
     this.notificationService = notificationService;
+    this.doc = doc;
     // Recuperamos la data de auth
     this.auth.user$.subscribe(user => {
       if (user) {
@@ -3193,6 +3189,25 @@ class ReservasusuarioComponent {
         this.getReservarUsser();
       }
     });
+  }
+  // metodo que se encarga de habilitar y desactivar el scroll al body
+  actualizarScroll(habilitarScroll) {
+    console.log(habilitarScroll);
+    if (habilitarScroll) {
+      this.doc.body.classList.add('no-scroll');
+    } else {
+      this.doc.body.classList.remove('no-scroll');
+    }
+  }
+  filtrarRerserva(reservaId) {
+    //  buscamos en la lista que hemos cargado
+    const reserva = this.reservas_usuario.find(r => r.reservaId === reservaId);
+    // validamos si se encontro la reserva
+    if (reserva) {
+      this.selectedReserva = reserva;
+    } else {
+      this.notificationService.error('No se encontro tu reserva seleccionada');
+    }
   }
   // buscamos las reservas del usuario
   getReservarUsser() {
@@ -3240,21 +3255,13 @@ class ReservasusuarioComponent {
   formatearFecha(fecha) {
     return fecha.replace('T', ' ');
   }
-  filtrarRerserva(reservaId) {
-    //  buscamos en la lista que hemos cargado
-    const reserva = this.reservas_usuario.find(r => r.reservaId === reservaId);
-    // validamos si se encontro la reserva
-    if (reserva) {
-      this.selectedReserva = reserva;
-    } else {
-      this.notificationService.error('No se encontro tu reserva seleccionada');
-    }
-  }
   /**
    *
    * @param event recibe un objeto
    */
   handleReservaActualizada(event) {
+    // cuando presionen en boton de enviar, tenga exito o no habilitamos el scroll
+    this.actualizarScroll(false);
     // extraemos el token jwt
     this.auth.getAccessTokenSilently().subscribe({
       next: token => {
@@ -3309,7 +3316,7 @@ class ReservasusuarioComponent {
     });
   }
   static ɵfac = function ReservasusuarioComponent_Factory(t) {
-    return new (t || ReservasusuarioComponent)(_angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵdirectiveInject"](_angular_common_http__WEBPACK_IMPORTED_MODULE_5__.HttpClient), _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵdirectiveInject"](_auth0_auth0_angular__WEBPACK_IMPORTED_MODULE_6__.AuthService), _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵdirectiveInject"](src_app_services_notification_service__WEBPACK_IMPORTED_MODULE_3__.NotificationService));
+    return new (t || ReservasusuarioComponent)(_angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵdirectiveInject"](_angular_common_http__WEBPACK_IMPORTED_MODULE_5__.HttpClient), _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵdirectiveInject"](_auth0_auth0_angular__WEBPACK_IMPORTED_MODULE_6__.AuthService), _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵdirectiveInject"](src_app_services_notification_service__WEBPACK_IMPORTED_MODULE_3__.NotificationService), _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵdirectiveInject"](_angular_common__WEBPACK_IMPORTED_MODULE_7__.DOCUMENT));
   };
   static ɵcmp = /*@__PURE__*/_angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵdefineComponent"]({
     type: ReservasusuarioComponent,
@@ -3318,7 +3325,7 @@ class ReservasusuarioComponent {
     features: [_angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵStandaloneFeature"]],
     decls: 7,
     vars: 2,
-    consts: [[1, "reservas-container"], [1, "grid-reservas"], ["class", "card-reserva", 4, "ngFor", "ngForOf"], [3, "reservaId", "espacioId", "espacioNombre", "fechaInicioOriginal", "fechaFinOriginal", "cerrarModal", "reservaActualizada", 4, "ngIf"], [1, "card-reserva"], [1, "card-imagen"], [1, "imagen-placeholder"], [1, "badge-estado", 3, "ngClass"], [1, "card-contenido"], [1, "nombre-espacio"], [1, "tipo-espacio"], [1, "icon"], [1, "info-ubicacion"], [1, "ubicacion-item"], ["fill", "none", "stroke", "currentColor", "viewBox", "0 0 24 24", 1, "icon-svg"], ["stroke-linecap", "round", "stroke-linejoin", "round", "stroke-width", "2", "d", "M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"], ["stroke-linecap", "round", "stroke-linejoin", "round", "stroke-width", "2", "d", "M15 11a3 3 0 11-6 0 3 3 0 016 0z"], [1, "ubicacion-item", "secondary"], [1, "info-usuario"], [1, "usuario-item"], ["stroke-linecap", "round", "stroke-linejoin", "round", "stroke-width", "2", "d", "M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"], ["stroke-linecap", "round", "stroke-linejoin", "round", "stroke-width", "2", "d", "M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"], [1, "info-fechas"], [1, "fecha-item"], ["stroke-linecap", "round", "stroke-linejoin", "round", "stroke-width", "2", "d", "M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"], ["stroke-linecap", "round", "stroke-linejoin", "round", "stroke-width", "2", "d", "M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"], [1, "info-precio"], [1, "precio"], [1, "signo"], [1, "monto"], [1, "estado-reserva"], [1, "btn-accion", "disponible", 3, "click", "disabled"], [3, "cerrarModal", "reservaActualizada", "reservaId", "espacioId", "espacioNombre", "fechaInicioOriginal", "fechaFinOriginal"]],
+    consts: [[1, "reservas-container"], [1, "grid-reservas"], ["class", "card-reserva", 4, "ngFor", "ngForOf"], [3, "reservaId", "espacioId", "espacioNombre", "fechaInicioOriginal", "fechaFinOriginal", "cerrarModal", "reservaActualizada", "scrollChange", 4, "ngIf"], [1, "card-reserva"], [1, "card-imagen"], [1, "imagen-placeholder"], [1, "badge-estado", 3, "ngClass"], [1, "card-contenido"], [1, "nombre-espacio"], [1, "tipo-espacio"], [1, "icon"], [1, "info-ubicacion"], [1, "ubicacion-item"], ["fill", "none", "stroke", "currentColor", "viewBox", "0 0 24 24", 1, "icon-svg"], ["stroke-linecap", "round", "stroke-linejoin", "round", "stroke-width", "2", "d", "M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"], ["stroke-linecap", "round", "stroke-linejoin", "round", "stroke-width", "2", "d", "M15 11a3 3 0 11-6 0 3 3 0 016 0z"], [1, "ubicacion-item", "secondary"], [1, "info-usuario"], [1, "usuario-item"], ["stroke-linecap", "round", "stroke-linejoin", "round", "stroke-width", "2", "d", "M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"], ["stroke-linecap", "round", "stroke-linejoin", "round", "stroke-width", "2", "d", "M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"], [1, "info-fechas"], [1, "fecha-item"], ["stroke-linecap", "round", "stroke-linejoin", "round", "stroke-width", "2", "d", "M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"], ["stroke-linecap", "round", "stroke-linejoin", "round", "stroke-width", "2", "d", "M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"], [1, "info-precio"], [1, "precio"], [1, "signo"], [1, "monto"], [1, "estado-reserva"], [1, "btn-accion", "disponible", 3, "click", "disabled"], [3, "cerrarModal", "reservaActualizada", "scrollChange", "reservaId", "espacioId", "espacioNombre", "fechaInicioOriginal", "fechaFinOriginal"]],
     template: function ReservasusuarioComponent_Template(rf, ctx) {
       if (rf & 1) {
         _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵelementStart"](0, "div", 0)(1, "h1");

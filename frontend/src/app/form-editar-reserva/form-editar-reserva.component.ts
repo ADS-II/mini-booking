@@ -21,6 +21,8 @@ export class FormEditarReservaComponent {
 
   @Output() cerrarModal = new EventEmitter<void>();
   @Output() reservaActualizada = new EventEmitter<any>();
+  @Output() scrollChange = new EventEmitter<boolean>();
+
 
 
   fechaInicio: string = '';
@@ -29,9 +31,20 @@ export class FormEditarReservaComponent {
   horaFin: string = '';
   accionReserva: string = 'no-cancelar';
 
-  mostrarLogin: boolean = false;
+
+  cerrar() {
+    this.cerrarModal.emit();
+
+    // cuando presione el boton de cerrar actualizacion el valor de la variable
+    this.scrollChange.emit(false);
+  }
+
 
   ngOnInit() {
+    // cuando se habre el formulario hacemos que se desabilite el formulario
+    this.scrollChange.emit(true);
+
+
     // Inicializar fechas y horas
     if (this.fechaInicioOriginal) {
       const inicio = new Date(this.fechaInicioOriginal);
@@ -61,10 +74,6 @@ export class FormEditarReservaComponent {
     return `${horas}:${minutos}`;
   }
 
-
-  cerrar() {
-    this.cerrarModal.emit();
-  }
 
   reservar() {
     if (this.accionReserva === 'cancelar') {

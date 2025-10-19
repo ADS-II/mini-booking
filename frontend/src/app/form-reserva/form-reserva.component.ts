@@ -104,34 +104,33 @@ export class FormReservaComponent implements OnInit {
       if (user) {
 
         // cargamos informacion de usuario
-        this.establecerUsuario(user.email, user.name, user.picture);
+        // this.establecerUsuario(user.email, user.name, user.picture);
+
+        this.email = user.email;
+        this.nombre = user.name;
+        this.picture = user.picture;
+
         this.actualizarVista(false);
       } else {
         this.actualizarVista(true);
       }
     });
   }
-  // metodo que se encarga de actualizar la infromacion del usuario
-  private establecerUsuario(email: string | null, nombre?: string | null, picture?: string | null): void {
-    this.email = email ?? null;
-    this.nombre = nombre ?? null;
-    this.picture = picture ?? null;
-  }
+
 
   // metodo que se encarga de mostrar/ocultar el login o formulario de reserva
   private actualizarVista(mostrarLogin: boolean): void {
     this.mostrarLogin = mostrarLogin;
-    this.mostrarEsteForm = !mostrarLogin;
-    this.actualizarScroll();
+    this.actualizarScroll(this.email != null ? true : false);
   }
 
   // metodo que se encarga de habilitar y desactivar el scroll al body
-  private actualizarScroll(): void {
-    console.log(this.mostrarEsteForm);
+  private actualizarScroll(abrirForm: boolean): void {
+    this.mostrarEsteForm = abrirForm;
     if (this.mostrarEsteForm) {
-      this.doc.body.classList.remove('no-scroll');
-    } else {
       this.doc.body.classList.add('no-scroll');
+    } else {
+      this.doc.body.classList.remove('no-scroll');
     }
   }
 
@@ -260,7 +259,6 @@ export class FormReservaComponent implements OnInit {
           const reservasEspacio = reservas.filter(
             r => r.nombreEspacio === this.espacioNombre
           );
-          console.log(`Reservas existentes para ${this.espacioNombre}:`, reservasEspacio);
         },
         error: (err) => {
           console.error('Error al cargar reservas:', err);
@@ -552,7 +550,6 @@ export class FormReservaComponent implements OnInit {
     this.resetForm();
     this.cerrarForm.emit();
     // agregamos para que cuando se cierre el form de reserva se habilite nuevamente el scroll
-    this.mostrarEsteForm = !this.mostrarEsteForm;
-    this.actualizarScroll();
+    this.actualizarScroll(false);
   }
 }

@@ -1,6 +1,6 @@
-import { CommonModule } from '@angular/common';  // Importa CommonModule
+import { CommonModule, DOCUMENT } from '@angular/common';  // Importa CommonModule
 import { HttpClient } from '@angular/common/http';
-import { Component } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { FooterComponent } from 'src/app/components/footer/footer.component';
 import { AuthService } from '@auth0/auth0-angular';
 import { environment } from 'src/environments/environment';
@@ -21,54 +21,45 @@ export class ReservasusuarioComponent {
   constructor(
     private http: HttpClient,
     private auth: AuthService,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    @Inject(DOCUMENT) private doc: Document
   ) {
-<<<<<<< HEAD
-    const usuarioLocal = JSON.parse(localStorage.getItem('usserAutenticado') || '{}');
-=======
->>>>>>> deploy
     // Recuperamos la data de auth
     this.auth.user$.subscribe((user) => {
       if (user) {
         this.email = user.email;
         this.getReservarUsser();
-<<<<<<< HEAD
-      } else {
-        if (usuarioLocal) {
-          this.email = usuarioLocal.email;
-          this.getReservarUsser();
-        }
-=======
->>>>>>> deploy
       }
     });
+  }
+  // metodo que se encarga de habilitar y desactivar el scroll al body
+  public actualizarScroll(habilitarScroll: boolean): void {
+    console.log(habilitarScroll);
+    if (habilitarScroll) {
+      this.doc.body.classList.add('no-scroll');
+    } else {
+      this.doc.body.classList.remove('no-scroll');
+    }
+  }
+
+  filtrarRerserva(reservaId: number): void {
+    //  buscamos en la lista que hemos cargado
+    const reserva = this.reservas_usuario.find(r => r.reservaId === reservaId);
+
+    // validamos si se encontro la reserva
+    if (reserva) {
+      this.selectedReserva = reserva;
+    } else {
+      this.notificationService.error('No se encontro tu reserva seleccionada');
+    }
   }
 
   // buscamos las reservas del usuario
   getReservarUsser(): void {
-<<<<<<< HEAD
-    if (this.email) {
-      const data = { email: this.email };
-      this.http.post(`${environment.apiUrl}/api/componente/reservas/usuario`, data)
-        .subscribe({
-          next: (reservas: any[]) => {
-            this.reservas_usuario = reservas;
-            if (reservas.length == 0) {
-              this.notificationService.error('Actualmente no tienes reservas registradas');
-            }
-          },
-          error: (err) => {
-            this.notificationService.error('Error al cargar tus reservas');
-          }
-        });
-    }else{
-            this.notificationService.error('No te has registrado aun');
-=======
     // validamos si el email que se recupero es valido
     if (!this.email) {
       this.notificationService.error('No te has registrado aun');
       return;
->>>>>>> deploy
     }
 
     // extraemos el token jwt
@@ -109,23 +100,13 @@ export class ReservasusuarioComponent {
   }
 
 
-
-  filtrarRerserva(reservaId: number): void {
-    //  buscamos en la lista que hemos cargado
-    const reserva = this.reservas_usuario.find(r => r.reservaId === reservaId);
-
-    // validamos si se encontro la reserva
-    if (reserva) {
-      this.selectedReserva = reserva;
-    } else {
-      this.notificationService.error('No se encontro tu reserva seleccionada');
-    }
-  }
   /**
    * 
    * @param event recibe un objeto
    */
   handleReservaActualizada(event: any) {
+    // cuando presionen en boton de enviar, tenga exito o no habilitamos el scroll
+    this.actualizarScroll(false)
     // extraemos el token jwt
     this.auth.getAccessTokenSilently().subscribe({
       next: (token) => {

@@ -107,6 +107,6 @@
 <app-form-editar-reserva *ngIf="selectedReserva" [reservaId]="selectedReserva.reservaId"
   [espacioId]="selectedReserva.espacioId" [espacioNombre]="selectedReserva.nombreEspacio"
   [fechaInicioOriginal]="selectedReserva.fechaInicio" [fechaFinOriginal]="selectedReserva.fechaFin"
-  (cerrarModal)="selectedReserva = null" (reservaActualizada)="handleReservaActualizada($event)">
+  (cerrarModal)="selectedReserva = null" (reservaActualizada)="handleReservaActualizada($event)"   (scrollChange)="actualizarScroll($event)">
 </app-form-editar-reserva>
 <app-footer />

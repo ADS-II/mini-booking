@@ -36,15 +36,6 @@ export class FormLoginComponent implements OnChanges {
 
   login(form: NgForm) {
     this.auth.loginWithRedirect();
-    // if (form.valid) {
-    //   const { email, password, remember } = form.value;
-    //   const loginData = { email, password, remember };
-    //   localStorage.setItem('usserAutenticado', JSON.stringify(loginData));
-    //   this.hideForm()
-    //   alert(`Iniciando sesión para ${loginData.email}`);
-    // } else {
-    //   alert('Por favor completa todos los campos');
-    // }
   }
 
   socialLogin() {
