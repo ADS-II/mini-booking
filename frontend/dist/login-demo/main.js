@@ -201,11 +201,18 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-function NavBarComponent_li_18_Template(rf, ctx) {
+function NavBarComponent_li_15_Template(rf, ctx) {
+  if (rf & 1) {
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](0, "li", 9)(1, "a", 17);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](2, "Mis Reservas");
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]()();
+  }
+}
+function NavBarComponent_li_17_Template(rf, ctx) {
   if (rf & 1) {
     const _r1 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵgetCurrentView"]();
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](0, "li", 9)(1, "button", 18);
-    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵlistener"]("click", function NavBarComponent_li_18_Template_button_click_1_listener() {
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵlistener"]("click", function NavBarComponent_li_17_Template_button_click_1_listener() {
       _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵrestoreView"](_r1);
       const ctx_r1 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵnextContext"]();
       return _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵresetView"](ctx_r1.logout());
@@ -214,11 +221,11 @@ function NavBarComponent_li_18_Template(rf, ctx) {
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]()();
   }
 }
-function NavBarComponent_li_21_Template(rf, ctx) {
+function NavBarComponent_li_20_Template(rf, ctx) {
   if (rf & 1) {
     const _r3 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵgetCurrentView"]();
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](0, "li", 9)(1, "button", 19);
-    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵlistener"]("click", function NavBarComponent_li_21_Template_button_click_1_listener() {
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵlistener"]("click", function NavBarComponent_li_20_Template_button_click_1_listener() {
       _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵrestoreView"](_r3);
       const ctx_r1 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵnextContext"]();
       return _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵresetView"](ctx_r1.loginWithRedirect());
@@ -227,7 +234,7 @@ function NavBarComponent_li_21_Template(rf, ctx) {
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]()();
   }
 }
-function NavBarComponent_li_23_Template(rf, ctx) {
+function NavBarComponent_li_22_Template(rf, ctx) {
   if (rf & 1) {
     const _r4 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵgetCurrentView"]();
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](0, "li", 20)(1, "a", 21);
@@ -241,7 +248,7 @@ function NavBarComponent_li_23_Template(rf, ctx) {
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](8, " Profile ");
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](9, "button", 27);
-    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵlistener"]("click", function NavBarComponent_li_23_Template_button_click_9_listener() {
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵlistener"]("click", function NavBarComponent_li_22_Template_button_click_9_listener() {
       _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵrestoreView"](_r4);
       const ctx_r1 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵnextContext"]();
       return _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵresetView"](ctx_r1.logout());
@@ -263,11 +270,11 @@ function NavBarComponent_li_23_Template(rf, ctx) {
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("icon", ctx_r1.faPowerOff);
   }
 }
-function NavBarComponent_ul_25_Template(rf, ctx) {
+function NavBarComponent_ul_24_Template(rf, ctx) {
   if (rf & 1) {
     const _r6 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵgetCurrentView"]();
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](0, "ul", 28)(1, "button", 29);
-    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵlistener"]("click", function NavBarComponent_ul_25_Template_button_click_1_listener() {
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵlistener"]("click", function NavBarComponent_ul_24_Template_button_click_1_listener() {
       _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵrestoreView"](_r6);
       const ctx_r1 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵnextContext"]();
       return _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵresetView"](ctx_r1.loginWithRedirect());
@@ -276,7 +283,7 @@ function NavBarComponent_ul_25_Template(rf, ctx) {
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]()();
   }
 }
-function NavBarComponent_ul_27_Template(rf, ctx) {
+function NavBarComponent_ul_26_Template(rf, ctx) {
   if (rf & 1) {
     const _r7 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵgetCurrentView"]();
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](0, "ul", 30)(1, "li", 9)(2, "span", 31);
@@ -292,7 +299,7 @@ function NavBarComponent_ul_27_Template(rf, ctx) {
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](10, "li");
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelement"](11, "fa-icon", 26);
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](12, "button", 35);
-    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵlistener"]("click", function NavBarComponent_ul_27_Template_button_click_12_listener() {
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵlistener"]("click", function NavBarComponent_ul_26_Template_button_click_12_listener() {
       _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵrestoreView"](_r7);
       const ctx_r1 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵnextContext"]();
       return _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵresetView"](ctx_r1.logout());
@@ -341,9 +348,9 @@ class NavBarComponent {
     selectors: [["app-nav-bar"]],
     standalone: true,
     features: [_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵStandaloneFeature"]],
-    decls: 29,
-    vars: 17,
-    consts: [[1, "nav-container"], [1, "navbar", "navbar-expand-md", "navbar-light", "bg-light"], [1, "container"], ["routerLink", "/", 1, "navbar-brand"], ["src", "assets/logo.jpg", "alt", "Mi Logo", 2, "height", "40px"], ["type", "button", "data-toggle", "collapse", "data-target", "#navbarNav", "aria-controls", "navbarNav", "aria-label", "Toggle navigation", 1, "navbar-toggler", 3, "click"], [1, "navbar-toggler-icon"], ["id", "navbarNav", 1, "collapse", "navbar-collapse", 3, "ngbCollapse"], [1, "navbar-nav", "mr-auto"], [1, "nav-item"], ["routerLink", "/", 1, "nav-link"], ["routerLink", "/catalogo", 1, "nav-link"], ["routerLink", "/MisReservas", 1, "nav-link"], ["class", "nav-item", 4, "ngIf"], [1, "navbar-nav", "d-none", "d-md-block"], ["class", "nav-item dropdown", "ngbDropdown", "", 4, "ngIf"], ["class", "navbar-nav d-md-none", 4, "ngIf"], ["class", "navbar-nav d-md-none justify-content-between", "style", "min-height: 170px;", 4, "ngIf"], ["id", "qsLogoutBtn", 1, "btn", "btn-link", "p-0", 2, "min-width", "unset", 3, "click"], ["id", "qsLoginBtn", 1, "btn", "btn-primary", "btn-margin", 3, "click"], ["ngbDropdown", "", 1, "nav-item", "dropdown"], ["ngbDropdownToggle", "", "id", "profileDropDown", "data-toggle", "dropdown", 1, "nav-link", "dropdown-toggle"], ["alt", "Profile picture", 1, "nav-user-profile", "rounded-circle", 2, "width", "75px", 3, "src"], ["ngbDropdownMenu", "", 1, "dropdown-menu", "dropdown-menu-left"], [1, "dropdown-header"], ["routerLink", "/profile", 1, "dropdown-item", "dropdown-profile"], [1, "mr-3", 3, "icon"], [1, "btn", "btn-link", "dropdown-item", 3, "click"], [1, "navbar-nav", "d-md-none"], ["id", "qsLoginBtn", 1, "btn", "btn-primary", "btn-block", 3, "click"], [1, "navbar-nav", "d-md-none", "justify-content-between", 2, "min-height", "170px"], [1, "user-info"], ["alt", "Profile picture", 1, "nav-user-profile", "d-inline-block", "rounded-circle", "mr-3", 2, "width", "75px", 3, "src"], [1, "d-inline-block"], ["routerLink", "/profile"], [1, "btn", "btn-link", "p-0", 3, "click"]],
+    decls: 28,
+    vars: 20,
+    consts: [[1, "nav-container"], [1, "navbar", "navbar-expand-md", "navbar-light", "bg-light"], [1, "container"], ["routerLink", "/", 1, "navbar-brand"], ["src", "assets/logo.jpg", "alt", "Mi Logo", 2, "height", "40px"], ["type", "button", "data-toggle", "collapse", "data-target", "#navbarNav", "aria-controls", "navbarNav", "aria-label", "Toggle navigation", 1, "navbar-toggler", 3, "click"], [1, "navbar-toggler-icon"], ["id", "navbarNav", 1, "collapse", "navbar-collapse", 3, "ngbCollapse"], [1, "navbar-nav", "mr-auto"], [1, "nav-item"], ["routerLink", "/", 1, "nav-link"], ["routerLink", "/catalogo", 1, "nav-link"], ["class", "nav-item", 4, "ngIf"], [1, "navbar-nav", "d-none", "d-md-block"], ["class", "nav-item dropdown", "ngbDropdown", "", 4, "ngIf"], ["class", "navbar-nav d-md-none", 4, "ngIf"], ["class", "navbar-nav d-md-none justify-content-between", "style", "min-height: 170px;", 4, "ngIf"], ["routerLink", "/MisReservas", 1, "nav-link"], ["id", "qsLogoutBtn", 1, "btn", "btn-link", "p-0", 2, "min-width", "unset", 3, "click"], ["id", "qsLoginBtn", 1, "btn", "btn-primary", "btn-margin", 3, "click"], ["ngbDropdown", "", 1, "nav-item", "dropdown"], ["ngbDropdownToggle", "", "id", "profileDropDown", "data-toggle", "dropdown", 1, "nav-link", "dropdown-toggle"], ["alt", "Profile picture", 1, "nav-user-profile", "rounded-circle", 2, "width", "75px", 3, "src"], ["ngbDropdownMenu", "", 1, "dropdown-menu", "dropdown-menu-left"], [1, "dropdown-header"], ["routerLink", "/profile", 1, "dropdown-item", "dropdown-profile"], [1, "mr-3", 3, "icon"], [1, "btn", "btn-link", "dropdown-item", 3, "click"], [1, "navbar-nav", "d-md-none"], ["id", "qsLoginBtn", 1, "btn", "btn-primary", "btn-block", 3, "click"], [1, "navbar-nav", "d-md-none", "justify-content-between", 2, "min-height", "170px"], [1, "user-info"], ["alt", "Profile picture", 1, "nav-user-profile", "d-inline-block", "rounded-circle", "mr-3", 2, "width", "75px", 3, "src"], [1, "d-inline-block"], ["routerLink", "/profile"], [1, "btn", "btn-link", "p-0", 3, "click"]],
     template: function NavBarComponent_Template(rf, ctx) {
       if (rf & 1) {
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](0, "div", 0)(1, "nav", 1)(2, "div", 2)(3, "a", 3);
@@ -361,22 +368,21 @@ class NavBarComponent {
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](12, "li", 9)(13, "a", 11);
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](14, "Catalogo");
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]()();
-        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](15, "li", 9)(16, "a", 12);
-        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](17, "Mis Reservas");
-        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]()();
-        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](18, NavBarComponent_li_18_Template, 3, 0, "li", 13);
-        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpipe"](19, "async");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](15, NavBarComponent_li_15_Template, 3, 0, "li", 12);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpipe"](16, "async");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](17, NavBarComponent_li_17_Template, 3, 0, "li", 12);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpipe"](18, "async");
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
-        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](20, "ul", 14);
-        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](21, NavBarComponent_li_21_Template, 3, 0, "li", 13);
-        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpipe"](22, "async");
-        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](23, NavBarComponent_li_23_Template, 12, 4, "li", 15);
-        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpipe"](24, "async");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](19, "ul", 13);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](20, NavBarComponent_li_20_Template, 3, 0, "li", 12);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpipe"](21, "async");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](22, NavBarComponent_li_22_Template, 12, 4, "li", 14);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpipe"](23, "async");
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
-        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](25, NavBarComponent_ul_25_Template, 3, 0, "ul", 16);
-        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpipe"](26, "async");
-        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](27, NavBarComponent_ul_27_Template, 14, 4, "ul", 17);
-        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpipe"](28, "async");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](24, NavBarComponent_ul_24_Template, 3, 0, "ul", 15);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpipe"](25, "async");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtemplate"](26, NavBarComponent_ul_26_Template, 14, 4, "ul", 16);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpipe"](27, "async");
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]()()()();
       }
       if (rf & 2) {
@@ -384,16 +390,18 @@ class NavBarComponent {
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵattribute"]("aria-expanded", !ctx.isCollapsed);
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](2);
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngbCollapse", ctx.isCollapsed);
-        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](11);
-        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngIf", _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpipeBind1"](19, 7, ctx.auth.isAuthenticated$));
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](8);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngIf", _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpipeBind1"](16, 8, ctx.auth.isAuthenticated$));
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](2);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngIf", _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpipeBind1"](18, 10, ctx.auth.isAuthenticated$));
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](3);
-        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngIf", _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpipeBind1"](22, 9, ctx.auth.isAuthenticated$) === false);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngIf", _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpipeBind1"](21, 12, ctx.auth.isAuthenticated$) === false);
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](2);
-        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngIf", _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpipeBind1"](24, 11, ctx.auth.user$));
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngIf", _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpipeBind1"](23, 14, ctx.auth.user$));
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](2);
-        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngIf", _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpipeBind1"](26, 13, ctx.auth.isAuthenticated$) === false);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngIf", _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpipeBind1"](25, 16, ctx.auth.isAuthenticated$) === false);
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](2);
-        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngIf", _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpipeBind1"](28, 15, ctx.auth.user$));
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngIf", _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpipeBind1"](27, 18, ctx.auth.user$));
       }
     },
     dependencies: [_fortawesome_angular_fontawesome__WEBPACK_IMPORTED_MODULE_4__.FontAwesomeModule, _fortawesome_angular_fontawesome__WEBPACK_IMPORTED_MODULE_4__.FaIconComponent, _ng_bootstrap_ng_bootstrap__WEBPACK_IMPORTED_MODULE_5__.NgbDropdownToggle, _ng_bootstrap_ng_bootstrap__WEBPACK_IMPORTED_MODULE_5__.NgbDropdownMenu, _ng_bootstrap_ng_bootstrap__WEBPACK_IMPORTED_MODULE_5__.NgbDropdown, _ng_bootstrap_ng_bootstrap__WEBPACK_IMPORTED_MODULE_5__.NgbCollapse, _angular_common__WEBPACK_IMPORTED_MODULE_3__.AsyncPipe, _angular_common__WEBPACK_IMPORTED_MODULE_3__.NgIf, _angular_router__WEBPACK_IMPORTED_MODULE_6__.RouterLink],
@@ -3180,40 +3188,64 @@ class ReservasusuarioComponent {
     this.http = http;
     this.auth = auth;
     this.notificationService = notificationService;
-    const usuarioLocal = JSON.parse(localStorage.getItem('usserAutenticado') || '{}');
-    if (usuarioLocal) {
-      this.email = usuarioLocal.email;
-      this.getReservarUsser();
-    } else {
-      // Recuperamos la data de auth
-      this.auth.user$.subscribe(user => {
-        if (user) {
-          this.email = user.email;
+    // Recuperamos la data de auth
+    this.auth.user$.subscribe(user => {
+      if (user) {
+        this.email = user.email;
+        this.getReservarUsser();
+      } else {
+        // ´posbible caso que solo haya iniciado en el login
+        const usuarioLocal = JSON.parse(localStorage.getItem('usserAutenticado') || '{}');
+        if (usuarioLocal) {
+          this.email = usuarioLocal.email;
           this.getReservarUsser();
         }
-      });
-    }
+      }
+    });
   }
   // buscamos las reservas del usuario
   getReservarUsser() {
-    if (this.email) {
-      const data = {
-        email: this.email
-      };
-      this.http.post(`${src_environments_environment__WEBPACK_IMPORTED_MODULE_1__.environment.apiUrl}/api/componente/reservas/usuario`, data).subscribe({
-        next: reservas => {
-          this.reservas_usuario = reservas;
-          if (reservas.length == 0) {
-            this.notificationService.error('Actualmente no tienes reservas registradas');
-          }
-        },
-        error: err => {
-          this.notificationService.error('Error al cargar tus reservas');
-        }
-      });
-    } else {
+    // validamos si el email que se recupero es valido
+    if (!this.email) {
       this.notificationService.error('No te has registrado aun');
+      return;
     }
+    // extraemos el token jwt
+    this.auth.getAccessTokenSilently().subscribe({
+      next: token => {
+        console.log(token);
+        // preparamos el formto de json que recibe el backend
+        const data = {
+          email: this.email
+        };
+        // hacemos peticion al backend con el tocken que recuperamos
+        this.http.post(`${src_environments_environment__WEBPACK_IMPORTED_MODULE_1__.environment.apiUrl}/api/componente/reservas/usuario`, data, {
+          // agregamos el encabezado
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }).subscribe({
+          next: reservas => {
+            // obtenemos las respuestas 
+            this.reservas_usuario = reservas;
+            // en dado caso que no se obtenga ninguna reserva registrada el usuario que se autentico mostramos un mensaje
+            if (reservas.length == 0) {
+              this.notificationService.error('Actualmente no tienes reservas registradas');
+            }
+          },
+          error: err => {
+            // en caso que se pase un erro con la peticion del backed mostramos alerta
+            console.error(err);
+            this.notificationService.error('Error al cargar tus reservas');
+          }
+        });
+      },
+      error: err => {
+        // en caso de que tengamos un error al obtener el tocken
+        console.error(err);
+        this.notificationService.error('No se pudo autenticar la sesión, error en el token');
+      }
+    });
   }
   formatearFecha(fecha) {
     return fecha.replace('T', ' ');
@@ -3221,39 +3253,72 @@ class ReservasusuarioComponent {
   filtrarRerserva(reservaId) {
     //  buscamos en la lista que hemos cargado
     const reserva = this.reservas_usuario.find(r => r.reservaId === reservaId);
+    // validamos si se encontro la reserva
     if (reserva) {
       this.selectedReserva = reserva;
     } else {
       this.notificationService.error('No se encontro tu reserva seleccionada');
     }
   }
+  /**
+   *
+   * @param event recibe un objeto
+   */
   handleReservaActualizada(event) {
-    if (event.accion === 'actualizar') {
-      this.http.put(`${src_environments_environment__WEBPACK_IMPORTED_MODULE_1__.environment.apiUrl}/api/reserva/actualizar/tiempo`, event).subscribe({
-        next: response => {
-          this.notificationService.success(response.message, 'Reserva actualizada');
-          this.getReservarUsser();
-        },
-        error: err => {
-          this.notificationService.error(err.error.error || 'Hubo un error al actualizar la reserva.');
+    // extraemos el token jwt
+    this.auth.getAccessTokenSilently().subscribe({
+      next: token => {
+        // validamos si la accion que se intenta procesar es actualizar como horas o fechas
+        if (event.accion === 'actualizar') {
+          this.http.put(`${src_environments_environment__WEBPACK_IMPORTED_MODULE_1__.environment.apiUrl}/api/reserva/actualizar/tiempo`, event, {
+            // agregamos el encabezado
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          }).subscribe({
+            next: response => {
+              // mostramos mensaje que nos devolvio el backend
+              this.notificationService.success(response.message, 'Reserva actualizada');
+              // actualizamos la interfaz sin recargar la pagina
+              this.getReservarUsser();
+            },
+            error: err => {
+              // mostramos error que nos devolvio el backend
+              this.notificationService.error(err.error.error || 'Hubo un error al actualizar la reserva.');
+            }
+          });
+        } else if (event.accion === 'cancelar') {
+          // validamos si solo se quiere cancelar
+          // solo habilitamos el espacio y cambiamos estado de la reserva
+          const body = {
+            reservaId: event.reservaId,
+            espacioId: event.espacioId
+          };
+          this.http.put(`${src_environments_environment__WEBPACK_IMPORTED_MODULE_1__.environment.apiUrl}/api/reserva/actualizar/cancelar`, body, {
+            // agregamos el encabezado
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          }).subscribe({
+            next: response => {
+              // mostramos mensaje que nos devolvio el backend
+              this.notificationService.success(response.message, 'Reserva actualizada');
+              // actualizamos la interfaz sin recargar la pagina
+              this.getReservarUsser();
+            },
+            error: err => {
+              // mostramos error que nos devolvio el backend
+              this.notificationService.error(err.error.error || 'Hubo un error al actualizar la reserva.');
+            }
+          });
         }
-      });
-    } else if (event.accion === 'cancelar') {
-      // solo habilitamos el espacio y cambiamos estado de la reserva
-      const body = {
-        reservaId: event.reservaId,
-        espacioId: event.espacioId
-      };
-      this.http.put(`${src_environments_environment__WEBPACK_IMPORTED_MODULE_1__.environment.apiUrl}/api/reserva/actualizar/cancelar`, body).subscribe({
-        next: response => {
-          this.notificationService.success(response.message, 'Reserva actualizada');
-          this.getReservarUsser();
-        },
-        error: err => {
-          this.notificationService.error(err.error.error || 'Hubo un error al actualizar la reserva.');
-        }
-      });
-    }
+      },
+      error: err => {
+        // en caso de que tengamos un error al obtener el tocken
+        console.error(err);
+        this.notificationService.error('No se pudo autenticar la sesión, error en el token');
+      }
+    });
   }
   static ɵfac = function ReservasusuarioComponent_Factory(t) {
     return new (t || ReservasusuarioComponent)(_angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵdirectiveInject"](_angular_common_http__WEBPACK_IMPORTED_MODULE_5__.HttpClient), _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵdirectiveInject"](_auth0_auth0_angular__WEBPACK_IMPORTED_MODULE_6__.AuthService), _angular_core__WEBPACK_IMPORTED_MODULE_4__["ɵɵdirectiveInject"](src_app_services_notification_service__WEBPACK_IMPORTED_MODULE_3__.NotificationService));
