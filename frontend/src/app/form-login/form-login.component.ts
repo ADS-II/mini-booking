@@ -22,9 +22,6 @@ export class FormLoginComponent implements OnChanges {
   ngOnChanges(changes: SimpleChanges) {
     if (changes['isVisibleForm']) {
       if (this.isVisibleForm) {
-        // modemos la vista al inicio
-        // window.scrollTo({ top: 0, behavior: 'smooth' });
-        
         //  desactivamos el scroll
         this.doc.body.classList.add('no-scroll');
 
@@ -38,15 +35,16 @@ export class FormLoginComponent implements OnChanges {
 
 
   login(form: NgForm) {
-    if (form.valid) {
-      const { email, password, remember } = form.value;
-      const loginData = { email, password, remember };
-      localStorage.setItem('usserAutenticado', JSON.stringify(loginData));
-      this.hideForm()
-      alert(`Iniciando sesión para ${loginData.email}`);
-    } else {
-      alert('Por favor completa todos los campos');
-    }
+    this.auth.loginWithRedirect();
+    // if (form.valid) {
+    //   const { email, password, remember } = form.value;
+    //   const loginData = { email, password, remember };
+    //   localStorage.setItem('usserAutenticado', JSON.stringify(loginData));
+    //   this.hideForm()
+    //   alert(`Iniciando sesión para ${loginData.email}`);
+    // } else {
+    //   alert('Por favor completa todos los campos');
+    // }
   }
 
   socialLogin() {

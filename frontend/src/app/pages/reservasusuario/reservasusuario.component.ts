@@ -28,13 +28,6 @@ export class ReservasusuarioComponent {
       if (user) {
         this.email = user.email;
         this.getReservarUsser();
-      } else {
-        // ´posbible caso que solo haya iniciado en el login
-        const usuarioLocal = JSON.parse(localStorage.getItem('usserAutenticado') || '{}');
-        if (usuarioLocal) {
-          this.email = usuarioLocal.email;
-          this.getReservarUsser();
-        }
       }
     });
   }
@@ -50,12 +43,10 @@ export class ReservasusuarioComponent {
     // extraemos el token jwt
     this.auth.getAccessTokenSilently().subscribe({
       next: (token) => {
-        console.log(token);
         // preparamos el formto de json que recibe el backend
         const data = { email: this.email };
         // hacemos peticion al backend con el tocken que recuperamos
         this.http.post(`${environment.apiUrl}/api/componente/reservas/usuario`, data, {
-          // agregamos el encabezado
           headers: { Authorization: `Bearer ${token}` }
         })
           .subscribe({
@@ -70,6 +61,7 @@ export class ReservasusuarioComponent {
             error: (err) => {
               // en caso que se pase un erro con la peticion del backed mostramos alerta
               console.error(err);
+              console.log(err.error);
               this.notificationService.error('Error al cargar tus reservas');
             }
           });
@@ -109,7 +101,6 @@ export class ReservasusuarioComponent {
         // validamos si la accion que se intenta procesar es actualizar como horas o fechas
         if (event.accion === 'actualizar') {
           this.http.put(`${environment.apiUrl}/api/reserva/actualizar/tiempo`, event, {
-            // agregamos el encabezado
             headers: { Authorization: `Bearer ${token}` }
           })
             .subscribe({
@@ -133,7 +124,6 @@ export class ReservasusuarioComponent {
             espacioId: event.espacioId
           };
           this.http.put(`${environment.apiUrl}/api/reserva/actualizar/cancelar`, body, {
-            // agregamos el encabezado
             headers: { Authorization: `Bearer ${token}` }
           })
             .subscribe({

@@ -7,7 +7,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import com.example.coworking.dto.ReservaDTO;
 import com.example.coworking.service.ReservaService;
@@ -130,8 +132,12 @@ public class ReservaController {
     }
 
     @PutMapping("actualizar/tiempo")
-    public ResponseEntity<?> actualizarReserva(@RequestBody Map<String, String> body) {
+    public ResponseEntity<?> actualizarReserva(@RequestBody Map<String, String> body,
+            @AuthenticationPrincipal Jwt jwt) {
         try {
+            // imprimimos info
+            new ComplementoPrints().imprimirToken(jwt);
+
             Integer idReserva = Integer.parseInt(body.get("reservaId"));
 
             LocalDateTime[] fechaHoras = formatearFecha_up(body);
@@ -150,13 +156,16 @@ public class ReservaController {
     }
 
     @PutMapping("actualizar/cancelar")
-    public ResponseEntity<?> actualizarReservaCancelar(@RequestBody Map<String, String> body) {
+    public ResponseEntity<?> actualizarReservaCancelar(@RequestBody Map<String, String> body,
+            @AuthenticationPrincipal Jwt jwt) {
         try {
+            // imprimimos info
+            new ComplementoPrints().imprimirToken(jwt);
+
             // aqui solo actualizamos 2 cosas pasamos el espacio a disponible
             // y la reserva a cancelada
             Integer idReserva = Integer.parseInt(body.get("reservaId"));
             Integer idEspacio = Integer.parseInt(body.get("espacioId"));
-
 
             service.actualizarReservaCancelar(idReserva, idEspacio);
             return ResponseEntity.ok(Map.of("message", "Reserva cancelada correctamente"));

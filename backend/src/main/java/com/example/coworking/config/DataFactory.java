@@ -21,7 +21,6 @@ import com.example.coworking.repository.ServicioRepository;
 import com.example.coworking.repository.TipoEspacioRepository;
 import com.example.coworking.repository.UbicacionRepository;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
@@ -76,8 +75,6 @@ public class DataFactory implements CommandLineRunner {
             EstadoPago estadoPago3 = new EstadoPago();
             estadoPago3.setNombre("Rechazado");
             estadoPagoRepo.save(estadoPago3);
-
-            System.out.println("Estados de pago creados");
         }
 
         if (estadoRepo.count() == 0) {
@@ -92,8 +89,6 @@ public class DataFactory implements CommandLineRunner {
             Estado estado3 = new Estado();
             estado3.setNombre("mantenimiento");
             estadoRepo.save(estado3);
-
-            System.out.println("Estados creados");
         }
 
 
@@ -116,7 +111,6 @@ public class DataFactory implements CommandLineRunner {
             ubicacion3.setHorario("6 PM - 6 AM");
             ubicacionRepo.save(ubicacion3);
 
-            System.out.println("Ubicaciones creadas");
         }
 
 
@@ -135,8 +129,6 @@ public class DataFactory implements CommandLineRunner {
             tipo3.setNombre("Oficina Privada");
             tipo3.setUbicacion(ubicacionRepo.findByZona("San Salvador Este"));
             tipoEspacioRepo.save(tipo3);
-
-            System.out.println("Tipos de espacio creados");
         }
 
 
@@ -165,8 +157,6 @@ public class DataFactory implements CommandLineRunner {
             servicio5.setNombre("Estacionamiento");
             servicio5.setDescripcion("Espacios de estacionamiento disponibles");
             servicioRepo.save(servicio5);
-
-            System.out.println("Servicios creados");
         }
 
 
@@ -178,8 +168,6 @@ public class DataFactory implements CommandLineRunner {
             MetodoPago metodo2 = new MetodoPago();
             metodo2.setNombre("Efectivo");
             metodoPagoRepo.save(metodo2);
-
-            System.out.println("Métodos de pago creados");
         }
 
   
@@ -204,7 +192,6 @@ public class DataFactory implements CommandLineRunner {
             EstadoReserva estadoReserva5 = new EstadoReserva();
             estadoReserva5.setNombre("Cancelada");
             estadoReservaRepo.save(estadoReserva5);
-            System.out.println("Estados de reserva creados");
         }
 
 
@@ -237,8 +224,6 @@ public class DataFactory implements CommandLineRunner {
                     espacioServicio.setServicio(s);
                     espacioServicioRepo.save(espacioServicio);
                 }
-
-                System.out.println("Espacio " + i + " creado con servicios");
             }
         }
     }
