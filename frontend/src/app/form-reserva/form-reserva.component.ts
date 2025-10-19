@@ -1,5 +1,5 @@
-import { Component, Input, EventEmitter, Output, OnInit, Inject  } from '@angular/core';
-import { CommonModule, DOCUMENT  } from '@angular/common';
+import { Component, Input, EventEmitter, Output, OnInit, Inject } from '@angular/core';
+import { CommonModule, DOCUMENT } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { AuthService } from '@auth0/auth0-angular';
@@ -84,7 +84,7 @@ export class FormReservaComponent implements OnInit {
     private http: HttpClient,
     private auth: AuthService,
     private notificationService: NotificationService,
-        @Inject(DOCUMENT) private doc: Document
+    @Inject(DOCUMENT) private doc: Document
   ) {
     const today = new Date();
     this.fechaInicio = today.toISOString().split('T')[0];
@@ -107,15 +107,7 @@ export class FormReservaComponent implements OnInit {
         this.establecerUsuario(user.email, user.name, user.picture);
         this.actualizarVista(false);
       } else {
-        // en caso que solo se haya registrado sin usar auth
-        const usuarioLocal = JSON.parse(localStorage.getItem('usserAutenticado'));
-        // cargamos informacion de usuario
-        if (usuarioLocal) {
-          this.establecerUsuario(usuarioLocal.email, usuarioLocal.email);
-          this.actualizarVista(false);
-        } else {
-          this.actualizarVista(true);
-        }
+        this.actualizarVista(true);
       }
     });
   }
@@ -135,10 +127,11 @@ export class FormReservaComponent implements OnInit {
 
   // metodo que se encarga de habilitar y desactivar el scroll al body
   private actualizarScroll(): void {
+    console.log(this.mostrarEsteForm);
     if (this.mostrarEsteForm) {
-      this.doc.body.classList.add('no-scroll');
-    } else {
       this.doc.body.classList.remove('no-scroll');
+    } else {
+      this.doc.body.classList.add('no-scroll');
     }
   }
 
@@ -484,43 +477,57 @@ export class FormReservaComponent implements OnInit {
       monto: montoCalculado
     };
 
-    this.http.post(`${environment.apiUrl}/api/reserva/crear`, reservaData)
-      .subscribe({
-        next: (response: any) => {
-          this.validandoDisponibilidad = false;
+    // agregamos el token ya que es necesario que se logee con google
+    this.auth.getAccessTokenSilently().subscribe({
+      next: (token) => {
+        this.http.post(`${environment.apiUrl}/api/reserva/crear`, reservaData, {
+          headers: { Authorization: `Bearer ${token}` }
+        })
+          .subscribe({
+            next: (response: any) => {
+              this.validandoDisponibilidad = false;
 
-          this.notificationService.reservaExitosa(
-            this.espacioNombre || 'Espacio',
-            this.calcularDuracion(),
-            this.calcularTotal()
-          );
+              this.notificationService.reservaExitosa(
+                this.espacioNombre || 'Espacio',
+                this.calcularDuracion(),
+                this.calcularTotal()
+              );
 
-          this.resetForm();
-          this.reservaExitosa.emit(true);
-          this.cerrarForm.emit();
-          // actualizamos de nuevo el scroll
-          this.actualizarVista(true)
-        },
-        error: (err) => {
-          this.validandoDisponibilidad = false;
-          console.error('Error al crear reserva:', err);
+              this.resetForm();
+              this.reservaExitosa.emit(true);
+              this.cerrarForm.emit();
+              // actualizamos de nuevo el scroll
+              this.actualizarVista(true)
+            },
+            error: (err) => {
+              this.validandoDisponibilidad = false;
+              console.error('Error al crear reserva:', err);
 
-          if (err.status === 400) {
-            const mensaje = err.error?.error || 'Los datos de la reserva no son válidos';
-            this.notificationService.error(mensaje, 'Error en la Reserva');
-          } else if (err.status === 409) {
-            this.notificationService.espacioNoDisponible(
-              this.espacioNombre || 'El espacio',
-              this.fechaInicio,
-              this.fechaFin
-            );
-          } else if (err.status === 0) {
-            this.notificationService.errorServidor('No se pudo conectar con el servidor');
-          } else {
-            this.notificationService.errorServidor(err.error?.message);
-          }
-        }
-      });
+              if (err.status === 400) {
+                const mensaje = err.error?.error || 'Los datos de la reserva no son válidos';
+                this.notificationService.error(mensaje, 'Error en la Reserva');
+              } else if (err.status === 409) {
+                this.notificationService.espacioNoDisponible(
+                  this.espacioNombre || 'El espacio',
+                  this.fechaInicio,
+                  this.fechaFin
+                );
+              } else if (err.status === 0) {
+                this.notificationService.errorServidor('No se pudo conectar con el servidor');
+              } else {
+                this.notificationService.errorServidor(err.error?.message);
+              }
+            }
+          });
+      },
+      error: (err) => {
+        // en caso de que tengamos un error al obtener el tocken
+        console.error(err);
+        this.notificationService.error('No se pudo autenticar la sesión, error en el token');
+      }
+    });
+
+
   }
 
   resetForm() {
@@ -544,7 +551,7 @@ export class FormReservaComponent implements OnInit {
   cerrar() {
     this.resetForm();
     this.cerrarForm.emit();
-     // agregamos para que cuando se cierre el form de reserva se habilite nuevamente el scroll
+    // agregamos para que cuando se cierre el form de reserva se habilite nuevamente el scroll
     this.mostrarEsteForm = !this.mostrarEsteForm;
     this.actualizarScroll();
   }

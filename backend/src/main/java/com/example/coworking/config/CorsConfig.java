@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+// esta clase maneja los cors, es decir desde que lugar permite realizar peticiones
 @Configuration
 public class CorsConfig {
 
@@ -20,7 +21,7 @@ public class CorsConfig {
                 )
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*")
-                        .allowCredentials(false);
+                        .allowCredentials(true);
             }
         };
     }

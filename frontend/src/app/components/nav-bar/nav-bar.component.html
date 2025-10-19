@@ -20,7 +20,7 @@
           <li class="nav-item">
             <a routerLink="/catalogo" class="nav-link">Catalogo</a>
           </li>
-          <li class="nav-item">
+          <li class="nav-item" *ngIf="auth.isAuthenticated$ | async">
             <a routerLink="/MisReservas" class="nav-link">Mis Reservas</a>
           </li>
           <!-- <li class="nav-item" *ngIf="auth.isAuthenticated$ | async">

@@ -23,23 +23,30 @@ export class ReservasusuarioComponent {
     private auth: AuthService,
     private notificationService: NotificationService
   ) {
+<<<<<<< HEAD
     const usuarioLocal = JSON.parse(localStorage.getItem('usserAutenticado') || '{}');
+=======
+>>>>>>> deploy
     // Recuperamos la data de auth
     this.auth.user$.subscribe((user) => {
       if (user) {
         this.email = user.email;
         this.getReservarUsser();
+<<<<<<< HEAD
       } else {
         if (usuarioLocal) {
           this.email = usuarioLocal.email;
           this.getReservarUsser();
         }
+=======
+>>>>>>> deploy
       }
     });
   }
 
   // buscamos las reservas del usuario
   getReservarUsser(): void {
+<<<<<<< HEAD
     if (this.email) {
       const data = { email: this.email };
       this.http.post(`${environment.apiUrl}/api/componente/reservas/usuario`, data)
@@ -56,7 +63,46 @@ export class ReservasusuarioComponent {
         });
     }else{
             this.notificationService.error('No te has registrado aun');
+=======
+    // validamos si el email que se recupero es valido
+    if (!this.email) {
+      this.notificationService.error('No te has registrado aun');
+      return;
+>>>>>>> deploy
     }
+
+    // extraemos el token jwt
+    this.auth.getAccessTokenSilently().subscribe({
+      next: (token) => {
+        // preparamos el formto de json que recibe el backend
+        const data = { email: this.email };
+        // hacemos peticion al backend con el tocken que recuperamos
+        this.http.post(`${environment.apiUrl}/api/componente/reservas/usuario`, data, {
+          headers: { Authorization: `Bearer ${token}` }
+        })
+          .subscribe({
+            next: (reservas: any[]) => {
+              // obtenemos las respuestas 
+              this.reservas_usuario = reservas;
+              // en dado caso que no se obtenga ninguna reserva registrada el usuario que se autentico mostramos un mensaje
+              if (reservas.length == 0) {
+                this.notificationService.error('Actualmente no tienes reservas registradas');
+              }
+            },
+            error: (err) => {
+              // en caso que se pase un erro con la peticion del backed mostramos alerta
+              console.error(err);
+              console.log(err.error);
+              this.notificationService.error('Error al cargar tus reservas');
+            }
+          });
+      },
+      error: (err) => {
+        // en caso de que tengamos un error al obtener el tocken
+        console.error(err);
+        this.notificationService.error('No se pudo autenticar la sesión, error en el token');
+      }
+    });
   }
   formatearFecha(fecha: string): string {
     return fecha.replace('T', ' ');
@@ -68,44 +114,68 @@ export class ReservasusuarioComponent {
     //  buscamos en la lista que hemos cargado
     const reserva = this.reservas_usuario.find(r => r.reservaId === reservaId);
 
+    // validamos si se encontro la reserva
     if (reserva) {
       this.selectedReserva = reserva;
     } else {
       this.notificationService.error('No se encontro tu reserva seleccionada');
     }
   }
+  /**
+   * 
+   * @param event recibe un objeto
+   */
   handleReservaActualizada(event: any) {
-    if (event.accion === 'actualizar') {
-      this.http.put(`${environment.apiUrl}/api/reserva/actualizar/tiempo`, event)
-        .subscribe({
-          next: (response: any) => {
-            this.notificationService.success(response.message, 'Reserva actualizada');
+    // extraemos el token jwt
+    this.auth.getAccessTokenSilently().subscribe({
+      next: (token) => {
+        // validamos si la accion que se intenta procesar es actualizar como horas o fechas
+        if (event.accion === 'actualizar') {
+          this.http.put(`${environment.apiUrl}/api/reserva/actualizar/tiempo`, event, {
+            headers: { Authorization: `Bearer ${token}` }
+          })
+            .subscribe({
+              next: (response: any) => {
+                // mostramos mensaje que nos devolvio el backend
+                this.notificationService.success(response.message, 'Reserva actualizada');
 
-            this.getReservarUsser()
-          },
-          error: (err) => {
-            this.notificationService.error(err.error.error || 'Hubo un error al actualizar la reserva.');
+                // actualizamos la interfaz sin recargar la pagina
+                this.getReservarUsser()
+              },
+              error: (err) => {
+                // mostramos error que nos devolvio el backend
+                this.notificationService.error(err.error.error || 'Hubo un error al actualizar la reserva.');
+              }
+            });
 
-          }
-        });
-
-    } else if (event.accion === 'cancelar') {
-      // solo habilitamos el espacio y cambiamos estado de la reserva
-      const body = {
-        reservaId: event.reservaId,
-        espacioId: event.espacioId
-      };
-      this.http.put(`${environment.apiUrl}/api/reserva/actualizar/cancelar`, body)
-        .subscribe({
-          next: (response: any) => {
-            this.notificationService.success(response.message, 'Reserva actualizada');
-            this.getReservarUsser()
-          },
-          error: (err) => {
-            this.notificationService.error(err.error.error || 'Hubo un error al actualizar la reserva.');
-          }
-        });
-    }
+        } else if (event.accion === 'cancelar') { // validamos si solo se quiere cancelar
+          // solo habilitamos el espacio y cambiamos estado de la reserva
+          const body = {
+            reservaId: event.reservaId,
+            espacioId: event.espacioId
+          };
+          this.http.put(`${environment.apiUrl}/api/reserva/actualizar/cancelar`, body, {
+            headers: { Authorization: `Bearer ${token}` }
+          })
+            .subscribe({
+              next: (response: any) => {
+                // mostramos mensaje que nos devolvio el backend
+                this.notificationService.success(response.message, 'Reserva actualizada');
+                // actualizamos la interfaz sin recargar la pagina
+                this.getReservarUsser()
+              },
+              error: (err) => {
+                // mostramos error que nos devolvio el backend
+                this.notificationService.error(err.error.error || 'Hubo un error al actualizar la reserva.');
+              }
+            });
+        }
+      },
+      error: (err) => {
+        // en caso de que tengamos un error al obtener el tocken
+        console.error(err);
+        this.notificationService.error('No se pudo autenticar la sesión, error en el token');
+      }
+    });
   }
-
 }
