@@ -3555,7 +3555,7 @@ __webpack_require__.r(__webpack_exports__);
   \**************************/
 /***/ ((module) => {
 
-module.exports = /*#__PURE__*/JSON.parse('{"domain":"dev-l4x7cl5jwzv51tep.us.auth0.com","clientId":"oITo5ocgxu4mRn62MPmLCgHONv3vDCec","authorizationParams":{"audience":"https://worknest-auth-api.com"},"apiUri":"https://worknest-u0uz.onrender.com","appUri":"https://worknest-71nj.onrender.com","errorPath":"/error"}');
+module.exports = /*#__PURE__*/JSON.parse('{"domain":"dev-l4x7cl5jwzv51tep.us.auth0.com","clientId":"oITo5ocgxu4mRn62MPmLCgHONv3vDCec","authorizationParams":{"audience":"https://worknest-auth-api.com"},"apiUri":"https://worknest-u0uz.onrender.com","appUri":"https://worknest-336a.onrender.com","errorPath":"/error"}');
 
 /***/ })
 
