@@ -2056,7 +2056,7 @@ class FormReservaComponent {
             this.reservaExitosa.emit(true);
             this.cerrarForm.emit();
             // actualizamos de nuevo el scroll
-            this.actualizarVista(true);
+            this.actualizarScroll(true);
           },
           error: err => {
             this.validandoDisponibilidad = false;
