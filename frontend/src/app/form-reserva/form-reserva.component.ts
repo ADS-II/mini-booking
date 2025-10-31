@@ -8,6 +8,7 @@ import { environment } from 'src/environments/environment';
 import { NotificationService } from '../services/notification.service';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { ScrollService } from '../services/scroll.service';
 
 interface ReservaExistente {
   idReserva: number;
@@ -31,9 +32,10 @@ interface ValidacionResult {
 })
 export class FormReservaComponent implements OnInit {
 
+  mostrarLogin: boolean = false; // controla si se muestra el login
+  mostrarEsteForm: boolean = false // controla si se muestra el formulario de reserva
 
-  mostrarLogin: boolean = false;
-  mostrarEsteForm: boolean = false
+
   validandoDisponibilidad: boolean = false;
   @Input() espacioId!: number;
   @Input() espacioNombre?: string;
@@ -84,6 +86,7 @@ export class FormReservaComponent implements OnInit {
     private http: HttpClient,
     private auth: AuthService,
     private notificationService: NotificationService,
+    public scrollService: ScrollService,
     @Inject(DOCUMENT) private doc: Document
   ) {
     const today = new Date();
@@ -102,10 +105,6 @@ export class FormReservaComponent implements OnInit {
     this.auth.user$.subscribe((user) => {
       // si se ha logeado actualizamos la infoirmacion
       if (user) {
-
-        // cargamos informacion de usuario
-        // this.establecerUsuario(user.email, user.name, user.picture);
-
         this.email = user.email;
         this.nombre = user.name;
         this.picture = user.picture;
@@ -121,17 +120,14 @@ export class FormReservaComponent implements OnInit {
   // metodo que se encarga de mostrar/ocultar el login o formulario de reserva
   private actualizarVista(mostrarLogin: boolean): void {
     this.mostrarLogin = mostrarLogin;
-    this.actualizarScroll(this.email != null ? true : false);
+    this.mostrarEsteForm = !mostrarLogin;
+    this.scrollService.disabledScroll(!this.email);
   }
 
   // metodo que se encarga de habilitar y desactivar el scroll al body
   private actualizarScroll(abrirForm: boolean): void {
+    this.scrollService.disabledScroll(abrirForm);
     this.mostrarEsteForm = abrirForm;
-    if (this.mostrarEsteForm) {
-      this.doc.body.classList.add('no-scroll');
-    } else {
-      this.doc.body.classList.remove('no-scroll');
-    }
   }
 
 
@@ -495,7 +491,7 @@ export class FormReservaComponent implements OnInit {
               this.reservaExitosa.emit(true);
               this.cerrarForm.emit();
               // actualizamos de nuevo el scroll
-              this.actualizarVista(true)
+              this.actualizarScroll(false)
             },
             error: (err) => {
               this.validandoDisponibilidad = false;
@@ -519,8 +515,6 @@ export class FormReservaComponent implements OnInit {
           });
       },
       error: (err) => {
-        // en caso de que tengamos un error al obtener el tocken
-        console.error(err);
         this.notificationService.error('No se pudo autenticar la sesión, error en el token');
       }
     });
@@ -549,7 +543,6 @@ export class FormReservaComponent implements OnInit {
   cerrar() {
     this.resetForm();
     this.cerrarForm.emit();
-    // agregamos para que cuando se cierre el form de reserva se habilite nuevamente el scroll
-    this.actualizarScroll(false);
+    this.actualizarScroll(false);  // agregamos para que cuando se cierre el form de reserva se habilite nuevamente el scroll
   }
 }

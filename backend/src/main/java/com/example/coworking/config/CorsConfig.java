@@ -17,7 +17,7 @@ public class CorsConfig {
                 registry.addMapping("/api/**")
                         .allowedOrigins(
                                 "http://localhost:4200", // peticiones de modo desarrollo
-                                "https://worknest-71nj.onrender.com" // peticiones de modo produccion
+                                "https://worknest-336a.onrender.com" // peticiones de modo produccion
                 )
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*")

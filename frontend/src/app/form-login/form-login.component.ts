@@ -3,6 +3,10 @@ import { FormsModule, NgForm } from '@angular/forms';
 import { AuthService } from '@auth0/auth0-angular';
 import { CommonModule, DOCUMENT } from '@angular/common';
 
+import { ScrollService } from '../services/scroll.service'; 
+
+
+
 @Component({
   selector: 'app-form-login',
   standalone: true,
@@ -11,24 +15,17 @@ import { CommonModule, DOCUMENT } from '@angular/common';
   styleUrls: ['./form-login.component.css']
 })
 export class FormLoginComponent implements OnChanges {
-  @Input() isVisibleForm: boolean = false;
+  @Input() isVisibleForm: boolean = false; // segun se detecte en el formulario de form-reserva se cambia la visibilidad del formulario de login
   @Output() visibilityChange = new EventEmitter<boolean>();
 
   constructor(
     public auth: AuthService,
-    @Inject(DOCUMENT) private doc: Document
+    public scrollService: ScrollService
   ) { }
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['isVisibleForm']) {
-      if (this.isVisibleForm) {
-        //  desactivamos el scroll
-        this.doc.body.classList.add('no-scroll');
-
-      } else {
-        // restauramos el scroll del body
-        this.doc.body.classList.remove('no-scroll');
-      }
+      this.scrollService.disabledScroll(this.isVisibleForm); // deshabilitamos o habilitamos el scroll según la visibilidad del formulario
     }
   }
 
@@ -43,7 +40,8 @@ export class FormLoginComponent implements OnChanges {
   }
   hideForm() {
     this.isVisibleForm = false;
-    this.doc.body.classList.remove('no-scroll'); // agregamos la clase al body para que no permita hacer scroll mediante se superponga esta ventana
+
+    this.scrollService.disabledScroll(); // habilitamos el scroll nuevamente
     this.visibilityChange.emit(false); // actualizamos la visibilidad
   }
 
