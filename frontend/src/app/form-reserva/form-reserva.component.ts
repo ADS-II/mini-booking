@@ -9,6 +9,7 @@ import { NotificationService } from '../services/notification.service';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ScrollService } from '../services/scroll.service';
+import Swal from 'sweetalert2';
 
 interface ReservaExistente {
   idReserva: number;
@@ -388,19 +389,32 @@ export class FormReservaComponent implements OnInit {
    * Limpia el formulario y resetea a valores por defecto
    */
   limpiarFormulario(): void {
-    const confirmar = confirm('¿Estás seguro de que deseas limpiar el formulario?');
-
-    if (confirmar) {
-      this.resetForm();
-      this.errores = {};
-      this.touched = {
-        fechaInicio: false,
-        fechaFin: false,
-        horaInicio: false,
-        horaFin: false
-      };
-      this.notificationService.info('Formulario limpiado', 'Información', 2000);
-    }
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: 'Se borrarán todos los datos del formulario.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, limpiar',
+      cancelButtonText: 'No, cancelar',
+      customClass: {
+        popup: 'swal2-popup',
+        title: 'swal2-title',
+        confirmButton: 'swal2-confirm',
+        cancelButton: 'swal2-cancel'
+      }
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.resetForm();
+        this.errores = {};
+        this.touched = {
+          fechaInicio: false,
+          fechaFin: false,
+          horaInicio: false,
+          horaFin: false
+        };
+        this.notificationService.info('Formulario limpiado', 'Información', 2000);
+      }
+    });
   }
 
   reservar() {
