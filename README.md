@@ -107,6 +107,75 @@ docker compose -f docker-compose.local.yml down -v
   - Verifica la salud del backend en Swagger: http://localhost:8080/swagger-ui.html
   - Ver logs específicos de un servicio: `docker compose -f docker-compose.local.yml logs <service>`
 
+### Verificación rápida (salud)
+
+Comprobar que los endpoints responden desde PowerShell:
+
+```powershell
+# Frontend (index): debería devolver 200
+powershell -NoProfile -Command "(Invoke-WebRequest -UseBasicParsing http://localhost:4200).StatusCode"
+
+# Backend (Swagger): debería devolver 200
+powershell -NoProfile -Command "(Invoke-WebRequest -UseBasicParsing http://localhost:8080/swagger-ui.html).StatusCode"
+```
+
+### Ciclo de desarrollo (cambios locales)
+
+- Cambios en frontend (Angular):
+  1) Genera el build estático
+     ```powershell
+     cd frontend
+     npm ci
+     npm run build
+     cd ..
+     ```
+  2) Reconstruye y levanta el contenedor Nginx con los estáticos nuevos
+     ```powershell
+     docker compose -f docker-compose.local.yml up --build -d
+     ```
+
+- Cambios en backend (Spring Boot):
+  - El contenedor recompila con Maven en cada `--build`. Si cambias código Java:
+    ```powershell
+    docker compose -f docker-compose.local.yml up --build -d
+    ```
+
+- Cambios en esquema/datos:
+  - Con `SPRING_JPA_HIBERNATE_DDL_AUTO=update` se aplican alter menores automáticamente.
+  - Para limpiar datos por completo:
+    ```powershell
+    docker compose -f docker-compose.local.yml down -v
+    docker compose -f docker-compose.local.yml up --build -d
+    ```
+
+### Personalizar puertos/credenciales (opcional)
+
+Edita `docker-compose.local.yml`:
+
+```yaml
+services:
+  db:
+    environment:
+      POSTGRES_DB: mini_booking_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"  # cambia el puerto host si ya está en uso
+
+  ads-coworking-app:
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/mini_booking_db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+    ports:
+      - "8080:8080"  # cambia a 8081 si 8080 está ocupado
+
+  frontend:
+    ports:
+      - "4200:80"    # cambia a 4300 si 4200 está ocupado
+```
+
 ## Características
 
 - Login y logout con Auth0
