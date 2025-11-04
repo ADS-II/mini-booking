@@ -54,6 +54,29 @@ Esta opción levanta Postgres, el backend Spring Boot y el frontend (estático e
 ### Requisitos
 - Docker Desktop instalado y en ejecución.
 
+### Configuración inicial
+
+1. Crea un archivo `.env` en la raíz del proyecto copiando el archivo de ejemplo:
+   ```powershell
+   # Desde la raíz del repo
+   copy .env.example .env
+   ```
+
+2. Crea un archivo `auth_config.json` en el directorio `frontend` copiando el archivo de ejemplo:
+   ```powershell
+   copy frontend\auth_config.json.example frontend\auth_config.json
+   ```
+
+3. (Opcional) Edita el archivo `.env` para personalizar las variables de entorno según tus necesidades:
+   - Credenciales de base de datos
+   - Configuración de Auth0
+   - Puertos
+   - Configuración de Spring Boot
+
+   El archivo `.env.example` contiene valores por defecto que funcionan para desarrollo local sin modificaciones.
+
+4. (Opcional) Edita el archivo `frontend/auth_config.json` con tus credenciales de Auth0 si deseas usar autenticación real. Para desarrollo básico sin autenticación, los valores de ejemplo son suficientes.
+
 ### Levantar el entorno local
 
 ```powershell
@@ -150,7 +173,26 @@ powershell -NoProfile -Command "(Invoke-WebRequest -UseBasicParsing http://local
 
 ### Personalizar puertos/credenciales (opcional)
 
-Edita `docker-compose.local.yml`:
+Edita el archivo `.env` en la raíz del proyecto para personalizar las variables de entorno:
+
+```env
+# Ejemplo de personalización en .env
+POSTGRES_DB=mi_base_datos
+POSTGRES_USER=mi_usuario
+POSTGRES_PASSWORD=mi_password_seguro
+DB_PORT=5433  # Si el puerto 5432 ya está en uso
+
+# URL de conexión (asegúrate de que coincida con las credenciales de arriba)
+SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/mi_base_datos
+SPRING_DATASOURCE_USERNAME=mi_usuario
+SPRING_DATASOURCE_PASSWORD=mi_password_seguro
+
+# Configuración de Auth0 (reemplaza con tus valores reales)
+AUTH_JWT_ISSUER_URI=https://tu-tenant.auth0.com/
+AUTH_JWT_AUDIENCE=tu-api-audience
+```
+
+Alternativamente, puedes editar directamente `docker-compose.local.yml` si prefieres valores hardcodeados:
 
 ```yaml
 services:

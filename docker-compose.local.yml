@@ -4,13 +4,15 @@ services:
     container_name: mini_booking_db_local
     restart: unless-stopped
     environment:
-      POSTGRES_DB: mini_booking_db
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: ${POSTGRES_DB:-mini_booking_db}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
     volumes:
       - db_data:/var/lib/postgresql/data
     ports:
-      - "5432:5432"
+      - "${DB_PORT:-5432}:5432"
+    env_file:
+      - .env
 
   ads-coworking-app:
     build:
@@ -18,14 +20,16 @@ services:
       dockerfile: Dockerfile
     container_name: mini_booking_backend_local
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/mini_booking_db
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: postgres
-      AUTH_JWT_ISSUER_URI: http://localhost/
-      AUTH_JWT_AUDIENCE: local-audience
-      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL:-jdbc:postgresql://db:5432/mini_booking_db}
+      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME:-postgres}
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD:-postgres}
+      AUTH_JWT_ISSUER_URI: ${AUTH_JWT_ISSUER_URI:-http://localhost/}
+      AUTH_JWT_AUDIENCE: ${AUTH_JWT_AUDIENCE:-local-audience}
+      SPRING_JPA_HIBERNATE_DDL_AUTO: ${SPRING_JPA_HIBERNATE_DDL_AUTO:-update}
     ports:
       - "8080:8080"
+    env_file:
+      - .env
     depends_on:
       - db
 
@@ -36,6 +40,8 @@ services:
     container_name: mini_booking_frontend_local
     ports:
       - "4200:80"
+    env_file:
+      - .env
     depends_on:
       - ads-coworking-app
 

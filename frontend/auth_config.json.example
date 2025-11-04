@@ -1,0 +1,9 @@
+{
+  "domain": "your-tenant.auth0.com",
+  "clientId": "your-client-id",
+  "authorizationParams": {
+    "audience": "your-api-audience"
+  },
+  "apiUri": "http://localhost:8080",
+  "errorPath": "/error"
+}
