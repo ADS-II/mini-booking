@@ -1,0 +1,44 @@
+services:
+  # Servicio de base de datos local para desarrollo
+  db:
+    image: postgres:15-alpine
+    container_name: mini_booking_db_local
+    restart: unless-stopped
+    # Variables sensibles trasladadas a .env.local (ver .env.local.example)
+    env_file:
+      - .env.local
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  # Override del backend para apuntar a la BD local y usar perfil local
+  ads-coworking-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: mini_booking_backend_local
+    # Variables trasladadas a .env.local (ver .env.local.example)
+    env_file:
+      - .env.local
+    # Forzar el perfil local permanece explícito aquí (opcional si lo incluyes en .env.local)
+    environment:
+      SPRING_PROFILES_ACTIVE: local
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+
+  # Frontend se queda igual pero con nombres para desarrollo local
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: mini_booking_frontend_local
+    ports:
+      - "4200:80"
+    depends_on:
+      - ads-coworking-app
+
+volumes:
+  db_data:
