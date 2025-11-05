@@ -1,55 +1,26 @@
-# Mini-Booking Monorepo
+# Mini-Booking — levantar en local (rápido)
 
-Este es un monorepo para un proyecto de mini-booking para espacios de coworking que integra Auth0 para la autenticación.
+1) Levanta todo con Docker Compose:
 
-## Estructura
-
-- `backend/`: Aplicación Java Spring Boot
-- `frontend/`: Aplicación Angular con Auth0
-- `infra/`: Archivos de Docker y configuración de infraestructura
-- `docs/`: Documentación del proyecto
-
-## Configuración
-
-### Auth0
-
-Para configurar la autenticación, crea un archivo `auth_config.json` en la raíz del proyecto con la siguiente estructura:
-
-```json
-{
-  "domain": "<TU AUTH0 DOMAIN>",
-  "clientId": "<TU AUTH0 CLIENT ID>",
-  "audience": "<TU AUTH0 API AUDIENCE>"
-}
+```sh
+docker compose up -d
+# (o docker-compose up -d si usas la CLI antigua)
 ```
 
-## Desarrollo
+2) Comprobar estado / logs:
 
-### Frontend
-```bash
-cd frontend
-npm install
-npm run dev
-```
-La aplicación estará disponible en `http://localhost:4200`
-
-### Backend
-```bash
-cd backend
-mvn spring-boot:run
+```sh
+docker compose ps
+docker compose logs -f ads-coworking-app
+docker compose logs -f db
 ```
 
-## Producción
+Para parar y eliminar volúmenes locales (reset de BD):
 
-Para levantar todos los servicios en producción, utiliza Docker Compose:
-
-```bash
-docker-compose up -d
+```sh
+docker compose down -v
 ```
 
-## Características
-
-- Login y logout con Auth0
-- Protección de rutas
-- Perfil de usuario
-- API con autenticación mediante tokens
+Notas:
+- `docker-compose.override.yml` se aplica automáticamente en local y lee `.env.local`.
+- No es necesario entrar en `backend/` o `frontend/` — el `docker compose up` construye y arranca todo.
