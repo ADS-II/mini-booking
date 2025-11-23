@@ -1,0 +1,43 @@
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: mini_booking_db_local
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: mini_booking_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  ads-coworking-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: mini_booking_backend_local
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/mini_booking_db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+      AUTH_JWT_ISSUER_URI: http://localhost/
+      AUTH_JWT_AUDIENCE: local-audience
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: mini_booking_frontend_local
+    ports:
+      - "4200:80"
+    depends_on:
+      - ads-coworking-app
+
+volumes:
+  db_data:
