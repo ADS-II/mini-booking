@@ -32,6 +32,23 @@ export class ReservasusuarioComponent {
       }
     });
   }
+
+  /**
+   * llamamos a la funcion de analisis
+   * @param  
+   */
+  private analisisGrafica() {
+    // fecha inicio y final
+    const result = this.calculoEstadisticas('05-01-2025', '23-12-2025')
+    console.log(result);
+  }
+
+  
+
+
+
+
+
   // metodo que se encarga de habilitar y desactivar el scroll al body
   public actualizarScroll(habilitarScroll: boolean): void {
     console.log(habilitarScroll);
@@ -75,6 +92,8 @@ export class ReservasusuarioComponent {
             next: (reservas: any[]) => {
               // obtenemos las respuestas 
               this.reservas_usuario = reservas;
+
+              this.analisisGrafica()
               // en dado caso que no se obtenga ninguna reserva registrada el usuario que se autentico mostramos un mensaje
               if (reservas.length == 0) {
                 this.notificationService.error('Actualmente no tienes reservas registradas');
@@ -158,5 +177,74 @@ export class ReservasusuarioComponent {
         this.notificationService.error('No se pudo autenticar la sesión, error en el token');
       }
     });
+  }
+
+  private calculoEstadisticas(fecha_inicio_input, fecha_fin_input) {
+    // en caso que dejen alguna fecha vacia mandamos una alerta
+    if (!fecha_inicio_input || !fecha_fin_input) {
+      this.notificationService.error('Fecha de incio o final vacio')
+      return;
+    }
+    const reservas = this.reservas_usuario;
+
+    // hacemos la conversion a formato d-m-y
+    const parseDateToUTC = (dateStr: string): Date => {
+      const [day, month, year] = dateStr.split('-');
+      return new Date(Date.UTC(parseInt(year), parseInt(month) - 1, parseInt(day)));
+    };
+
+    const fecha_filtro_inicio = parseDateToUTC(fecha_inicio_input);
+    const fecha_filtro_fin = parseDateToUTC(fecha_fin_input);
+
+    // filtramos
+    const reservas_filtradas = reservas.filter(reserva => {
+
+      const inicio_reserva = new Date(reserva.fechaInicio);
+      const fin_reserva = new Date(reserva.fechaFin);
+
+      const inicio_reserva_date_only = new Date(Date.UTC(inicio_reserva.getFullYear(), inicio_reserva.getMonth(), inicio_reserva.getDate()));
+      const fin_reserva_date_only = new Date(Date.UTC(fin_reserva.getFullYear(), fin_reserva.getMonth(), fin_reserva.getDate()));
+
+      //  validamos que las fechas esten dentro del rango que escribieron
+      const fin_reserva_es_despues_del_inicio_filtro = fin_reserva_date_only.getTime() >= fecha_filtro_inicio.getTime();
+      const inicio_reserva_es_antes_del_fin_filtro = inicio_reserva_date_only.getTime() <= fecha_filtro_fin.getTime();
+
+      return fin_reserva_es_despues_del_inicio_filtro && inicio_reserva_es_antes_del_fin_filtro;
+    });
+
+    // creamos una lista de los meses para darle mas visualidad al momento de graficar
+    const meses_es = [
+      'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
+      'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'
+    ];
+
+
+    const agrupadoPorMes: { [mes: string]: { reservas_mes: number; dinero: number } } = {};
+
+    reservas_filtradas.forEach(reserva => {
+      const fecha = new Date(reserva.fechaInicio);
+      const mesNombre = meses_es[fecha.getMonth()];
+
+      if (!agrupadoPorMes[mesNombre]) {
+        agrupadoPorMes[mesNombre] = {
+          reservas_mes: 0,
+          dinero: 0
+        };
+      }
+
+      agrupadoPorMes[mesNombre].reservas_mes += 1;
+      agrupadoPorMes[mesNombre].dinero += Number(reserva.monto);
+    });
+
+    // preparamos el objeto que le mandaremos a la grafica
+    const dataGrafica = Object.keys(agrupadoPorMes).map(mes => ({
+      mes,
+      reservas_mes: agrupadoPorMes[mes].reservas_mes,
+      dinero: agrupadoPorMes[mes].dinero,
+      label: mes + ' - reservas ' + agrupadoPorMes[mes].reservas_mes,
+      valor: agrupadoPorMes[mes].dinero
+    }));
+
+    return dataGrafica
   }
 }
