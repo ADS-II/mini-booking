@@ -1,0 +1,11 @@
+
+spring.datasource.url=jdbc:postgresql://ep-plain-tree-a5hnak7w-pooler.us-east-2.aws.neon.tech:5432/coworking?sslmode=require   
+spring.datasource.username=neondb_owner
+spring.datasource.password=npg_lxMoiO5KCeU9
+
+
+
+# ruta de auth (agregar la barra / final)
+spring.security.oauth2.resourceserver.jwt.issuer-uri=https://dev-l4x7cl5jwzv51tep.us.auth0.com/
+# ruta para obtener el tocken
+spring.security.oauth2.resourceserver.jwt.audience=https://worknest-auth-api.com
