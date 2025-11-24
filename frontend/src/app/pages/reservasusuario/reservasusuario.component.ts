@@ -9,7 +9,7 @@ import { FormEditarReservaComponent } from "src/app/form-editar-reserva/form-edi
 import { NotificationService } from 'src/app/services/notification.service';
 import { FormsModule } from '@angular/forms';
 import { BaseChartDirective } from 'ng2-charts';
-import { ChartConfiguration, ChartData, ChartType } from 'chart.js';
+import { ChartConfiguration, ChartData, ChartType, Chart, BarController, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
 
 @Component({
   selector: 'app-reservasusuario',
@@ -25,6 +25,54 @@ export class ReservasusuarioComponent implements OnInit {
 
   public barChartOptions: ChartConfiguration['options'] = {
     responsive: true,
+    maintainAspectRatio: true,
+    plugins: {
+      legend: {
+        display: true,
+        position: 'top',
+        labels: {
+          color: '#374151',
+          font: {
+            size: 12,
+            weight: 'bold'
+          },
+          padding: 15
+        }
+      },
+      tooltip: {
+        backgroundColor: 'rgba(31, 41, 55, 0.9)',
+        padding: 12,
+        titleColor: '#fff',
+        bodyColor: '#fff',
+        borderColor: '#6b7280',
+        borderWidth: 1
+      }
+    },
+    scales: {
+      x: {
+        grid: {
+          display: false
+        },
+        ticks: {
+          color: '#6b7280',
+          font: {
+            size: 11
+          }
+        }
+      },
+      y: {
+        beginAtZero: true,
+        grid: {
+          color: 'rgba(229, 231, 235, 0.5)'
+        },
+        ticks: {
+          color: '#6b7280',
+          font: {
+            size: 11
+          }
+        }
+      }
+    }
   };
   public barChartLabels: string[] = [];
   public barChartType: ChartType = 'bar';
@@ -43,12 +91,29 @@ export class ReservasusuarioComponent implements OnInit {
   ];
   selectedMonth: string = '';
 
+  // Opciones de filtro de rango
+  filterType: 'mes' | 'rango' = 'mes';
+  rangoOptions = [
+    { value: '1', label: 'Último mes' },
+    { value: '3', label: 'Últimos 3 meses' },
+    { value: '6', label: 'Últimos 6 meses' },
+    { value: '12', label: 'Año completo' },
+    { value: 'custom', label: 'Personalizado' }
+  ];
+  selectedRango: string = '3';
+
+  // Fechas personalizadas
+  fechaInicio: string = '';
+  fechaFin: string = '';
+
   constructor(
     private http: HttpClient,
     private auth: AuthService,
     private notificationService: NotificationService,
     @Inject(DOCUMENT) private doc: Document
   ) {
+    // Register Chart.js components
+    Chart.register(BarController, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
     // Recuperamos la data de auth
     this.auth.user$.subscribe((user) => {
       if (user) {
@@ -67,22 +132,88 @@ export class ReservasusuarioComponent implements OnInit {
     this.analisisGrafica();
   }
 
-  private analisisGrafica() {
-    const currentYear = new Date().getFullYear();
-    const monthIndex = this.meses.indexOf(this.selectedMonth);
-    const startDate = `01-${monthIndex + 1}-${currentYear}`;
-    const endDate = new Date(currentYear, monthIndex + 1, 0);
-    const formattedEndDate = `${endDate.getDate()}-${monthIndex + 1}-${currentYear}`;
+  onFilterTypeChange(): void {
+    this.analisisGrafica();
+  }
 
-    const result = this.calculoEstadisticas(startDate, formattedEndDate);
+  onRangoChange(): void {
+    if (this.selectedRango !== 'custom') {
+      this.analisisGrafica();
+    }
+  }
+
+  onFechaCustomChange(): void {
+    if (this.fechaInicio && this.fechaFin) {
+      this.analisisGrafica();
+    }
+  }
+
+  private analisisGrafica() {
+    let startDate: string;
+    let endDate: string;
+    const today = new Date();
+    const currentYear = today.getFullYear();
+
+    if (this.filterType === 'mes') {
+      // Filtro por mes individual
+      const monthIndex = this.meses.indexOf(this.selectedMonth);
+      startDate = `01-${String(monthIndex + 1).padStart(2, '0')}-${currentYear}`;
+      const lastDay = new Date(currentYear, monthIndex + 1, 0);
+      endDate = `${String(lastDay.getDate()).padStart(2, '0')}-${String(monthIndex + 1).padStart(2, '0')}-${currentYear}`;
+    } else {
+      // Filtro por rango de meses
+      if (this.selectedRango === 'custom') {
+        // Rango personalizado con date pickers
+        if (!this.fechaInicio || !this.fechaFin) {
+          return; // No hacer nada si no hay fechas
+        }
+        // Convertir de formato YYYY-MM-DD a DD-MM-YYYY
+        const [yearI, monthI, dayI] = this.fechaInicio.split('-');
+        const [yearF, monthF, dayF] = this.fechaFin.split('-');
+        startDate = `${dayI}-${monthI}-${yearI}`;
+        endDate = `${dayF}-${monthF}-${yearF}`;
+      } else {
+        // Rangos predefinidos
+        const mesesAtras = parseInt(this.selectedRango);
+        const fechaInicio = new Date(today);
+        fechaInicio.setMonth(fechaInicio.getMonth() - mesesAtras);
+        fechaInicio.setDate(1); // Primer día del mes
+
+        startDate = `${String(fechaInicio.getDate()).padStart(2, '0')}-${String(fechaInicio.getMonth() + 1).padStart(2, '0')}-${fechaInicio.getFullYear()}`;
+        endDate = `${String(today.getDate()).padStart(2, '0')}-${String(today.getMonth() + 1).padStart(2, '0')}-${today.getFullYear()}`;
+      }
+    }
+
+    const result = this.calculoEstadisticas(startDate, endDate);
     this.updateChart(result);
   }
 
   private updateChart(data: any[]): void {
     this.barChartLabels = data.map(d => d.label);
-    this.barChartData.labels = this.barChartLabels;
-    this.barChartData.datasets[0].data = data.map(d => d.reservas_mes);
-    this.barChartData.datasets[1].data = data.map(d => d.dinero);
+    // Create new reference to trigger change detection in ng2-charts
+    this.barChartData = {
+      labels: this.barChartLabels,
+      datasets: [
+        {
+          data: data.map(d => d.reservas_mes),
+          label: 'Reservas',
+          backgroundColor: 'rgba(37, 99, 235, 0.7)',
+          borderColor: 'rgba(37, 99, 235, 1)',
+          borderWidth: 2,
+          hoverBackgroundColor: 'rgba(37, 99, 235, 0.9)',
+          hoverBorderColor: 'rgba(37, 99, 235, 1)'
+        },
+        {
+          data: data.map(d => d.dinero),
+          label: 'Dinero ($)',
+          backgroundColor: 'rgba(16, 185, 129, 0.7)',
+          borderColor: 'rgba(16, 185, 129, 1)',
+          borderWidth: 2,
+          hoverBackgroundColor: 'rgba(16, 185, 129, 0.9)',
+          hoverBorderColor: 'rgba(16, 185, 129, 1)'
+        }
+      ]
+    };
   }
 
   public actualizarScroll(habilitarScroll: boolean): void {
@@ -182,7 +313,7 @@ export class ReservasusuarioComponent implements OnInit {
     });
   }
 
-  private calculoEstadisticas(fecha_inicio_input, fecha_fin_input) {
+  private calculoEstadisticas(fecha_inicio_input: string, fecha_fin_input: string) {
     if (!fecha_inicio_input || !fecha_fin_input) {
       this.notificationService.error('Fecha de incio o final vacio');
       return [];
@@ -238,4 +369,3 @@ export class ReservasusuarioComponent implements OnInit {
     return dataGrafica;
   }
 }
-
