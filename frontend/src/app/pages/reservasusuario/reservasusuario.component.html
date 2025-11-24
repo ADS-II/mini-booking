@@ -1,6 +1,59 @@
 <div class="reservas-container">
   <h1>Mis Reservas</h1>
 
+  <div class="chart-container">
+    <h2>Estadísticas de Reservas</h2>
+
+    <div class="filters-container">
+      <div class="filter-group">
+        <label for="filterType">Tipo de vista:</label>
+        <select id="filterType" [(ngModel)]="filterType" (change)="onFilterTypeChange()">
+          <option value="mes">Por mes</option>
+          <option value="rango">Por rango de tiempo</option>
+        </select>
+      </div>
+
+      <div class="filter-group" *ngIf="filterType === 'mes'">
+        <label for="month">Selecciona un mes:</label>
+        <select id="month" [(ngModel)]="selectedMonth" (change)="onMonthChange()">
+          <option *ngFor="let mes of meses" [value]="mes">{{ mes | titlecase }}</option>
+        </select>
+      </div>
+
+      <div class="filter-group" *ngIf="filterType === 'rango'">
+        <label for="rango">Selecciona el periodo:</label>
+        <select id="rango" [(ngModel)]="selectedRango" (change)="onRangoChange()">
+          <option *ngFor="let opcion of rangoOptions" [value]="opcion.value">{{ opcion.label }}</option>
+        </select>
+      </div>
+
+      <div class="filter-group custom-dates" *ngIf="filterType === 'rango' && selectedRango === 'custom'">
+        <div class="date-input-group">
+          <label for="fechaInicio">Fecha inicio:</label>
+          <input
+            type="date"
+            id="fechaInicio"
+            [(ngModel)]="fechaInicio"
+            (change)="onFechaCustomChange()">
+        </div>
+        <div class="date-input-group">
+          <label for="fechaFin">Fecha fin:</label>
+          <input
+            type="date"
+            id="fechaFin"
+            [(ngModel)]="fechaFin"
+            (change)="onFechaCustomChange()">
+        </div>
+      </div>
+    </div>
+
+    <canvas baseChart
+            [data]="barChartData"
+            [options]="barChartOptions"
+            [type]="barChartType">
+    </canvas>
+  </div>
+
   <div class="grid-reservas">
     <div *ngFor="let reserva of reservas_usuario" class="card-reserva">
 
@@ -8,9 +61,6 @@
         <div class="imagen-placeholder">
           <!-- <img src="https://wearecloudworks.com/wp-content/uploads/2022/01/beneficios-coworking.jpeg" loading="lazy"> -->
         </div>
-
-
-
         <div class="badge-estado" [ngClass]="reserva.editable ? 'no_ocupado' : 'ocupado'">
           {{ reserva.estadoReserva }}
         </div>
